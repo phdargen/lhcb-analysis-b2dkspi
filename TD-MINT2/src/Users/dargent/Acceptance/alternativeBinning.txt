@@ -1,0 +1,16 @@
+* options for acceptance 
+"CompareAcceptance"	1
+"FitSplineAccRatio"	1
+"updateAnaNotePlots"	1
+
+* binning options
+"BinningName"		"alternative"
+"min_TAU"	 0.3
+"max_TAU" 	 12.
+"knot_positions" 	0.5  1. 1.5  2. 3.  9.   11
+"knot_values"	 	0.3 0.5 0.8 1 1 1 1  
+"ratio_knot_values"	1 1 1 1 1 1 1  
+
+
+* fit options
+"numCPU"         10

@@ -1,0 +1,41 @@
+* reweighting
+
+"ReweightFromA"		"/auto/data/dargent/BsDsKpipi/Final/Data/signal_tagged.root"
+"ReweightToB"		"/auto/data/dargent/BsDsKpipi/Final/Data/signal_tagged.root"
+"ApplyWeightToC"	""
+
+"OutputDir"		"B0vsBs_signal/"
+
+"legTitle"	"LHCb data"
+"nameA"		"B_{d}#rightarrowD_{s}K#pi#pi"
+"weightVarA"	"weight"
+"newWeightVarA"	"noweight"
+"cutA"		""
+
+"nameB"		"B_{s}#rightarrowD_{s}K#pi#pi"
+"weightVarB"	"N_Bs_sw"
+"cutB"		""
+
+"weightVarC"	"noweight"
+"newWeightVarC"	"noweight"
+
+"reweight"	0
+"reweightInBinsOfRun"    	 -1
+"reweightInBinsOfFinalState"	 0
+"reweightInBinsOfTrigger"	0
+
+"maxWeight"	10
+"nIterations"   1
+"minEventsPerBin"  50
+"maxBinsPerDim"    200
+
+"reweightVarSet1"	 1
+"reweightVarSet2"	 0
+"reweightVarSet3"	 0
+"reweightVarSet4"	 0
+"reweightVarSet5"	 0
+
+* plotting MC vs Data
+"nBins"		 40
+"updateAnaNoteHistos"		0
+"updateAnaNotePlots"		1

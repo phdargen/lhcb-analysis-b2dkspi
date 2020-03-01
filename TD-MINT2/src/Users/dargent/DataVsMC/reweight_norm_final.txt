@@ -1,0 +1,39 @@
+* reweighting
+
+"ReweightFromA"		"/auto/data/dargent/BsDsKpipi/Final/MC/norm_PIDGen.root"
+"ReweightToB"		"/auto/data/dargent/BsDsKpipi/Final/Data/norm.root"
+"ApplyWeightToC"	"/auto/data/dargent/BsDsKpipi/Final/MC/signal_PIDGen.root"
+
+"OutputDir"		"norm_final/"
+
+"legTitle"	"B_{s}#rightarrowD_{s}#pi#pi#pi"
+"nameA"		"MC"
+"weightVarA"	"weight"
+"newWeightVarA"	"weight_rw"   * must not exist !
+
+"nameB"		"Data"
+"weightVarB"	"N_Bs_sw"
+
+"weightVarC"	"weight"
+"newWeightVarC"	"weight_rw"
+
+"reweight"	1
+"reweightInBinsOfRun"    	 -1
+"reweightInBinsOfFinalState"	 0
+"reweightInBinsOfTrigger"	 0
+"maxWeight"	20
+"nIterations"   1
+"minEventsPerBin"  40
+"maxBinsPerDim"    200
+
+"reweightVarSet1"	 1
+"reweightVarSet2"	 0
+"reweightVarSet3"	 0
+"reweightVarSet4"	 0
+"reweightVarSet5"	 0
+
+
+* plotting MC vs Data
+"nBins"		 40
+"updateAnaNoteHistos"		0
+"updateAnaNotePlots"		0
