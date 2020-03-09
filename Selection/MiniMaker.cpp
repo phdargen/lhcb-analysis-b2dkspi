@@ -42,7 +42,7 @@ int main(int argc, char** argv){
     }
 
     /// bools : bkg, ltu, ss
-    DecayTree d(decay, year, dataType,polarity,"./","out/");
+    DecayTree d(decay, year, dataType,polarity,"./","Preselected/");
     d.Loop();
 
     return 0;

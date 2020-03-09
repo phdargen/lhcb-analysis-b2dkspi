@@ -12,6 +12,8 @@
 #include <TChain.h>
 #include <TFile.h>
 #include <iostream>
+#include "TLorentzVector.h"
+
 using namespace std;
 
 struct Decay{
@@ -26,6 +28,7 @@ struct DataType{
     enum  Type { mc, data };
 };
 
+static const double massKs = 497.611;
 static const double massKaon = 493.68;
 static const double massPion = 139.57;
 static const double massProton = 938.27;
@@ -97,6 +100,15 @@ public :
     inline  Bool_t TriggerCuts(Long64_t entry);
     inline  Bool_t LooseCuts(Long64_t entry);
     inline  Bool_t LooseCutsLTU(Long64_t entry);
+    inline void set_LorentzVectors();
+    
+   TLorentzVector pi,pip_Ks,pim_Ks,pi1_D,pi2_D,K_D,Ks,D;
+   TLorentzVector FullDTF_pi,FullDTF_pip_Ks,FullDTF_pim_Ks,FullDTF_pi1_D,FullDTF_pi2_D,FullDTF_K_D,FullDTF_Ks,FullDTF_D;
+    
+   TLorentzVector K_fromD_asP_MissID,K_fromD_asPi_MissID;
+   TLorentzVector pi_asP_MissID,pi_asK_MissID;
+   TLorentzVector pi1_fromD_asP_MissID,pi1_fromD_asK_MissID;
+   TLorentzVector pi2_fromD_asP_MissID,pi2_fromD_asK_MissID;
     
    // Declaration of leaf types
    Double_t        B_ETA;

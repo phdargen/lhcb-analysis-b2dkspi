@@ -1,0 +1,8 @@
+*.o
+*rootmap*
+*rootrc*
+massFit
+ampFit
+timeFit
+.makedepend.err
+.depend

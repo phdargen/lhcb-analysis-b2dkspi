@@ -13,10 +13,11 @@
 #include "TROOT.h"
 
 #include "TMVAGui.C"
-#include "/work/dargent/TMVA-v4.2.0/test/variables.C"
-#include "/work/dargent/TMVA-v4.2.0/test/efficiencies.C"
-#include "/work/dargent/TMVA-v4.2.0/test/mvas.C"
-#include "/work/dargent/TMVA-v4.2.0/test/correlations.C"
+#include "../TMVA-v4.2.0/test/variables.C"
+#include "../TMVA-v4.2.0/test/efficiencies.C"
+#include "../TMVA-v4.2.0/test/mvas.C"
+#include "../TMVA-v4.2.0/test/correlations.C"
+#include "../TMVA-v4.2.0/test/mvaeffs.C"
 
 #if not defined(__CINT__) || defined(__MAKECINT__)
 // needs to be included when makecint runs (ACLIC)
@@ -28,26 +29,15 @@ void TMVAClassification( TString myMethodList = "BDTG", TString trainOn = "MC", 
 {
    TChain* background = new TChain("DecayTree");
    if(run == "run1" || run == "all"){
-	   background->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/signal_Ds2*_11.root");
-  	   background->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/signal_Ds2*_12.root");
-	   background->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/norm_Ds2*_11.root");
-  	   background->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/norm_Ds2*_12.root");
-// 	   background->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/signal_Ds2KKpi_12_SS.root");
+
    }
-   else if(run == "run2" || run == "all") {
-	   background->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/signal_Ds2*_15.root");
-	   background->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/signal_Ds2*_16.root");
-	   background->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/signal_Ds2*_17.root");
-	   background->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/norm_Ds2*_15.root");
-	   background->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/norm_Ds2*_16.root");
-	   background->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/norm_Ds2*_17.root");
+   if(run == "run2" || run == "all") {
+	   background->Add("Preselected/Data_b2dkspi_DD_17.root");
    }
 
    TChain* signal = new TChain("DecayTree");
-   //signal->Add("/auto/data/dargent/BsDsKpipi/Preselected/MC/signal_Ds2KKpi_11.root");
-   //signal->Add("/auto/data/dargent/BsDsKpipi/Preselected/MC/signal_Ds2KKpi_12.root");
-   if(trainOn == "MC")signal->Add("/auto/data/dargent/BsDsKpipi/BDT/MC/signal.root");
-   else signal->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/norm_sweight.root");
+   if(trainOn == "MC")signal->Add("Preselected/MC_b2dkspi_DD_12.root");
+   else signal->Add("");
 
    //---------------------------------------------------------------
    // This loads the library
@@ -92,15 +82,14 @@ void TMVAClassification( TString myMethodList = "BDTG", TString trainOn = "MC", 
    // Create a ROOT output file where TMVA will store ntuples, histograms, etc.
 
    //TString outDir = "plots";
-   TString outDir = "../TD-AnaNote/latex/figs/TMVA/";
+   TString outDir = "figs/TMVA/";
    outDir +=  myMethodList + "_" + trainOn + "_" + run + "_" + trigger + "_" + sample;
  
-   TString outfileName = "TMVA_Bs2DsKpipi_" +  myMethodList + "_" + trainOn + "_" + run + "_" + trigger + "_" + sample + ".root";
+   TString outfileName = "TMVA_" +  myMethodList + "_" + trainOn + "_" + run + "_" + trigger + "_" + sample + ".root";
    TFile* outputFile = TFile::Open( outfileName, "RECREATE" );
 
    // Create the factory object. 
-   TMVA::Factory *factory = new TMVA::Factory( "TMVAClassification_" + trainOn + "_" + run + "_" + trigger + "_" + sample, outputFile,
-                                               "!V:!Silent:Color:DrawProgressBar:Transformations=I;D;P;G,D:AnalysisType=Classification" );
+   TMVA::Factory *factory = new TMVA::Factory( "TMVAClassification_" + trainOn + "_" + run + "_" + trigger + "_" + sample, outputFile, "!V:!Silent:Color:DrawProgressBar:Transformations=I;D;P;G,D:AnalysisType=Classification" );
 
 
    signal->SetBranchStatus("*",0);  // disable all branches
@@ -124,7 +113,6 @@ void TMVAClassification( TString myMethodList = "BDTG", TString trainOn = "MC", 
    signal->SetBranchStatus("weight",1);
    signal->SetBranchStatus("eventNumber",1);
    signal->SetBranchStatus("run",1);
-   signal->SetBranchStatus("Ds_finalState",1);
 
    background->SetBranchStatus("*",0);  // disable all branches
    background->SetBranchStatus("*CHI2*",1); 
@@ -150,8 +138,52 @@ void TMVAClassification( TString myMethodList = "BDTG", TString trainOn = "MC", 
 
    // Define the input variables that shall be used for the MVA training
 
-   //factory->AddVariable( "DTF_CHI2NDOF", "chi^{2}_{DTF}/#nu", "", 'F' );
-   factory->AddVariable( "log_Bs_IPCHI2_OWNPV := log(Bs_IPCHI2_OWNPV)","B_{s} ln(IP #chi^{2})", "", 'F' );
+    //factory->AddVariable("log_B_TAU := log(B_TAU)","B_TAU","",'F');
+    
+    factory->AddVariable( "log_B_IPCHI2_OWNPV := log(B_IPCHI2_OWNPV)","B ln(IP #chi^{2})", "", 'F' );
+    //factory->AddVariable( "log_D_IPCHI2_OWNPV := log(D_IPCHI2_OWNPV)","D ln(IP #chi^{2})", "", 'F' );
+    //factory->AddVariable( "log_Ks_IPCHI2_OWNPV := log(Ks_IPCHI2_OWNPV)","Ks ln(IP #chi^{2})", "", 'F' );
+    //factory->AddVariable( "log_pi_IPCHI2_OWNPV := log(pi_IPCHI2_OWNPV)","pi ln(IP #chi^{2})", "", 'F' );
+    //factory->AddVariable( "log_DDaughters_min_IPCHI2 := log(DDaughters_min_IPCHI2)","D daughters min[ln(IP#chi^{2})]", "", 'F' );
+    //factory->AddVariable( "log_KsDaughters_min_IPCHI2 := log(KsDaughters_min_IPCHI2)","K_{S} daughters min[ln(IP#chi^{2})]", "", 'F' );
+    factory->AddVariable( "log_min_IPCHI2 := log(track_min_IPCHI2)","min[ln(IP#chi^{2})]", "", 'F' );
+
+    //factory->AddVariable( "log_B_PT := log(B_PT)","B p_t","MeV", 'D' );
+    //factory->AddVariable( "log_D_PT := log(D_PT)","D p_t","MeV", 'D' );
+    factory->AddVariable( "log_Ks_PT := log(Ks_PT)","KS p_t","MeV", 'D' );
+    //factory->AddVariable( "log_pi_PT := log(pi_PT)","pi p_t","MeV", 'D' );
+    //factory->AddVariable( "log_min_PT := log(track_min_PT)","min[ln(p_t)]", "", 'F' );
+    
+    //factory->AddVariable( "log_D_FDCHI2_ORIVX := log(D_FDCHI2_ORIVX)","D ln(#chi^{2}_{FD})", "", 'F' );
+    factory->AddVariable( "log_D_RFD:=log(D_RFD)","D log(RFD)", "", 'F' );
+    //factory->AddVariable( "log_Ks_FDCHI2_ORIVX := log(Ks_FDCHI2_ORIVX)","K_{S} ln(#chi^{2}_{FD})", "", 'F' );
+    factory->AddVariable( "log_Ks_RFD:=log(Ks_RFD)","K_{S} log(RFD)", "", 'F' );
+    //factory->AddVariable( "Ks_z","K_{S} FDz", "", 'F' );
+
+    factory->AddVariable( "PV_CHI2NDOF", "#chi^{2}_{DTF}/ndf", "", 'F' );
+    //factory->AddVariable( "B_ENDVERTEX_CHI2", "B Vertex fit", "", 'D' );
+    //factory->AddVariable( "D_ENDVERTEX_CHI2", "D Vertex fit", "", 'D' );
+    //factory->AddVariable( "Ks_ENDVERTEX_CHI2", "Ks Vertex fit", "", 'D' );
+
+    //factory->AddVariable( "m_D_Kpi", "m_D_Kpi", "", 'D' );
+    //factory->AddVariable( "m_D_pipi", "m_D_pipi", "", 'D' );
+
+    factory->AddVariable( "log_pi_ProbNNpi := log(1-pi_ProbNNpi)", "pi_ProbNNpi", "", 'D' );
+    factory->AddVariable( "log_K_D_ProbNNk := log(1-K_D_ProbNNk)", "K_D_ProbNNk", "", 'D' );
+
+    factory->AddVariable( "log_B_DIRA := log(1-B_DIRA_OWNPV)","B ln(1 - DIRA)","", 'F' );
+    //factory->AddVariable( "log_D_DIRA := log(1-D_DIRA_OWNPV)","ln(1 - D DIRA)","", 'D' );
+    //factory->AddVariable( "log_Ks_DIRA := log(1-Ks_DIRA_OWNPV)","ln(1 - K_{S} DIRA)","", 'D' );
+
+    //factory->AddVariable( "B_ptasy","B A_{p_{t}}^{cone}","", 'F' );
+    //factory->AddVariable( "D_ptasy","D A_{p_{t}}^{cone}","", 'F' );
+    //factory->AddVariable( "Ks_ptasy","K_{S} A_{p_{t}}^{cone}","", 'F' );
+
+    factory->AddVariable("max_ghostProb","max[ghostProb]","",'F');
+    factory->AddVariable( "maxCos2", "cos(max[#theta])", "", 'F' );
+
+    /*
+    //factory->AddVariable( "DTF_CHI2NDOF", "chi^{2}_{DTF}/#nu", "", 'F' );
    factory->AddVariable( "log_Bs_DIRA := log(1-Bs_DIRA_OWNPV)","B_{s} ln(1 - DIRA)","", 'F' );
    factory->AddVariable( "PV_CHI2NDOF", "#chi^{2}_{DTF}/ndf", "", 'F' );
    factory->AddVariable( "log_Bs_SmallestDeltaChi2OneTrack:= log(Bs_SmallestDeltaChi2OneTrack)","#Delta#chi^{2}_{add-track}","", 'F' );
@@ -168,7 +200,7 @@ void TMVAClassification( TString myMethodList = "BDTG", TString trainOn = "MC", 
    //factory->AddVariable( "Ds_ptasy_1.00","D_{s} cone p_{t} asy","", 'F' );
    factory->AddVariable( "log_Ds_FDCHI2_ORIVX := log(Ds_FDCHI2_ORIVX)","D_{s} ln(#chi^{2}_{FD})", "", 'F' );
    factory->AddVariable( "log_Ds_RFD:=log(Ds_RFD)","D_{s} log(RFD)", "", 'F' );
-
+*/
 
    // Additional variables for testing
   
@@ -187,7 +219,7 @@ void TMVAClassification( TString myMethodList = "BDTG", TString trainOn = "MC", 
    //factory->AddVariable( "log_track_min_IPCHI2 := log(track_min_IPCHI2)","track_min_IPCHI2","", 'F' );
    //factory->AddVariable( "log_Bs_PT := log(Bs_PT)","Bs p_t","MeV", 'D' );
    //factory->AddVariable( "log_Ds_PT := log(Ds_PT)","Ds p_t","MeV", 'D' );
-   //factory->AddVariable( "Bs_ptasy_1.00","Bs  cone p_{t} asy","", 'F' );
+  //factory->AddVariable( "Bs_ptasy_1.00","Bs  cone p_{t} asy","", 'F' );
    //factory->AddVariable( "Ds_max_DOCA","D_{s} max DOCA", "mm", 'F' );
    //factory->AddVariable( "Ds_finalState","f","", 'I' );
    //factory->AddVariable( "Ds_m12","Ds_m12","", 'F' );
@@ -218,14 +250,12 @@ void TMVAClassification( TString myMethodList = "BDTG", TString trainOn = "MC", 
    Double_t backgroundWeight = 1.0;
 
    // Apply additional cuts on the signal and background samples (can be different)
-   TCut mycuts; 
-   mycuts = "maxCos > -0.95 && Bs_IPCHI2_OWNPV < 16 && Bs_SmallestDeltaChi2OneTrack > 5 && Ds_finalState < 5 && PV_CHI2NDOF < 15 && Xs_max_DOCA < 0.5 && m_pipi < 1200 && m_Kpi < 1200";
+   TCut mycuts;
    if(run != "all")mycuts += "run == " + run.ReplaceAll("run","");
    if(trigger != "all")mycuts += "TriggerCat == " + trigger.ReplaceAll("t","");
-   if(trainOn == "MC") mycuts += "Bs_MM > 5300 && Bs_MM < 5420 && Bs_BKGCAT == 20";
+   if(trainOn == "MC") mycuts += "B_MM > 5000 && B_MM < 6000 && B_BKGCAT < 30";
 
-   TCut mycutb = "Bs_MM > 5500";
-   mycutb += "maxCos > -0.95 && Bs_IPCHI2_OWNPV < 16 && Bs_SmallestDeltaChi2OneTrack > 5 && Ds_finalState < 5 && PV_CHI2NDOF < 15 && Xs_max_DOCA < 0.5 && m_pipi < 1200 && m_Kpi < 1200" ;
+   TCut mycutb = "B_MM > 5500 && abs(D_MM-1869.61) < 20 && abs(Ks_MM-497.611) < 20";
    if(run != "all")mycutb += "run == " + run;
    if(trigger != "all")mycutb += "TriggerCat == " + trigger ;
    
@@ -234,8 +264,7 @@ void TMVAClassification( TString myMethodList = "BDTG", TString trainOn = "MC", 
    if(sample == "all"){
 	   factory->AddSignalTree    ( signal,     signalWeight     );
    	   factory->AddBackgroundTree( background, backgroundWeight );
-           factory->PrepareTrainingAndTestTree( mycuts, mycutb,
-                                        "nTrain_Signal=0:nTrain_Background=0:SplitMode=Random:NormMode=NumEvents:!V" );
+           factory->PrepareTrainingAndTestTree( mycuts,mycutb,"nTrain_Signal=0:nTrain_Background=0:SplitMode=Random:NormMode=NumEvents:!V" );
    }
    else {
 	dummy = new TFile("dummy.root","RECREATE");
@@ -258,14 +287,14 @@ void TMVAClassification( TString myMethodList = "BDTG", TString trainOn = "MC", 
 		signal_testing = signal->CopyTree(mycuts+cut_even);
 		background_training = background->CopyTree(mycutb+cut_odd);
 		background_testing = background->CopyTree(mycutb+cut_even);
-        }
+    }
 	factory->AddSignalTree(signal_training,signalWeight,TMVA::Types::kTraining);
 	factory->AddSignalTree(signal_testing,signalWeight,TMVA::Types::kTesting);
 	factory->AddBackgroundTree(background_training,backgroundWeight,TMVA::Types::kTraining);
 	factory->AddBackgroundTree(background_testing,backgroundWeight,TMVA::Types::kTesting);
    }
 
-   factory->SetSignalWeightExpression("weight");
+   //factory->SetSignalWeightExpression("weight");
 
    // ---- Book MVA methods
 
