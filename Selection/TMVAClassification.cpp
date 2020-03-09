@@ -138,29 +138,39 @@ void TMVAClassification( TString myMethodList = "BDTG", TString trainOn = "MC", 
 
    // Define the input variables that shall be used for the MVA training
 
-    //factory->AddVariable("log_B_TAU := log(B_TAU)","B_TAU","",'F');
-    
+    factory->AddVariable( "log_B_FDCHI2_OWNPV := log(B_FDCHI2_OWNPV)","B ln(FD #chi^{2})", "", 'F' );
     factory->AddVariable( "log_B_IPCHI2_OWNPV := log(B_IPCHI2_OWNPV)","B ln(IP #chi^{2})", "", 'F' );
+    factory->AddVariable( "log_B_DIRA := log(1-B_DIRA_OWNPV)","B ln(1 - DIRA)","", 'F' );
+
+    factory->AddVariable( "log_Ks_PT := log(Ks_PT)","KS p_t","MeV", 'F' );
+    factory->AddVariable( "log_Ks_RFD:=log(Ks_RFD)","K_{S} log(RFD)", "", 'F' );
+    factory->AddVariable( "log_D_RFD:=log(D_RFD)","D log(RFD)", "", 'F' );
+        
+    factory->AddVariable( "PV_CHI2NDOF", "#chi^{2}_{DTF}/ndf", "", 'F' );
+    factory->AddVariable( "log_pi_ProbNNpi := log(1-pi_ProbNNpi)", "pi_ProbNNpi", "", 'F' );
+    factory->AddVariable( "log_K_D_ProbNNk := log(1-K_D_ProbNNk)", "K_D_ProbNNk", "", 'F' );
+
+    factory->AddVariable( "log_min_IPCHI2 := log(track_min_IPCHI2)","min[ln(IP#chi^{2})]", "", 'F' );
+    factory->AddVariable( "maxCos2", "cos(max[#theta])", "", 'F' );
+
+    
     //factory->AddVariable( "log_D_IPCHI2_OWNPV := log(D_IPCHI2_OWNPV)","D ln(IP #chi^{2})", "", 'F' );
     //factory->AddVariable( "log_Ks_IPCHI2_OWNPV := log(Ks_IPCHI2_OWNPV)","Ks ln(IP #chi^{2})", "", 'F' );
     //factory->AddVariable( "log_pi_IPCHI2_OWNPV := log(pi_IPCHI2_OWNPV)","pi ln(IP #chi^{2})", "", 'F' );
     //factory->AddVariable( "log_DDaughters_min_IPCHI2 := log(DDaughters_min_IPCHI2)","D daughters min[ln(IP#chi^{2})]", "", 'F' );
     //factory->AddVariable( "log_KsDaughters_min_IPCHI2 := log(KsDaughters_min_IPCHI2)","K_{S} daughters min[ln(IP#chi^{2})]", "", 'F' );
-    factory->AddVariable( "log_min_IPCHI2 := log(track_min_IPCHI2)","min[ln(IP#chi^{2})]", "", 'F' );
 
     //factory->AddVariable( "log_B_PT := log(B_PT)","B p_t","MeV", 'D' );
     //factory->AddVariable( "log_D_PT := log(D_PT)","D p_t","MeV", 'D' );
-    factory->AddVariable( "log_Ks_PT := log(Ks_PT)","KS p_t","MeV", 'D' );
+
+
     //factory->AddVariable( "log_pi_PT := log(pi_PT)","pi p_t","MeV", 'D' );
     //factory->AddVariable( "log_min_PT := log(track_min_PT)","min[ln(p_t)]", "", 'F' );
     
     //factory->AddVariable( "log_D_FDCHI2_ORIVX := log(D_FDCHI2_ORIVX)","D ln(#chi^{2}_{FD})", "", 'F' );
-    factory->AddVariable( "log_D_RFD:=log(D_RFD)","D log(RFD)", "", 'F' );
     //factory->AddVariable( "log_Ks_FDCHI2_ORIVX := log(Ks_FDCHI2_ORIVX)","K_{S} ln(#chi^{2}_{FD})", "", 'F' );
-    factory->AddVariable( "log_Ks_RFD:=log(Ks_RFD)","K_{S} log(RFD)", "", 'F' );
     //factory->AddVariable( "Ks_z","K_{S} FDz", "", 'F' );
 
-    factory->AddVariable( "PV_CHI2NDOF", "#chi^{2}_{DTF}/ndf", "", 'F' );
     //factory->AddVariable( "B_ENDVERTEX_CHI2", "B Vertex fit", "", 'D' );
     //factory->AddVariable( "D_ENDVERTEX_CHI2", "D Vertex fit", "", 'D' );
     //factory->AddVariable( "Ks_ENDVERTEX_CHI2", "Ks Vertex fit", "", 'D' );
@@ -168,10 +178,7 @@ void TMVAClassification( TString myMethodList = "BDTG", TString trainOn = "MC", 
     //factory->AddVariable( "m_D_Kpi", "m_D_Kpi", "", 'D' );
     //factory->AddVariable( "m_D_pipi", "m_D_pipi", "", 'D' );
 
-    factory->AddVariable( "log_pi_ProbNNpi := log(1-pi_ProbNNpi)", "pi_ProbNNpi", "", 'D' );
-    factory->AddVariable( "log_K_D_ProbNNk := log(1-K_D_ProbNNk)", "K_D_ProbNNk", "", 'D' );
 
-    factory->AddVariable( "log_B_DIRA := log(1-B_DIRA_OWNPV)","B ln(1 - DIRA)","", 'F' );
     //factory->AddVariable( "log_D_DIRA := log(1-D_DIRA_OWNPV)","ln(1 - D DIRA)","", 'D' );
     //factory->AddVariable( "log_Ks_DIRA := log(1-Ks_DIRA_OWNPV)","ln(1 - K_{S} DIRA)","", 'D' );
 
@@ -179,8 +186,7 @@ void TMVAClassification( TString myMethodList = "BDTG", TString trainOn = "MC", 
     //factory->AddVariable( "D_ptasy","D A_{p_{t}}^{cone}","", 'F' );
     //factory->AddVariable( "Ks_ptasy","K_{S} A_{p_{t}}^{cone}","", 'F' );
 
-    factory->AddVariable("max_ghostProb","max[ghostProb]","",'F');
-    factory->AddVariable( "maxCos2", "cos(max[#theta])", "", 'F' );
+    //factory->AddVariable("max_ghostProb","max[ghostProb]","",'F');
 
     /*
     //factory->AddVariable( "DTF_CHI2NDOF", "chi^{2}_{DTF}/#nu", "", 'F' );

@@ -194,6 +194,10 @@ inline Bool_t DecayTree::LooseCuts(Long64_t i){
     
     b_Ks_DIRA_OWNPV->GetEntry(i);
     if(Ks_DIRA_OWNPV<0.) return false;
+
+    b_Ks_PT->GetEntry(i);
+    if(Ks_PT< 500.) return false;
+
     
     return true;
 }
@@ -594,6 +598,8 @@ void DecayTree::Loop()
         angPiKs= v_Ks.Angle(v_pi);
         maxCos = cos(max(angKs,angPi));
         maxCos2 = cos(max(max(angPiKs,angPi),angKs));
+        
+        if(maxCos2<-0.95)continue;
         
         KsDaughters_min_IPCHI2 = min(pip_Ks_IPCHI2_OWNPV,pim_Ks_IPCHI2_OWNPV);            
         KsDaughters_max_IPCHI2 = max(pip_Ks_IPCHI2_OWNPV,pim_Ks_IPCHI2_OWNPV);            
