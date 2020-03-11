@@ -28,13 +28,13 @@ TTree* DecayTree::GetInputTree(){
         fileName+= str_year; 
     }
     else {
-        fileName+= "MC/";
-        //fileName+= "bkg/";
+        //fileName+= "MC/";
+        fileName+= "bkg/";
         //fileName+= str_year; 
         //fileName+= "U";
     }
-    fileName+= "/b2dkspi*.root"; 
-    //fileName+= "/bkg_bs2dksk.root"; 
+    //fileName+= "/b2dkspi*.root"; 
+    fileName+= "/bkg_bs2dstarkspi.root"; 
     
     cout << "Using the files: " << endl;
     cout << fileName << endl << endl;
@@ -70,8 +70,8 @@ fChain(0), _decay(decay), _year(year), _data(dataType), _polarity(polarity), _in
     _outFileName = _outFileLoc;   
     _outFileName += s1;  
     _outFileName += "_";  
-    _outFileName += "b2dkspi_";
-    //_outFileName += "bkg_bs2dksk_";
+    //_outFileName += "b2dkspi_";
+    _outFileName += "bkg_bs2dstarkspi_";
     _outFileName += s2;   
     _outFileName += "_";  
     _outFileName += str_year;
@@ -122,7 +122,6 @@ inline Bool_t DecayTree::TriggerCuts(Long64_t i){
 }
 
 inline Bool_t DecayTree::LooseCuts(Long64_t i){
-    
     
     b_B_DIRA_OWNPV->GetEntry(i);
     if(B_DIRA_OWNPV<0.99994) return false;

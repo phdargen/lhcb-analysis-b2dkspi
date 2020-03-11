@@ -326,10 +326,12 @@ int NamedDecayTreeList::add_CPConjugates_forAll(){
  */
 
 int NamedDecayTreeList::makeDecayTreeList(){
+    
+  makeB02DKspiList();
   //make3BodyList();
-  makeDplusTo3PiList();
-  make3BodyListForRunningWidth();  
-  make4BodyList();
+  //makeDplusTo3PiList();
+  //make3BodyListForRunningWidth();  
+  //make4BodyList();
   return _trees.size();
 }
 
@@ -501,6 +503,82 @@ int NamedDecayTreeList::make3BodyListForRunningWidth(){
     return _trees.size();
 }
 
+int NamedDecayTreeList::makeB02DKspiList() {
+    DecayTree* dk=0;
+    
+    dk = new DecayTree(511);
+    dk->addDgtr(-411, 323)->addDgtr(310,211);
+    this->add(*dk);
+    delete dk;
+    
+    dk = new DecayTree(511);
+    dk->addDgtr(-411, 100321)->addDgtr(310,211);
+    this->add(*dk);
+    delete dk;
+
+    dk = new DecayTree(511);
+    dk->addDgtr(-411, 10321)->addDgtr(310,211);
+    this->add(*dk);
+    this->add(AmpInitialiser(*dk, "Lass"));  
+    delete dk;
+
+    dk = new DecayTree(511);
+    dk->addDgtr(-411, 325)->addDgtr(310,211);
+    this->add(*dk);
+    delete dk;
+
+    dk = new DecayTree(511);
+    dk->addDgtr(-411, 30323)->addDgtr(310,211);
+    this->add(*dk);
+    delete dk;
+    
+    //
+    dk = new DecayTree(511);
+    dk->addDgtr(310, 10421)->addDgtr(-411,211);
+    this->add(*dk);
+    delete dk;
+
+    dk = new DecayTree(511);
+    dk->addDgtr(310, 425)->addDgtr(-411,211);
+    this->add(*dk);
+    delete dk;
+    
+    //
+    dk = new DecayTree(511);
+    dk->addDgtr(211,-435)->addDgtr(-411,310);
+    this->add(*dk);
+    delete dk;    
+    
+    //non resonant
+    dk = new DecayTree(511);
+    dk->addDgtr(-411, 9981)->addDgtr(310,211);
+    this->add(*dk);
+    this->add(AmpInitialiser(*dk, "NonRes"));
+    this->add(AmpInitialiser(*dk, "NonResExp"));
+    delete dk;
+    
+    dk = new DecayTree(511);
+    dk->addDgtr(-411, 9993)->addDgtr(310,211);
+    this->add(*dk);
+    this->add(AmpInitialiser(*dk, "NonRes"));
+    this->add(AmpInitialiser(*dk, "NonResExp"));
+    delete dk;
+
+    dk = new DecayTree(511);
+    dk->addDgtr(310, 9993)->addDgtr(-411,211);
+    this->add(*dk);
+    this->add(AmpInitialiser(*dk, "NonRes"));
+    this->add(AmpInitialiser(*dk, "NonResExp"));
+    delete dk;
+
+    dk = new DecayTree(511);
+    dk->addDgtr(211,9993)->addDgtr(-411,310);
+    this->add(*dk);
+    this->add(AmpInitialiser(*dk, "NonRes"));
+    this->add(AmpInitialiser(*dk, "NonResExp"));
+    delete dk;
+}
+    
 int NamedDecayTreeList::makeDplusTo3PiList() {
   DecayTree* dk=0;
 

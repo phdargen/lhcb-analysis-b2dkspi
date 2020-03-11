@@ -29,6 +29,12 @@ class NamedDecayTreeList{
   int make4BodyList();
 
   // --- 3 body ---
+  int makeB02DKspiList();
+  int makeB02DKsKList();
+  
+  int makeBs2DKspiList();
+  int makeBs2DKsKList();
+    
   int makeKsPiPiList();
   int makeKPiPiZeroList();
   int makeDplusToKKPiList();
