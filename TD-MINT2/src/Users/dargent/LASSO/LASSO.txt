@@ -3,9 +3,11 @@ RandomSeed  0
 "Phases given in"       "degrees"
 "Event Pattern"         511 -411 310 211
 
-"IntegratorEventFile"	"SignalIntegrationEvents.root"
-"IntegratorEvents"	300000
-"IntegPrecision"        1.0e-3
+*"IntegratorEventFile"	"SignalIntegrationEvents_DsCut.root"
+"IntegratorEventFile"   "../AcceptancePhspBDT/SignalIntegrationEvents_AccBDT.root"
+
+"IntegratorEvents"	500000
+"IntegPrecision"        1.0e-4
 "IntegMethod"           "efficient"
 "IntegratorSource"        "file"
 
@@ -24,8 +26,12 @@ RandomSeed  0
 
 "SigFraction"                     				2	0.999	0.1	0.0	0.0
 
-*"mass_K(1)(1270)+"	                     		2	1270	 1	0.0	0.0
-*"width_K(1)(1270)+"                     		2	90	 1 	0.0	0.0
+"mass_D*(2600)0"	   0	2623	 1	0.0	0.0
+"width_D*(2600)0"          0	139	 1 	0.0	0.0
+
+"mass_D(s2)(3040)+"	   0	3044	 1	0.0	0.0
+"width_D(s2)(3040)+"       0	240	 1 	0.0	0.0
+
 
 *Baseline:
 *---------------------		
@@ -42,15 +48,38 @@ RandomSeed  0
 *"B0->K*(1680)+(->Ks0,pi+),D-_Phase"         0	0.	0.01	0.0	0.0
 
 
-"B0->D(0)*(2400)0(->D-,pi+),Ks0_Amp"              0	0.1	0.01	0.0	0.0
-"B0->D(0)*(2400)0(->D-,pi+),Ks0_Phase"              0	0.	0.01	0.0	0.0
+"B0->D(0)*(2300)0(->D-,pi+),Ks0_Amp"              0	0.1	0.01	0.0	0.0
+"B0->D(0)*(2300)0(->D-,pi+),Ks0_Phase"              0	0.	0.01	0.0	0.0
 
 "B0->D(2)*(2460)0(->D-,pi+),Ks0_Amp"              0	0.1	0.01	0.0	0.0
 "B0->D(2)*(2460)0(->D-,pi+),Ks0_Phase"              0	0.	0.01	0.0	0.0
 
+"B0->D*(2600)0(->D-,pi+),Ks0_Amp"              0	0.1	0.01	0.0	0.0
+"B0->D*(2600)0(->D-,pi+),Ks0_Phase"              0	0.	0.01	0.0	0.0
+
+*"B0->D(3)*(2750)0(->D-,pi+),Ks0_Amp"              0	0.1	0.01	0.0	0.0
+*"B0->D(3)*(2750)0(->D-,pi+),Ks0_Phase"              0	0.	0.01	0.0	0.0
+
+"B0->D(3000)0(->D-,pi+),Ks0_Amp"              0	0.1	0.01	0.0	0.0
+"B0->D(3000)0(->D-,pi+),Ks0_Phase"              0	0.	0.01	0.0	0.0
+
+
 
 "B0->D(s2)(2573)-(->D-,Ks0),pi+_Amp"              0	0.1	0.01	0.0	0.0
 "B0->D(s2)(2573)-(->D-,Ks0),pi+_Phase"              0	0.	0.01	0.0	0.0
+
+"B0->D(s1)(2700)-(->D-,Ks0),pi+_Amp"              0	0.1	0.01	0.0	0.0
+"B0->D(s1)(2700)-(->D-,Ks0),pi+_Phase"              0	0.	0.01	0.0	0.0
+
+"B0->D(s1)*(2860)-(->D-,Ks0),pi+_Amp"              0	0.1	0.01	0.0	0.0
+"B0->D(s1)*(2860)-(->D-,Ks0),pi+_Phase"              0	0.	0.01	0.0	0.0
+
+*"B0->D(s3)*(2860)-(->D-,Ks0),pi+_Amp"              0	0.1	0.01	0.0	0.0
+*"B0->D(s3)*(2860)-(->D-,Ks0),pi+_Phase"              0	0.	0.01	0.0	0.0
+
+"B0->D(s2)(3040)-(->D-,Ks0),pi+_Amp"              0	0.1	0.01	0.0	0.0
+"B0->D(s2)(3040)-(->D-,Ks0),pi+_Phase"              0	0.	0.01	0.0	0.0
+
 
 
 "B0->NonResS0(->Ks0,pi+),D-_Amp"              0	0.1	0.01	0.0	0.0
@@ -60,10 +89,10 @@ RandomSeed  0
 
 * For toy and integrator event generation:
 
-"Inco_B0->K*(892)+(->Ks0,pi+),D-_Re"              2	1.	0.01	0.0	0.0
-"Inco_B0->K*(892)+(->Ks0,pi+),D-_Im"              2	0.	0.01	0.0	0.0
-"Inco_B0->NonResS0(->Ks0,pi+),D-_Re"              2	1.	0.01	0.0	0.0
-"Inco_B0->NonResS0(->Ks0,pi+),D-_Im"              2	0.	0.01	0.0	0.0
+"Inco_B0->K*(892)+(->Ks0,pi+),D-_Re"              1	1.	0.01	0.0	0.0
+"Inco_B0->K*(892)+(->Ks0,pi+),D-_Im"              1	0.	0.01	0.0	0.0
+"Inco_B0->NonResS0(->Ks0,pi+),D-_Re"              1	1.	0.01	0.0	0.0
+"Inco_B0->NonResS0(->Ks0,pi+),D-_Im"              1	0.	0.01	0.0	0.0
 
 
 

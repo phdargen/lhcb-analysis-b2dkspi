@@ -372,7 +372,7 @@ int ampFit(int step=0){
         tree->SetBranchStatus("weight",1);
         tree->SetBranchStatus("FullDTF*",1);
 
-        tree->SetBranchAddress("weight",&sw);
+        tree->SetBranchAddress("N_B_sw",&sw);
         
         tree->SetBranchAddress("FullDTF_Ks_PX",&Ks[0]);
         tree->SetBranchAddress("FullDTF_Ks_PY",&Ks[1]);
@@ -420,6 +420,9 @@ int ampFit(int step=0){
                 badEvents++;
                 //continue;
             }
+            
+            if(abs(sqrt(evt.s(2,3))-1968.30)<30)continue;
+            
             evt.setWeight(sw);
             eventList.Add(evt);	
         }
@@ -637,11 +640,18 @@ int ampFit(int step=0){
             ampNames2.push_back("K*(1680)+");
 
             vector<string> ampNames3;
-            ampNames3.push_back("D(0)*(2400)0");
+            ampNames3.push_back("D(0)*(2300)0");
             ampNames3.push_back("D(2)*(2460)0");
+            ampNames3.push_back("D*(2600)0");
+            ampNames3.push_back("D(3)*(2750)0");
+            ampNames3.push_back("D(3000)0");
 
             vector<string> ampNames4;
             ampNames4.push_back("D(s2)(2573)");
+            ampNames4.push_back("D(s1)(2700)");
+            ampNames4.push_back("D(s1)*(2860)");
+            ampNames4.push_back("D(s3)*(2860)");
+            ampNames4.push_back("D(s2)(3040)-");
 
             vector<string> ampNames5;
             ampNames5.push_back("NonRes");
@@ -720,6 +730,7 @@ int ampFit(int step=0){
             m_DKs_fit_4->SetLineWidth(3);
             m_DKs_fit_4->SetLineStyle(kDashed);
             m_DKs_fit_4->DrawNormalized("histcsame",m_DKs_fit_4->Integral()/m_DKs_fit->Integral());
+            m_DKs->DrawNormalized("e1same",1);
             c->Print(((string)OutputDir+"m_DKs.eps").c_str());
             gPad->SetLogy(1);
             c->Print(((string)OutputDir+"m_DKs_log.eps").c_str());
@@ -755,6 +766,7 @@ int ampFit(int step=0){
              m_Dpi_fit_4->SetLineWidth(3);
              m_Dpi_fit_4->SetLineStyle(kDashed);
              m_Dpi_fit_4->DrawNormalized("histcsame",m_Dpi_fit_4->Integral()/m_Dpi_fit->Integral());
+            m_Dpi->DrawNormalized("e1same",1);
             c->Print(((string)OutputDir+"m_Dpi.eps").c_str());
             gPad->SetLogy(1);
             c->Print(((string)OutputDir+"m_Dpi_log.eps").c_str());
@@ -790,6 +802,7 @@ int ampFit(int step=0){
              m_Kspi_fit_4->SetLineWidth(3);
              m_Kspi_fit_4->SetLineStyle(kDashed);
              m_Kspi_fit_4->DrawNormalized("histcsame",m_Kspi_fit_4->Integral()/m_Kspi_fit->Integral());
+            m_Kspi->DrawNormalized("e1same",1);
             c->Print(((string)OutputDir+"m_Kspi.eps").c_str());
             gPad->SetLogy(1);
             c->Print(((string)OutputDir+"m_Kspi_log.eps").c_str());
@@ -824,7 +837,7 @@ void makeIntegratorFile(){
     sg.FillEventList(eventList, IntegratorEvents);
 
     for(int i = 0; i < eventList.size(); i++){
-        //if(sqrt(eventList[i].sij(s234)/(GeV*GeV)) < 1.95 && sqrt(eventList[i].s(2,4)/(GeV*GeV)) < 1.2 && sqrt(eventList[i].s(3,4)/(GeV*GeV)) < 1.2)
+            if(abs(sqrt(eventList[i].s(2,3))-1968.30)<30)continue;
             eventList_cut.Add(eventList[i]);
     }
 

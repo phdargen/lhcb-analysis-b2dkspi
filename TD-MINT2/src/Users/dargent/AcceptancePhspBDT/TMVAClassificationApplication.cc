@@ -62,9 +62,7 @@ void TMVAClassificationApplication(TString myMethod = "BDTG", TString applyTo = 
    // Disable not needed branches
    // Ouput tree
    theTree->SetBranchStatus("*",0);
-   theTree->SetBranchStatus("s_*",1);
-   theTree->SetBranchStatus("cos_*",1);
-   theTree->SetBranchStatus("phi_*",1);
+   theTree->SetBranchStatus("*m*",1);
    if(applyTo == "Gen")theTree->SetBranchStatus("*TRUEP*",1);
    if(applyTo == "MINT")theTree->SetBranchStatus("*",1);
 
@@ -78,98 +76,46 @@ void TMVAClassificationApplication(TString myMethod = "BDTG", TString applyTo = 
    TMVA::Reader *reader = new TMVA::Reader( "!Color:!Silent" );    
 
    // Create a set of variables and declare them to the reader
-   Float_t r_s_Kpipi;
-   Float_t r_s_Kpi;
-   Float_t r_s_pipi;
-   Float_t r_s_Dspipi;
-   Float_t r_s_Dspi;
-   Float_t r_s_DsK;
-   Float_t r_cos_theta_Kpi;
-   Float_t r_cos_theta_Dspi;
-   Float_t r_phi_Kpi_Dspi;
-   Float_t r_cos_theta_pipi;
-   Float_t r_cos_theta_DsK;
-   Float_t r_theta_DsK;
-   Float_t r_phi_pipi_DsK;
- 
-   //reader->AddVariable( "s_Kpipi", &r_s_Kpipi );
-   reader->AddVariable( "s_Kpi", &r_s_Kpi );
-   //reader->AddVariable( "s_pipi", &r_s_pipi );
-   reader->AddVariable( "s_Dspi", &r_s_Dspi );
-   //reader->AddVariable( "s_Dspipi", &r_s_Dspipi );
-   //reader->AddVariable( "s_DsK", &r_s_DsK );   
-   reader->AddVariable( "cos_theta_Kpi", &r_cos_theta_Kpi );
-   reader->AddVariable( "cos_theta_Dspi", &r_cos_theta_Dspi );
-   reader->AddVariable( "phi_Kpi_Dspi", &r_phi_Kpi_Dspi );
-   //reader->AddVariable( "cos_theta_pipi", &r_cos_theta_pipi );
-   //reader->AddVariable( "theta_DsK:=acos(cos_theta_DsK)", &r_theta_DsK );
-   //reader->AddVariable( "phi_pipi_DsK", &r_phi_pipi_DsK );
+   Float_t r_m_Dpi;
+   Float_t r_m_Kspi;
+   Float_t r_m_DKs;
 
+   //reader->AddVariable( "TRUE_m_DKs", &r_m_DKs );
+   reader->AddVariable( "TRUE_m_Dpi", &r_m_Dpi );
+   reader->AddVariable( "TRUE_m_Kspi", &r_m_Kspi );
+   
    // --- Book the MVA methods
-   TString prefix = "weights/TMVAClassification_run1_t0";
+   TString prefix = "weights/TMVAClassification_all_all";
    reader->BookMVA( myMethod, prefix + "_" + myMethod + ".weights.xml" ); 
 
-   Double_t s_Kpipi;
-   Double_t s_Kpi;
-   Double_t s_pipi;
-   Double_t s_Dspipi;
-   Double_t s_Dspi;
-   Double_t s_DsK;
-   Double_t cos_theta_Kpi;
-   Double_t cos_theta_Dspi;
-   Double_t phi_Kpi_Dspi;
-   Double_t cos_theta_pipi;
-   Double_t cos_theta_DsK;
-   Double_t phi_pipi_DsK;
+   Double_t m_Dpi;
+   Double_t m_Kspi;
+   Double_t m_DKs;
 
-   theTree->SetBranchAddress( "s_Kpipi", &s_Kpipi );
-   theTree->SetBranchAddress( "s_Kpi", &s_Kpi );
-   theTree->SetBranchAddress( "s_pipi", &s_pipi );
-   theTree->SetBranchAddress( "s_Dspipi", &s_Dspipi );
-   theTree->SetBranchAddress( "s_Dspi", &s_Dspi );
-   theTree->SetBranchAddress( "s_DsK", &s_DsK );
-   theTree->SetBranchAddress( "cos_theta_Kpi", &cos_theta_Kpi );
-   theTree->SetBranchAddress( "cos_theta_Dspi", &cos_theta_Dspi );
-   theTree->SetBranchAddress( "phi_Kpi_Dspi", &phi_Kpi_Dspi );
-   //theTree->SetBranchAddress( "cos_theta_pipi", &cos_theta_pipi );
-   //theTree->SetBranchAddress( "cos_theta_DsK", &cos_theta_DsK );
-   //theTree->SetBranchAddress( "phi_pipi_DsK", &phi_pipi_DsK );
+   theTree->SetBranchAddress( "TRUE_m_Dpi", &m_Dpi );
+   theTree->SetBranchAddress( "TRUE_m_Kspi", &m_Kspi );
+   theTree->SetBranchAddress( "TRUE_m_DKs", &m_DKs );
 
    //output file---------------------------------------------------------------------------------------------------------------------------------------
    double BDTG;
-   tree->Branch("BDTG",&BDTG, "BDTG/D");
+   tree->Branch("eff_BDTG",&BDTG, "eff_BDTG/D");
 
    std::cout << "--- Processing: " << theTree->GetEntries() << " events" << std::endl;
    TStopwatch sw;
    sw.Start();
    int N = theTree->GetEntries();
    for (Long64_t ievt=0; ievt< N ;ievt++) {
+       if (ievt%5000 == 0) std::cout << "--- ... Processing event: " << ievt << std::endl;
+       theTree->GetEntry(ievt);
 
-      if (ievt%5000 == 0) std::cout << "--- ... Processing event: " << ievt << std::endl;
-
-        theTree->GetEntry(ievt);
-
-	r_s_Kpipi= float(s_Kpipi);
-	r_s_Kpi= float(s_Kpi);
-	r_s_pipi= float(s_pipi);
-	r_s_Dspipi= float(s_Dspipi);
-	r_s_Dspi= float(s_Dspi);
-	r_s_DsK= float(s_DsK);
-
-	r_cos_theta_Kpi= float(cos_theta_Kpi);
-	r_cos_theta_Dspi= float(cos_theta_Dspi);
-	r_phi_Kpi_Dspi= float(phi_Kpi_Dspi);
-
-	//r_cos_theta_pipi= float(cos_theta_pipi);
-	//r_cos_theta_DsK= float(cos_theta_DsK);
-	//r_theta_DsK= float(acos(cos_theta_DsK));
-	//r_phi_pipi_DsK= float(phi_pipi_DsK);
-
-	TString methodName = myMethod;
-	BDTG = double(reader->EvaluateMVA(methodName));
-        tree->Fill();    
+       //r_m_DKs= float(m_DKs);
+       r_m_Dpi= float(m_Dpi);
+       r_m_Kspi= float(m_Kspi);
+       	
+       TString methodName = myMethod;
+       BDTG = double(reader->EvaluateMVA(methodName));
+       tree->Fill();    
    }
-
    // Get elapsed time
    sw.Stop();
    std::cout << "--- End of event loop: "; sw.Print();

@@ -1,4 +1,5 @@
 # setup Gauss
+https://gitlab.cern.ch/lhcb-datapkg/Gen/DecFiles/blob/master/CONTRIBUTING.md
 lb-dev --name GaussDev_v49r7 Gauss/v49r7
 cd GaussDev_v49r7/
 getpack Gen/DecFiles head

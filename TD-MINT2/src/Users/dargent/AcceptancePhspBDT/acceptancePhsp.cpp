@@ -97,282 +97,127 @@ double acoplanarityAngle(const DalitzEvent& evt, int a, int b, int c, int d){
 
 void prepareFilesForBDT(){
 
-    NamedParameter<string> InputGenMC("InputGenMC", (std::string) "/auto/data/dargent/BsDsKpipi/EvtGen/GenMC_13266007.root");
-
+    NamedParameter<string> InputGenMC("InputGenMC", (std::string) "Gen_11166161.root");
     TChain* tree_gen=new TChain("MCDecayTreeTuple/MCDecayTree");
     tree_gen->Add(((string)InputGenMC).c_str());
-    double K_gen[5]; 
-    double pip_gen[5]; 
-    double pim_gen[5]; 
-    double Ds_Kp_gen[5],Ds_Km_gen[5],Ds_pim_gen[5];
+    double Ks_gen[5]; 
+    double pi_gen[5]; 
+    double D_gen[5]; 
     
-    tree_gen->SetBranchAddress("Kplus_TRUEP_X",&K_gen[0]);
-    tree_gen->SetBranchAddress("Kplus_TRUEP_Y",&K_gen[1]);
-    tree_gen->SetBranchAddress("Kplus_TRUEP_Z",&K_gen[2]); 
-    tree_gen->SetBranchAddress("Kplus_TRUEP_E",&K_gen[3]); 
-    tree_gen->SetBranchAddress("Kplus_TRUEPT",&K_gen[4]); 
+    tree_gen->SetBranchAddress("KS0_TRUEP_X",&Ks_gen[0]);
+    tree_gen->SetBranchAddress("KS0_TRUEP_Y",&Ks_gen[1]);
+    tree_gen->SetBranchAddress("KS0_TRUEP_Z",&Ks_gen[2]); 
+    tree_gen->SetBranchAddress("KS0_TRUEP_E",&Ks_gen[3]); 
 	
-    tree_gen->SetBranchAddress("piplus_TRUEP_X",&pip_gen[0]);
-    tree_gen->SetBranchAddress("piplus_TRUEP_Y",&pip_gen[1]);
-    tree_gen->SetBranchAddress("piplus_TRUEP_Z",&pip_gen[2]); 
-    tree_gen->SetBranchAddress("piplus_TRUEP_E",&pip_gen[3]); 
-    tree_gen->SetBranchAddress("piplus_TRUEPT",&pip_gen[4]); 
-
-    tree_gen->SetBranchAddress("piminus_TRUEP_X",&pim_gen[0]);
-    tree_gen->SetBranchAddress("piminus_TRUEP_Y",&pim_gen[1]);
-    tree_gen->SetBranchAddress("piminus_TRUEP_Z",&pim_gen[2]); 
-    tree_gen->SetBranchAddress("piminus_TRUEP_E",&pim_gen[3]); 
-    tree_gen->SetBranchAddress("piminus_TRUEPT",&pim_gen[4]); 
-	
-    tree_gen->SetBranchAddress("Kplus0_TRUEP_X",&Ds_Kp_gen[0]);
-    tree_gen->SetBranchAddress("Kplus0_TRUEP_Y",&Ds_Kp_gen[1]);
-    tree_gen->SetBranchAddress("Kplus0_TRUEP_Z",&Ds_Kp_gen[2]); 
-    tree_gen->SetBranchAddress("Kplus0_TRUEP_E",&Ds_Kp_gen[3]); 
-    tree_gen->SetBranchAddress("Kplus0_TRUEPT",&Ds_Kp_gen[4]); 
+    tree_gen->SetBranchAddress("piplus_TRUEP_X",&pi_gen[0]);
+    tree_gen->SetBranchAddress("piplus_TRUEP_Y",&pi_gen[1]);
+    tree_gen->SetBranchAddress("piplus_TRUEP_Z",&pi_gen[2]); 
+    tree_gen->SetBranchAddress("piplus_TRUEP_E",&pi_gen[3]); 
     
-    tree_gen->SetBranchAddress("Kminus_TRUEP_X",&Ds_Km_gen[0]);
-    tree_gen->SetBranchAddress("Kminus_TRUEP_Y",&Ds_Km_gen[1]);
-    tree_gen->SetBranchAddress("Kminus_TRUEP_Z",&Ds_Km_gen[2]); 
-    tree_gen->SetBranchAddress("Kminus_TRUEP_E",&Ds_Km_gen[3]); 
-    tree_gen->SetBranchAddress("Kminus_TRUEPT",&Ds_Km_gen[4]); 
-
-    tree_gen->SetBranchAddress("piminus0_TRUEP_X",&Ds_pim_gen[0]);
-    tree_gen->SetBranchAddress("piminus0_TRUEP_Y",&Ds_pim_gen[1]);
-    tree_gen->SetBranchAddress("piminus0_TRUEP_Z",&Ds_pim_gen[2]); 
-    tree_gen->SetBranchAddress("piminus0_TRUEP_E",&Ds_pim_gen[3]); 
-    tree_gen->SetBranchAddress("piminus0_TRUEPT",&Ds_pim_gen[4]); 
+    tree_gen->SetBranchAddress("Dminus_TRUEP_X",&D_gen[0]);
+    tree_gen->SetBranchAddress("Dminus_TRUEP_Y",&D_gen[1]);
+    tree_gen->SetBranchAddress("Dminus_TRUEP_Z",&D_gen[2]); 
+    tree_gen->SetBranchAddress("Dminus_TRUEP_E",&D_gen[3]); 
 
     TFile* output_gen = new TFile("GenMC.root","RECREATE");
     TTree* summary_tree_gen = tree_gen->CloneTree(0);
-
-    double s_Kpipi,s_Kpi,s_pipi,s_Dspi,s_Dspipi,s_Kpip,s_Dspip,s_DsK,s_DsKpi;
-    double cos_theta_Kpi,cos_theta_Dspi,phi_Kpi_Dspi;
-    double cos_theta_pipi,cos_theta_DsK,phi_pipi_DsK;
-
-    summary_tree_gen->Branch("s_Kpipi", &s_Kpipi, "s_Kpipi/D");
-    summary_tree_gen->Branch("s_Kpi", &s_Kpi, "s_Kpi/D");
-    summary_tree_gen->Branch("s_pipi", &s_pipi, "s_pipi/D");
-    summary_tree_gen->Branch("s_Dspi", &s_Dspi, "s_Dspi/D");
-    summary_tree_gen->Branch("s_Dspipi", &s_Dspipi, "s_Dspipi/D");
-    summary_tree_gen->Branch("s_Dspip", &s_Dspip, "s_Dspip/D");
-    summary_tree_gen->Branch("s_DsK", &s_DsK, "s_DsK/D");
-    summary_tree_gen->Branch("s_DsKpi", &s_DsKpi, "s_DsKpi/D");
-    summary_tree_gen->Branch("s_Kpip", &s_Kpip, "s_Kpip/D");
-
-    summary_tree_gen->Branch("cos_theta_Kpi", &cos_theta_Kpi, "cos_theta_Kpi/D");
-    summary_tree_gen->Branch("cos_theta_Dspi", &cos_theta_Dspi, "cos_theta_Dspi/D");
-    summary_tree_gen->Branch("phi_Kpi_Dspi", &phi_Kpi_Dspi, "phi_Kpi_Dspi/D");
-
-    summary_tree_gen->Branch("cos_theta_pipi", &cos_theta_pipi, "cos_theta_pipi/D");
-    summary_tree_gen->Branch("cos_theta_DsK", &cos_theta_DsK, "cos_theta_DsK/D");
-    summary_tree_gen->Branch("phi_pipi_DsK", &phi_pipi_DsK, "phi_pipi_DsK/D");
-
+    double m_DKs,m_Dpi,m_Kspi;
+    summary_tree_gen->Branch("TRUE_m_DKs", &m_DKs, "TRUE_m_DKs/D");
+    summary_tree_gen->Branch("TRUE_m_Dpi", &m_Dpi, "TRUE_m_Dpi/D");
+    summary_tree_gen->Branch("TRUE_m_Kspi", &m_Kspi, "TRUE_m_Kspi/D");
+    
     for(int i=0; i< tree_gen->GetEntries(); i++)
     {	
         tree_gen->GetEntry(i);
 
-        TLorentzVector K_p(K_gen[0],K_gen[1],K_gen[2],K_gen[3]);
-        TLorentzVector pip_p(pip_gen[0],pip_gen[1],pip_gen[2],pip_gen[3]);
-        TLorentzVector pim_p(pim_gen[0],pim_gen[1],pim_gen[2],pim_gen[3]);
-        TLorentzVector D_Kp_p(Ds_Kp_gen[0],Ds_Kp_gen[1],Ds_Kp_gen[2],Ds_Kp_gen[3]);
-        TLorentzVector D_Km_p(Ds_Km_gen[0],Ds_Km_gen[1],Ds_Km_gen[2],Ds_Km_gen[3]);
-        TLorentzVector D_pim_p(Ds_pim_gen[0],Ds_pim_gen[1],Ds_pim_gen[2],Ds_pim_gen[3]);
-        TLorentzVector D_p = D_Kp_p + D_Km_p + D_pim_p;
-        TLorentzVector B_p = K_p + pip_p + pim_p + D_p;
-
-	s_Kpipi = (K_p + pip_p + pim_p).M()*MeV;
-	s_Kpi = (K_p + pim_p).M()*MeV;
-	s_pipi = (pip_p + pim_p).M()*MeV;
-	s_Dspi = (D_p + pip_p ).M()*MeV;
-	s_Dspipi = (D_p + pip_p + pim_p).M()*MeV;
-
-	s_Dspip = (D_p + pip_p).M()*MeV;
-	s_DsKpi = (D_p + K_p + pim_p).M()*MeV;
-	s_DsK = (D_p + K_p).M()*MeV;
-	s_Kpip = (K_p + pip_p).M()*MeV;
-
-	cos_theta_Kpi = cosThetaAngle(K_p,pim_p,D_p,pip_p);
-	cos_theta_Dspi = cosThetaAngle(D_p,pip_p,K_p,pim_p);
-	phi_Kpi_Dspi = acoplanarityAngle(K_p,pim_p,D_p,pip_p);
-
-	cos_theta_pipi = cosThetaAngle(pip_p,pim_p,D_p,K_p);
-	cos_theta_DsK = cosThetaAngle(D_p,K_p,pip_p,pim_p);
-	phi_pipi_DsK = acoplanarityAngle(pip_p,pim_p,D_p,K_p);
-
-	if(s_Kpipi > 1950. || s_Kpi > 1200. || s_pipi > 1200.) continue;
-
-	summary_tree_gen->Fill();
+        TLorentzVector Ks_p(Ks_gen[0],Ks_gen[1],Ks_gen[2],Ks_gen[3]);
+        TLorentzVector pi_p(pi_gen[0],pi_gen[1],pi_gen[2],pi_gen[3]);
+        TLorentzVector D_p(D_gen[0],D_gen[1],D_gen[2],D_gen[3]);
+        
+        m_DKs = (D_p+Ks_p).M();
+        m_Dpi = (D_p+pi_p).M();
+        m_Kspi = (pi_p+Ks_p).M();
+        
+        summary_tree_gen->Fill();
     }
-
     summary_tree_gen->Write();
     output_gen->Close();
 
-    NamedParameter<string> InputSelectedMC("InputSelectedMC", (std::string) "/auto/data/dargent/BsDsKpipi/Final/MC/signal.root");
+    NamedParameter<string> InputSelectedMC("InputSelectedMC", (std::string) "../../../../../Selection/BDT/signal_mc.root");
     TChain* tree=new TChain("DecayTree");
     tree->Add(((string)InputSelectedMC).c_str());
-
-    double K[5]; 
-    double pip[5]; 
-    double pim[5]; 
-    double Ds_Kp[5],Ds_Km[5],Ds_pim[5];
+    double Ks[5]; 
+    double pi[5]; 
+    double D[5];
     int cat;
-
-    tree->SetBranchAddress("Bs_BKGCAT",&cat);
-    tree->SetBranchAddress("K_plus_TRUEP_X",&K[0]);
-    tree->SetBranchAddress("K_plus_TRUEP_Y",&K[1]);
-    tree->SetBranchAddress("K_plus_TRUEP_Z",&K[2]); 
-    tree->SetBranchAddress("K_plus_TRUEP_E",&K[3]); 
-    tree->SetBranchAddress("K_plus_TRUEPT",&K[4]); 
-	
-    tree->SetBranchAddress("pi_plus_TRUEP_X",&pip[0]);
-    tree->SetBranchAddress("pi_plus_TRUEP_Y",&pip[1]);
-    tree->SetBranchAddress("pi_plus_TRUEP_Z",&pip[2]); 
-    tree->SetBranchAddress("pi_plus_TRUEP_E",&pip[3]); 
-    tree->SetBranchAddress("pi_plus_TRUEPT",&pip[4]); 
-
-    tree->SetBranchAddress("pi_minus_TRUEP_X",&pim[0]);
-    tree->SetBranchAddress("pi_minus_TRUEP_Y",&pim[1]);
-    tree->SetBranchAddress("pi_minus_TRUEP_Z",&pim[2]); 
-    tree->SetBranchAddress("pi_minus_TRUEP_E",&pim[3]); 
-    tree->SetBranchAddress("pi_minus_TRUEPT",&pim[4]); 
-	
-    tree->SetBranchAddress("K_plus_fromDs_TRUEP_X",&Ds_Kp[0]);
-    tree->SetBranchAddress("K_plus_fromDs_TRUEP_Y",&Ds_Kp[1]);
-    tree->SetBranchAddress("K_plus_fromDs_TRUEP_Z",&Ds_Kp[2]); 
-    tree->SetBranchAddress("K_plus_fromDs_TRUEP_E",&Ds_Kp[3]); 
-    tree->SetBranchAddress("K_plus_fromDs_TRUEPT",&Ds_Kp[4]); 
+    double BDTG;
     
-    tree->SetBranchAddress("K_minus_fromDs_TRUEP_X",&Ds_Km[0]);
-    tree->SetBranchAddress("K_minus_fromDs_TRUEP_Y",&Ds_Km[1]);
-    tree->SetBranchAddress("K_minus_fromDs_TRUEP_Z",&Ds_Km[2]); 
-    tree->SetBranchAddress("K_minus_fromDs_TRUEP_E",&Ds_Km[3]); 
-    tree->SetBranchAddress("K_minus_fromDs_TRUEPT",&Ds_Km[4]); 
-
-    tree->SetBranchAddress("pi_minus_fromDs_TRUEP_X",&Ds_pim[0]);
-    tree->SetBranchAddress("pi_minus_fromDs_TRUEP_Y",&Ds_pim[1]);
-    tree->SetBranchAddress("pi_minus_fromDs_TRUEP_Z",&Ds_pim[2]); 
-    tree->SetBranchAddress("pi_minus_fromDs_TRUEP_E",&Ds_pim[3]); 
-    tree->SetBranchAddress("pi_minus_fromDs_TRUEPT",&Ds_pim[4]); 
-
+    tree->SetBranchAddress("B_BKGCAT",&cat);
+    tree->SetBranchAddress("BDTG",&BDTG);
+    
+    tree->SetBranchAddress("Ks_TRUEP_X",&Ks[0]);
+    tree->SetBranchAddress("Ks_TRUEP_Y",&Ks[1]);
+    tree->SetBranchAddress("Ks_TRUEP_Z",&Ks[2]); 
+    tree->SetBranchAddress("Ks_TRUEP_E",&Ks[3]); 
+	
+    tree->SetBranchAddress("pi_TRUEP_X",&pi[0]);
+    tree->SetBranchAddress("pi_TRUEP_Y",&pi[1]);
+    tree->SetBranchAddress("pi_TRUEP_Z",&pi[2]); 
+    tree->SetBranchAddress("pi_TRUEP_E",&pi[3]); 
+	
+    tree->SetBranchAddress("D_TRUEP_X",&D[0]);
+    tree->SetBranchAddress("D_TRUEP_Y",&D[1]);
+    tree->SetBranchAddress("D_TRUEP_Z",&D[2]); 
+    tree->SetBranchAddress("D_TRUEP_E",&D[3]); 
+    
     TFile* output = new TFile("SelMC.root","RECREATE");
     TTree* summary_tree = tree->CloneTree(0);
-
-    summary_tree->Branch("s_Kpipi", &s_Kpipi, "s_Kpipi/D");
-    summary_tree->Branch("s_Kpi", &s_Kpi, "s_Kpi/D");
-    summary_tree->Branch("s_pipi", &s_pipi, "s_pipi/D");
-    summary_tree->Branch("s_Dspi", &s_Dspi, "s_Dspi/D");
-    summary_tree->Branch("s_Dspipi", &s_Dspipi, "s_Dspipi/D");
-    summary_tree->Branch("s_Dspip", &s_Dspip, "s_Dspip/D");
-    summary_tree->Branch("s_DsK", &s_DsK, "s_DsK/D");
-    summary_tree->Branch("s_DsKpi", &s_DsKpi, "s_DsKpi/D");
-    summary_tree->Branch("s_Kpip", &s_Kpip, "s_Kpip/D");
-    summary_tree->Branch("cos_theta_Kpi", &cos_theta_Kpi, "cos_theta_Kpi/D");
-    summary_tree->Branch("cos_theta_Dspi", &cos_theta_Dspi, "cos_theta_Dspi/D");
-    summary_tree->Branch("phi_Kpi_Dspi", &phi_Kpi_Dspi, "phi_Kpi_Dspi/D");
-    summary_tree->Branch("cos_theta_pipi", &cos_theta_pipi, "cos_theta_pipi/D");
-    summary_tree->Branch("cos_theta_DsK", &cos_theta_DsK, "cos_theta_DsK/D");
-    summary_tree->Branch("phi_pipi_DsK", &phi_pipi_DsK, "phi_pipi_DsK/D");
+    summary_tree->Branch("TRUE_m_DKs", &m_DKs, "TRUE_m_DKs/D");
+    summary_tree->Branch("TRUE_m_Dpi", &m_Dpi, "TRUE_m_Dpi/D");
+    summary_tree->Branch("TRUE_m_Kspi", &m_Kspi, "TRUE_m_Kspi/D");
 
     int numEvents = tree->GetEntries();
     for(int i=0; i< numEvents; i++)
     {
         tree->GetEntry(i);
+        if(cat>0)continue;        
+        TLorentzVector Ks_p(Ks[0],Ks[1],Ks[2],Ks[3]);
+        TLorentzVector pi_p(pi[0],pi[1],pi[2],pi[3]);
+        TLorentzVector D_p(D[0],D[1],D[2],D[3]);
         
-        // Lorentz vectors: P=(Px,Py,Pz,E)
-        TLorentzVector K_p(K[0],K[1],K[2],K[3]);
-        TLorentzVector pip_p(pip[0],pip[1],pip[2],pip[3]);
-        TLorentzVector pim_p(pim[0],pim[1],pim[2],pim[3]);
-        TLorentzVector D_Kp_p(Ds_Kp[0],Ds_Kp[1],Ds_Kp[2],Ds_Kp[3]);
-        TLorentzVector D_Km_p(Ds_Km[0],Ds_Km[1],Ds_Km[2],Ds_Km[3]);
-        TLorentzVector D_pim_p(Ds_pim[0],Ds_pim[1],Ds_pim[2],Ds_pim[3]);
-        TLorentzVector D_p = D_Kp_p + D_Km_p + D_pim_p;
-        TLorentzVector B_p = K_p + pip_p + pim_p + D_p;
-	
-	s_Kpipi = (K_p + pip_p + pim_p).M()*MeV;
-	s_Kpi = (K_p + pim_p).M()*MeV;
-	s_pipi = (pip_p + pim_p).M()*MeV;
-	s_Dspi = (D_p + pip_p ).M()*MeV;
-	s_Dspipi = (D_p + pip_p + pim_p).M()*MeV;
-
-	s_Dspip = (D_p + pip_p).M()*MeV;
-	s_DsKpi = (D_p + K_p + pim_p).M()*MeV;
-	s_DsK = (D_p + K_p).M()*MeV;
-	s_Kpip = (K_p + pip_p).M()*MeV;
-
-	cos_theta_Kpi = cosThetaAngle(K_p,pim_p,D_p,pip_p);
-	cos_theta_Dspi = cosThetaAngle(D_p,pip_p,K_p,pim_p);
-	phi_Kpi_Dspi = acoplanarityAngle(K_p,pim_p,D_p,pip_p);
-
-	cos_theta_pipi = cosThetaAngle(pip_p,pim_p,D_p,K_p);
-	cos_theta_DsK = cosThetaAngle(D_p,K_p,pip_p,pim_p);
-	phi_pipi_DsK = acoplanarityAngle(pip_p,pim_p,D_p,K_p);
-
-	if(cat != 20) continue;
-	if(s_Kpipi > 1950. || s_Kpi > 1200. || s_pipi > 1200.) continue;
-
-	summary_tree->Fill();
+        m_DKs = (D_p+Ks_p).M();
+        m_Dpi = (D_p+pi_p).M();
+        m_Kspi = (pi_p+Ks_p).M();
+        
+        summary_tree->Fill();
     }
-
     summary_tree->Write();
     output->Close();
 
-    DalitzEventPattern pdg(531, -431, 321, 211, -211);
+    DalitzEventPattern pdg(511 ,-411 ,310 ,211);
     DalitzEventList eventList;
-    TFile *file_MINT =  TFile::Open("SignalIntegrationEvents_toys_phspCut.root");
+    TFile *file_MINT =  TFile::Open("../LASSO/SignalIntegrationEvents.root");
     TTree* tree_MINT=dynamic_cast<TTree*>(file_MINT->Get("DalitzEventList"));
 
     TFile* output_MINT = new TFile("MintMC.root","RECREATE");
     TTree* summary_tree_MINT = tree_MINT->CloneTree();
-
     eventList.fromNtuple(tree_MINT,1);
     cout << " I've got " << eventList.size() << " events." << endl;
     file_MINT->Close();
 
-    TBranch* b_Kpipi = summary_tree_MINT->Branch("s_Kpipi", &s_Kpipi, "s_Kpipi/D");
-    TBranch* b_Kpi = summary_tree_MINT->Branch("s_Kpi", &s_Kpi, "s_Kpi/D");
-    TBranch* b_pipi =summary_tree_MINT->Branch("s_pipi", &s_pipi, "s_pipi/D");
-    TBranch* b_Dspi =summary_tree_MINT->Branch("s_Dspi", &s_Dspi, "s_Dspi/D");
-    TBranch* b_Dspipi =summary_tree_MINT->Branch("s_Dspipi", &s_Dspipi, "s_Dspipi/D");
-    TBranch* b_Dspip =summary_tree_MINT->Branch("s_Dspip", &s_Dspip, "s_Dspip/D");
-    TBranch* b_DsK =summary_tree_MINT->Branch("s_DsK", &s_DsK, "s_DsK/D");
-    TBranch* b_cos_theta_Kpi =summary_tree_MINT->Branch("cos_theta_Kpi", &cos_theta_Kpi, "cos_theta_Kpi/D");
-    TBranch* b_cos_theta_Dspi =summary_tree_MINT->Branch("cos_theta_Dspi", &cos_theta_Dspi, "cos_theta_Dspi/D");
-    TBranch* b_phi_Kpi_Dspi =summary_tree_MINT->Branch("phi_Kpi_Dspi", &phi_Kpi_Dspi, "phi_Kpi_Dspi/D");
-
-    vector<int> s234;
-    s234.push_back(2);
-    s234.push_back(3);
-    s234.push_back(4);
-    vector<int> s134;
-    s134.push_back(1);
-    s134.push_back(3);
-    s134.push_back(4);
+    TBranch* b_m_DKs = summary_tree_MINT->Branch("TRUE_m_DKs", &m_DKs, "TRUE_m_DKs/D");
+    TBranch* b_m_Dpi = summary_tree_MINT->Branch("TRUE_m_Dpi", &m_Dpi, "TRUE_m_Dpi/D");
+    TBranch* b_m_Kspi = summary_tree_MINT->Branch("TRUE_m_Kspi", &m_Kspi, "TRUE_m_Kspi/D");
 
     for(int i=0; i<eventList.size();i++){
+        m_DKs = sqrt(eventList[i].s(1,2))*MeV;
+        m_Dpi = sqrt(eventList[i].s(1,3))*MeV;
+        m_Kspi = sqrt(eventList[i].s(2,3))*MeV;
 
-	s_Kpipi = sqrt(eventList[i].sij(s234))*MeV;
-	s_Kpi = sqrt(eventList[i].s(2,4))*MeV;
-	s_pipi = sqrt(eventList[i].s(3,4))*MeV;
-	s_Dspi = sqrt(eventList[i].s(1,3))*MeV;
-	s_Dspipi = sqrt(eventList[i].sij(s134))*MeV;
-	s_Dspip = sqrt(eventList[i].s(1,4))*MeV;
-	s_DsK = sqrt(eventList[i].s(1,2))*MeV;
-	cos_theta_Kpi = cosThetaAngle(eventList[i],2,4,1,3);
-	cos_theta_Dspi = cosThetaAngle(eventList[i],1,3,2,4);
-	phi_Kpi_Dspi = acoplanarityAngle(eventList[i],2,4,1,3);
-
-	summary_tree_MINT->GetEntry(i);
-
-	b_Kpipi->Fill();
-        b_Kpi->Fill();
-        b_pipi->Fill();
-        b_Dspi->Fill();
-        b_Dspipi->Fill();
-        b_Dspip->Fill();
-        b_DsK->Fill();
-        b_cos_theta_Kpi->Fill();
-        b_cos_theta_Dspi->Fill();
-        b_phi_Kpi_Dspi->Fill();
+        summary_tree_MINT->GetEntry(i);
+        b_m_DKs->Fill();
+        b_m_Dpi->Fill();
+        b_m_Kspi->Fill();
     }
     summary_tree_MINT->Write();
     output_MINT->Close();
@@ -380,118 +225,68 @@ void prepareFilesForBDT(){
 
 void reweightGen(){
 	
-    double s_Kpipi,s_Kpi,s_pipi,s_Dspi,s_Dspipi,s_Kpip,s_Dspip,s_DsK,s_DsKpi;
-    double cos_theta_Kpi,cos_theta_Dspi,phi_Kpi_Dspi;
+    Double_t m_Dpi;
+    Double_t m_Kspi;
+    Double_t m_DKs;
     double BDTG;
-
+        
     TChain* tree_gen=new TChain("MCDecayTree");
     tree_gen->Add("GenMC_BDT.root");
-
-    tree_gen->SetBranchAddress("s_Kpipi",&s_Kpipi);
-    tree_gen->SetBranchAddress("s_Kpi",&s_Kpi);
-    tree_gen->SetBranchAddress("s_pipi",&s_pipi);
-    tree_gen->SetBranchAddress("s_Dspipi",&s_Dspipi);
-    tree_gen->SetBranchAddress("s_Dspi",&s_Dspi);
-    tree_gen->SetBranchAddress( "cos_theta_Kpi", &cos_theta_Kpi );
-    tree_gen->SetBranchAddress( "cos_theta_Dspi", &cos_theta_Dspi );
-    tree_gen->SetBranchAddress( "phi_Kpi_Dspi", &phi_Kpi_Dspi );
-    tree_gen->SetBranchAddress("BDTG",&BDTG);
+    tree_gen->SetBranchAddress( "TRUE_m_Dpi", &m_Dpi );
+    tree_gen->SetBranchAddress( "TRUE_m_Kspi", &m_Kspi );
+    tree_gen->SetBranchAddress( "TRUE_m_DKs", &m_DKs );
+    tree_gen->SetBranchAddress("eff_BDTG",&BDTG);
 
     TChain* tree=new TChain("DecayTree");
     tree->Add("SelMC_BDT.root");
-
-    tree->SetBranchAddress("s_Kpipi",&s_Kpipi);
-    tree->SetBranchAddress("s_Kpi",&s_Kpi);
-    tree->SetBranchAddress("s_pipi",&s_pipi);
-    tree->SetBranchAddress("s_Dspipi",&s_Dspipi);
-    tree->SetBranchAddress("s_Dspi",&s_Dspi);
-    tree->SetBranchAddress( "cos_theta_Kpi", &cos_theta_Kpi );
-    tree->SetBranchAddress( "cos_theta_Dspi", &cos_theta_Dspi );
-    tree->SetBranchAddress( "phi_Kpi_Dspi", &phi_Kpi_Dspi );
-    tree->SetBranchAddress("BDTG",&BDTG);
+    tree->SetBranchAddress( "TRUE_m_Dpi", &m_Dpi );
+    tree->SetBranchAddress( "TRUE_m_Kspi", &m_Kspi );
+    tree->SetBranchAddress( "TRUE_m_DKs", &m_DKs );
+    tree->SetBranchAddress("eff_BDTG",&BDTG);
 
     TChain* tree_MINT=new TChain("DalitzEventList");
     tree_MINT->Add("MintMC_BDT.root");
-    tree_MINT->SetBranchAddress("s_Kpipi",&s_Kpipi);
-    tree_MINT->SetBranchAddress("s_Kpi",&s_Kpi);
-    tree_MINT->SetBranchAddress("s_pipi",&s_pipi);
-    tree_MINT->SetBranchAddress("s_Dspipi",&s_Dspipi);
-    tree_MINT->SetBranchAddress("s_Dspi",&s_Dspi);
-    tree_MINT->SetBranchAddress( "cos_theta_Kpi", &cos_theta_Kpi );
-    tree_MINT->SetBranchAddress( "cos_theta_Dspi", &cos_theta_Dspi );
-    tree_MINT->SetBranchAddress( "phi_Kpi_Dspi", &phi_Kpi_Dspi );
-    tree_MINT->SetBranchAddress("BDTG",&BDTG);
+    tree_MINT->SetBranchAddress( "TRUE_m_Dpi", &m_Dpi );
+    tree_MINT->SetBranchAddress( "TRUE_m_Kspi", &m_Kspi );
+    tree_MINT->SetBranchAddress( "TRUE_m_DKs", &m_DKs );    
+    tree_MINT->SetBranchAddress("eff_BDTG",&BDTG);
 
-    TH1D* h_Kpipi= new TH1D("",";#left[m(K^{+} #pi^{+} #pi^{-})#right] (MeV);Events (norm.) ",40,1100,2000);
-    TH1D* h_Kpipi_gen= new TH1D("","",40,1100,2000);
-    TH1D* h_Kpipi_gen_rw= new TH1D("","",40,1100,2000);
-    TH1D* h_Kpipi_MINT= new TH1D("","",40,1100,2000);
-    TH1D* h_Kpipi_MINT_rw= new TH1D("","",40,1100,2000);
+    double nBins = 50;
+    TH1D* h_DKs = new TH1D("m_DKs","; m(DK_{s}) [GeV]; Yield",nBins,2,5.5);
+    TH1D* h_Dpi = new TH1D("m_Dpi","; m(D#pi) [GeV]; Yield",nBins,1,5.5);
+    TH1D* h_Kspi = new TH1D("m_Kspi","; m(K_{s}#pi) [GeV]; Yield",nBins,0,4);
+    
+    TH1D* h_DKs_gen = (TH1D*) h_DKs->Clone("m_DKs_gen");
+    TH1D* h_Dpi_gen = (TH1D*) h_Dpi->Clone("m_Dpi_gen");
+    TH1D* h_Kspi_gen = (TH1D*) h_Kspi->Clone("m_Kspi_gen");
+    TH1D* h_DKs_gen_rw = (TH1D*) h_DKs->Clone("m_DKs_gen_rw");
+    TH1D* h_Dpi_gen_rw = (TH1D*) h_Dpi->Clone("m_Dpi_gen_rw");
+    TH1D* h_Kspi_gen_rw = (TH1D*) h_Kspi->Clone("m_Kspi_gen_rw");
 
-    TH1D* h_Kpi= new TH1D("",";#left[m(K^{+} #pi^{-})#right] (MeV);Events (norm.) ",40,600,1200);
-    TH1D* h_Kpi_gen= new TH1D("","",40,600,1200);
-    TH1D* h_Kpi_gen_rw= new TH1D("","",40,600,1200);
-    TH1D* h_Kpi_MINT= new TH1D("","",40,600,1200);
-    TH1D* h_Kpi_MINT_rw= new TH1D("","",40,600,1200);
+    TH1D* h_DKs_MINT = (TH1D*) h_DKs->Clone("m_DKs_MINT");
+    TH1D* h_Dpi_MINT = (TH1D*) h_Dpi->Clone("m_Dpi_MINT");
+    TH1D* h_Kspi_MINT = (TH1D*) h_Kspi->Clone("m_Kspi_MINT");
+    TH1D* h_DKs_MINT_rw = (TH1D*) h_DKs->Clone("m_DKs_MINT_rw");
+    TH1D* h_Dpi_MINT_rw = (TH1D*) h_Dpi->Clone("m_Dpi_MINT_rw");
+    TH1D* h_Kspi_MINT_rw = (TH1D*) h_Kspi->Clone("m_Kspi_MINT_rw");
 
-    TH1D* h_pipi= new TH1D("",";#left[m(#pi^{+} #pi^{-})#right] (MeV);Events (norm.) ",40,200,1200);
-    TH1D* h_pipi_gen= new TH1D("","",40,200,1200);
-    TH1D* h_pipi_gen_rw= new TH1D("","",40,200,1200);
-    TH1D* h_pipi_MINT= new TH1D("","",40,200,1200);
-    TH1D* h_pipi_MINT_rw= new TH1D("","",40,200,1200);
-
-    TH1D* h_Dspi= new TH1D("",";#left[m(D_{s}^{-} #pi^{+})#right] (MeV);Events (norm.) ",40,1900,5000);
-    TH1D* h_Dspi_gen= new TH1D("","",40,1900,5000);
-    TH1D* h_Dspi_gen_rw= new TH1D("","",40,1900,5000);
-    TH1D* h_Dspi_MINT= new TH1D("","",40,1900,5000);
-    TH1D* h_Dspi_MINT_rw= new TH1D("","",40,1900,5000);
-
-    TH1D* h_Dspipi= new TH1D("",";#left[m(D_{s}^{-} #pi^{+} #pi^{-})#right] (MeV);Events (norm.) ",40,2400,5100);
-    TH1D* h_Dspipi_gen= new TH1D("","",40,2400,5100);
-    TH1D* h_Dspipi_gen_rw= new TH1D("","",40,2400,5100);
-    TH1D* h_Dspipi_MINT= new TH1D("","",40,2400,5100);
-    TH1D* h_Dspipi_MINT_rw= new TH1D("","",40,2400,5100);
-
-    TH1D* h_cosTheta_Kpi= new TH1D("",";cos #theta_{K^{+}#pi^{-}}; Events (norm.) ",40,-1,1);
-    TH1D* h_cosTheta_Kpi_gen= new TH1D("","",40,-1,1);
-    TH1D* h_cosTheta_Kpi_gen_rw= new TH1D("","",40,-1,1);
-    TH1D* h_cosTheta_Kpi_MINT= new TH1D("","",40,-1,1);
-    TH1D* h_cosTheta_Kpi_MINT_rw= new TH1D("","",40,-1,1);
-
-    TH1D* h_cosTheta_Dspi= new TH1D("",";cos #theta_{D_{s}#pi^{+}}; Events (norm.) ",40,0,1);
-    TH1D* h_cosTheta_Dspi_gen= new TH1D("","",40,0,1);
-    TH1D* h_cosTheta_Dspi_gen_rw= new TH1D("","",40,0,1);
-    TH1D* h_cosTheta_Dspi_MINT= new TH1D("","",40,0,1);
-    TH1D* h_cosTheta_Dspi_MINT_rw= new TH1D("","",40,0,1);
-
-    TH1D* h_phi_Kpi_Dspi= new TH1D("",";#phi_{K^{+}#pi^{-},D_{s}#pi^{+}}; Events (norm.)",40,-3.141,3.141);
-    TH1D* h_phi_Kpi_Dspi_gen= new TH1D("","",40,-3.141,3.141);
-    TH1D* h_phi_Kpi_Dspi_gen_rw= new TH1D("","",40,-3.141,3.141);
-    TH1D* h_phi_Kpi_Dspi_MINT= new TH1D("","",40,-3.141,3.141);
-    TH1D* h_phi_Kpi_Dspi_MINT_rw= new TH1D("","",40,-3.141,3.141);
-
-    TH1D* bdt_gen= new TH1D("","; BTDG; Efficiency (norm.)",50,-0.65,0.25);
-    TH1D* bdt_sel= new TH1D("","; BTDG; Events (norm.)",50,-0.65,0.25);
-    TH1D* bdt_MINT= new TH1D("","",50,-0.65,0.25);
+    TH1D* bdt_gen= new TH1D("","; BTDG; Efficiency (norm.)",nBins,-0.65,0.25);
+    TH1D* bdt_sel= new TH1D("","; BTDG; Events (norm.)",nBins,-0.65,0.25);
+    TH1D* bdt_MINT= new TH1D("","",nBins,-0.65,0.25);
 
     for(int i=0; i< tree_gen->GetEntries(); i++)
     {	
         tree_gen->GetEntry(i);
-	bdt_gen->Fill(BDTG);
+        bdt_gen->Fill(BDTG);
     }
 
     for(int i=0; i< tree->GetEntries(); i++)
     {	
         tree->GetEntry(i);
-	bdt_sel->Fill(BDTG);
-	h_Kpipi->Fill(s_Kpipi);
-	h_Dspipi->Fill(s_Dspipi);
-	h_Kpi->Fill(s_Kpi);
-	h_pipi->Fill(s_pipi);
-	h_Dspi->Fill(s_Dspi);
-	h_cosTheta_Kpi->Fill(cos_theta_Kpi);
-	h_cosTheta_Dspi->Fill(cos_theta_Dspi);
-	h_phi_Kpi_Dspi->Fill(phi_Kpi_Dspi);
+        bdt_sel->Fill(BDTG);
+        h_DKs->Fill(m_DKs/1000.);
+        h_Dpi->Fill(m_Dpi/1000.);
+        h_Kspi->Fill(m_Kspi/1000.);
     }
     	
     TH1D *h_weight = (TH1D*)bdt_gen->Clone();
@@ -500,76 +295,51 @@ void reweightGen(){
     TCanvas* c = new TCanvas();
     h_weight->Draw();
     c->Print("eff.eps");
-    c->Print("eff.pdf");
 
     for(int i=0; i< tree_gen->GetEntries(); i++)
     {	
         tree_gen->GetEntry(i);
-	h_Kpipi_gen->Fill(s_Kpipi);
-	h_Dspipi_gen->Fill(s_Dspipi);
-	h_Kpi_gen->Fill(s_Kpi);
-	h_pipi_gen->Fill(s_pipi);
-	h_Dspi_gen->Fill(s_Dspi);
-	h_cosTheta_Kpi_gen->Fill(cos_theta_Kpi);
-	h_cosTheta_Dspi_gen->Fill(cos_theta_Dspi);
-	h_phi_Kpi_Dspi_gen->Fill(phi_Kpi_Dspi);
+        h_DKs_gen->Fill(m_DKs/1000.);
+        h_Dpi_gen->Fill(m_Dpi/1000.);
+        h_Kspi_gen->Fill(m_Kspi/1000.);
 
-	double weight = h_weight->GetBinContent(h_weight->FindBin(BDTG));	
-	h_Kpipi_gen_rw->Fill(s_Kpipi,weight);
-	h_Dspipi_gen_rw->Fill(s_Dspipi,weight);
-	h_Kpi_gen_rw->Fill(s_Kpi,weight);
-	h_pipi_gen_rw->Fill(s_pipi,weight);
-	h_Dspi_gen_rw->Fill(s_Dspi,weight);
-	h_cosTheta_Kpi_gen_rw->Fill(cos_theta_Kpi,weight);
-	h_cosTheta_Dspi_gen_rw->Fill(cos_theta_Dspi,weight);
-	h_phi_Kpi_Dspi_gen_rw->Fill(phi_Kpi_Dspi,weight);
+        double weight = h_weight->GetBinContent(h_weight->FindBin(BDTG));	
+        h_DKs_gen_rw->Fill(m_DKs/1000.,weight);
+        h_Dpi_gen_rw->Fill(m_Dpi/1000.,weight);
+        h_Kspi_gen_rw->Fill(m_Kspi/1000.,weight);
     }
 
-    DalitzEventPattern pdg(531, -431, 321, 211, -211);
-
-    TFile *file_integ =  TFile::Open("SignalIntegrationEvents_toys_phspCut.root");
+    DalitzEventPattern pdg(511 ,-411 ,310 ,211);
+    TFile *file_integ =  TFile::Open("../LASSO/SignalIntegrationEvents.root");
     TTree* tree_integ=dynamic_cast<TTree*>(file_integ->Get("DalitzEventList"));
-
     DalitzEventList eventList,eventList_rw,eventList_rw_CP;
     eventList.fromNtuple(tree_integ,1);
     eventList[0].print();
-
     if(tree_MINT->GetEntries() != tree_integ->GetEntries()) throw "ERROR";
 
     for(int i=0; i< tree_MINT->GetEntries(); i++)
     {	
         tree_MINT->GetEntry(i);
+        bdt_MINT->Fill(BDTG);
 
-	bdt_MINT->Fill(BDTG);
+        h_DKs_MINT->Fill(m_DKs/1000.);
+        h_Dpi_MINT->Fill(m_Dpi/1000.);
+        h_Kspi_MINT->Fill(m_Kspi/1000.);
 
-	h_Kpipi_MINT->Fill(s_Kpipi);
-	h_Dspipi_MINT->Fill(s_Dspipi);
-	h_Kpi_MINT->Fill(s_Kpi);
-	h_pipi_MINT->Fill(s_pipi);
-	h_Dspi_MINT->Fill(s_Dspi);
-	h_cosTheta_Kpi_MINT->Fill(cos_theta_Kpi);
-	h_cosTheta_Dspi_MINT->Fill(cos_theta_Dspi);
-	h_phi_Kpi_Dspi_MINT->Fill(phi_Kpi_Dspi);
+        double weight = h_weight->GetBinContent(h_weight->FindBin(BDTG));	
+        h_DKs_MINT_rw->Fill(m_DKs/1000.,weight);
+        h_Dpi_MINT_rw->Fill(m_Dpi/1000.,weight);
+        h_Kspi_MINT_rw->Fill(m_Kspi/1000.,weight);
 
-	double weight = h_weight->GetBinContent(h_weight->FindBin(BDTG));	
-	h_Kpipi_MINT_rw->Fill(s_Kpipi,weight);
-	h_Dspipi_MINT_rw->Fill(s_Dspipi,weight);
-	h_Kpi_MINT_rw->Fill(s_Kpi,weight);
-	h_pipi_MINT_rw->Fill(s_pipi,weight);
-	h_Dspi_MINT_rw->Fill(s_Dspi,weight);
-	h_cosTheta_Kpi_MINT_rw->Fill(cos_theta_Kpi,weight);
-	h_cosTheta_Dspi_MINT_rw->Fill(cos_theta_Dspi,weight);
-	h_phi_Kpi_Dspi_MINT_rw->Fill(phi_Kpi_Dspi,weight);
-
-	DalitzEvent evt(eventList[i]);
-	evt.setWeight(evt.getWeight()*weight);
-	eventList_rw.Add(evt);
+        DalitzEvent evt(eventList[i]);
+        evt.setWeight(evt.getWeight()*weight);
+        eventList_rw.Add(evt);
         evt.CP_conjugateYourself();
         eventList_rw_CP.Add(evt);
     }
     
-    eventList_rw.saveAsNtuple("SignalIntegrationEvents_AccBDT2.root");
-    eventList_rw_CP.saveAsNtuple("SignalIntegrationEvents_AccBDT_CP2.root");
+    eventList_rw.saveAsNtuple("SignalIntegrationEvents_AccBDT.root");
+    //eventList_rw_CP.saveAsNtuple("SignalIntegrationEvents_AccBDT_CP2.root");
 
     bdt_sel->SetLineColor(kBlue);
     bdt_sel->DrawNormalized("hist",1);
@@ -578,159 +348,54 @@ void reweightGen(){
     bdt_gen->DrawNormalized("same",1);
     //bdt_MINT->DrawNormalized("histsame",1);
     c->Print("BDTG.eps");
-    c->Print("BDTG.pdf");
 
-    h_Kpipi->DrawNormalized("",1);
-    h_Kpipi_gen->SetLineColor(kRed);
-    h_Kpipi_gen->DrawNormalized("histsame",1);
-    h_Kpipi_gen_rw->SetLineColor(kBlue);
-    h_Kpipi_gen_rw->DrawNormalized("histsame",1);
-    c->Print("h_Kpipi.eps");
-    c->Print("h_Kpipi.pdf");
+    h_DKs->DrawNormalized("",1);
+    h_DKs_gen->SetLineColor(kRed);
+    h_DKs_gen->DrawNormalized("histsame",1);
+    h_DKs_gen_rw->SetLineColor(kBlue);
+    h_DKs_gen_rw->DrawNormalized("histsame",1);
+    c->Print("m_DKs.eps");
+    TH1D* h_DKs_eff = (TH1D*)h_DKs->Clone();
+    h_DKs_eff->Divide(h_DKs,h_DKs_gen);
+    h_DKs_eff->GetYaxis()->SetTitle("Efficiency (norm.)");
+    h_DKs_eff->DrawNormalized("e",1);
+    TH1D* h_DKs_MINT_eff = (TH1D*)h_DKs_MINT->Clone();
+    h_DKs_MINT_eff->Divide(h_DKs_MINT_rw,h_DKs_MINT);
+    h_DKs_MINT_eff->SetLineColor(kBlue);
+    h_DKs_MINT_eff->DrawNormalized("histsame",1);
+    c->Print("eff_m_DKs.eps");
 
-    TH1D* h_Kpipi_eff = (TH1D*)h_Kpipi->Clone();
-    h_Kpipi_eff->Divide(h_Kpipi,h_Kpipi_gen);
-    h_Kpipi_eff->GetYaxis()->SetTitle("Efficiency (norm.)");
-    h_Kpipi_eff->DrawNormalized("e",1);
-    TH1D* h_Kpipi_MINT_eff = (TH1D*)h_Kpipi_MINT->Clone();
-    h_Kpipi_MINT_eff->Divide(h_Kpipi_MINT_rw,h_Kpipi_MINT);
-    h_Kpipi_MINT_eff->SetLineColor(kBlue);
-    h_Kpipi_MINT_eff->DrawNormalized("histsame",1);
-    c->Print("eff_Kpipi.eps");
-    c->Print("eff_Kpipi.pdf");
+    h_Dpi->DrawNormalized("",1);
+    h_Dpi_gen->SetLineColor(kRed);
+    h_Dpi_gen->DrawNormalized("histsame",1);
+    h_Dpi_gen_rw->SetLineColor(kBlue);
+    h_Dpi_gen_rw->DrawNormalized("histsame",1);
+    c->Print("m_Dpi.eps");
+    TH1D* h_Dpi_eff = (TH1D*)h_Dpi->Clone();
+    h_Dpi_eff->Divide(h_Dpi,h_Dpi_gen);
+    h_Dpi_eff->GetYaxis()->SetTitle("Efficiency (norm.)");
+    h_Dpi_eff->DrawNormalized("e",1);
+    TH1D* h_Dpi_MINT_eff = (TH1D*)h_Dpi_MINT->Clone();
+    h_Dpi_MINT_eff->Divide(h_Dpi_MINT_rw,h_Dpi_MINT);
+    h_Dpi_MINT_eff->SetLineColor(kBlue);
+    h_Dpi_MINT_eff->DrawNormalized("histsame",1);
+    c->Print("eff_m_Dpi.eps");
 
-    h_Kpi->DrawNormalized("",1);
-    h_Kpi_gen->SetLineColor(kRed);
-    h_Kpi_gen->DrawNormalized("histsame",1);
-    h_Kpi_gen_rw->SetLineColor(kBlue);
-    h_Kpi_gen_rw->DrawNormalized("histsame",1);
-    c->Print("h_Kpi.eps");
-    c->Print("h_Kpi.pdf");
-
-    TH1D* h_Kpi_eff = (TH1D*)h_Kpi->Clone();
-    h_Kpi_eff->Divide(h_Kpi,h_Kpi_gen);
-    h_Kpi_eff->GetYaxis()->SetTitle("Efficiency (norm.)");
-    h_Kpi_eff->DrawNormalized("e",1);
-    TH1D* h_Kpi_MINT_eff = (TH1D*)h_Kpi_MINT->Clone();
-    h_Kpi_MINT_eff->Divide(h_Kpi_MINT_rw,h_Kpi_MINT);
-    h_Kpi_MINT_eff->SetLineColor(kBlue);
-    h_Kpi_MINT_eff->DrawNormalized("histsame",1);
-    c->Print("eff_Kpi.eps");
-    c->Print("eff_Kpi.pdf");
-
-    h_pipi->DrawNormalized("",1);
-    h_pipi_gen->SetLineColor(kRed);
-    h_pipi_gen->DrawNormalized("histsame",1);
-    h_pipi_gen_rw->SetLineColor(kBlue);
-    h_pipi_gen_rw->DrawNormalized("histsame",1);
-    c->Print("h_pipi.eps");
-    c->Print("h_pipi.pdf");
-
-    TH1D* h_pipi_eff = (TH1D*)h_pipi->Clone();
-    h_pipi_eff->Divide(h_pipi,h_pipi_gen);
-    h_pipi_eff->GetYaxis()->SetTitle("Efficiency (norm.)");
-    h_pipi_eff->DrawNormalized("e",1);
-    TH1D* h_pipi_MINT_eff = (TH1D*)h_pipi_MINT->Clone();
-    h_pipi_MINT_eff->Divide(h_pipi_MINT_rw,h_pipi_MINT);
-    h_pipi_MINT_eff->SetLineColor(kBlue);
-    h_pipi_MINT_eff->DrawNormalized("histsame",1);
-    c->Print("eff_pipi.eps");
-    c->Print("eff_pipi.pdf");
-
-    h_Dspi->DrawNormalized("",1);
-    h_Dspi_gen->SetLineColor(kRed);
-    h_Dspi_gen->DrawNormalized("histsame",1);
-    h_Dspi_gen_rw->SetLineColor(kBlue);
-    h_Dspi_gen_rw->DrawNormalized("histsame",1);
-    c->Print("h_Dspi.eps");
-    c->Print("h_Dspi.pdf");
-
-    TH1D* h_Dspi_eff = (TH1D*)h_Dspi->Clone();
-    h_Dspi_eff->Divide(h_Dspi,h_Dspi_gen);
-    h_Dspi_eff->GetYaxis()->SetTitle("Efficiency (norm.)");
-    h_Dspi_eff->DrawNormalized("e",1);
-    TH1D* h_Dspi_MINT_eff = (TH1D*)h_Dspi_MINT->Clone();
-    h_Dspi_MINT_eff->Divide(h_Dspi_MINT_rw,h_Dspi_MINT);
-    h_Dspi_MINT_eff->SetLineColor(kBlue);
-    h_Dspi_MINT_eff->DrawNormalized("histsame",1);
-    c->Print("eff_Dspi.eps");
-    c->Print("eff_Dspi.pdf");
-
-    h_Dspipi->DrawNormalized("",1);
-    h_Dspipi_gen->SetLineColor(kRed);
-    h_Dspipi_gen->DrawNormalized("histsame",1);
-    h_Dspipi_gen_rw->SetLineColor(kBlue);
-    h_Dspipi_gen_rw->DrawNormalized("histsame",1);
-    c->Print("h_Dspipi.eps");
-    c->Print("h_Dspipi.pdf");
-
-    TH1D* h_Dspipi_eff = (TH1D*)h_Dspipi->Clone();
-    h_Dspipi_eff->Divide(h_Dspipi,h_Dspipi_gen);
-    h_Dspipi_eff->GetYaxis()->SetTitle("Efficiency (norm.)");
-    h_Dspipi_eff->DrawNormalized("e",1);
-    TH1D* h_Dspipi_MINT_eff = (TH1D*)h_Dspipi_MINT->Clone();
-    h_Dspipi_MINT_eff->Divide(h_Dspipi_MINT_rw,h_Dspipi_MINT);
-    h_Dspipi_MINT_eff->SetLineColor(kBlue);
-    h_Dspipi_MINT_eff->DrawNormalized("histsame",1);
-    c->Print("eff_Dspipi.eps");
-    c->Print("eff_Dspipi.pdf");
-
-    h_cosTheta_Kpi->DrawNormalized("",1);
-    h_cosTheta_Kpi_gen->SetLineColor(kRed);
-    h_cosTheta_Kpi_gen->DrawNormalized("histsame",1);
-    h_cosTheta_Kpi_gen_rw->SetLineColor(kBlue);
-    h_cosTheta_Kpi_gen_rw->DrawNormalized("histsame",1);
-    c->Print("h_cosTheta_Kpi.eps");
-    c->Print("h_cosTheta_Kpi.pdf");
-
-    TH1D* h_cosTheta_Kpi_eff = (TH1D*)h_cosTheta_Kpi->Clone();
-    h_cosTheta_Kpi_eff->Divide(h_cosTheta_Kpi,h_cosTheta_Kpi_gen);
-    h_cosTheta_Kpi_eff->GetYaxis()->SetTitle("Efficiency (norm.)");
-    h_cosTheta_Kpi_eff->DrawNormalized("e",1);
-    TH1D* h_cosTheta_Kpi_MINT_eff = (TH1D*)h_cosTheta_Kpi_MINT->Clone();
-    h_cosTheta_Kpi_MINT_eff->Divide(h_cosTheta_Kpi_MINT_rw,h_cosTheta_Kpi_MINT);
-    h_cosTheta_Kpi_MINT_eff->SetLineColor(kBlue);
-    h_cosTheta_Kpi_MINT_eff->DrawNormalized("histsame",1);
-    c->Print("eff_cosTheta_Kpi.eps");
-    c->Print("eff_cosTheta_Kpi.pdf");
-
-    h_cosTheta_Dspi->DrawNormalized("",1);
-    h_cosTheta_Dspi_gen->SetLineColor(kRed);
-    h_cosTheta_Dspi_gen->DrawNormalized("histsame",1);
-    h_cosTheta_Dspi_gen_rw->SetLineColor(kBlue);
-    h_cosTheta_Dspi_gen_rw->DrawNormalized("histsame",1);
-    c->Print("h_cosTheta_Dspi.eps");
-    c->Print("h_cosTheta_Dspi.pdf");
-
-    TH1D* h_cosTheta_Dspi_eff = (TH1D*)h_cosTheta_Dspi->Clone();
-    h_cosTheta_Dspi_eff->Divide(h_cosTheta_Dspi,h_cosTheta_Dspi_gen);
-    h_cosTheta_Dspi_eff->GetYaxis()->SetTitle("Efficiency (norm.)");
-    h_cosTheta_Dspi_eff->DrawNormalized("e",1);
-    TH1D* h_cosTheta_Dspi_MINT_eff = (TH1D*)h_cosTheta_Dspi_MINT->Clone();
-    h_cosTheta_Dspi_MINT_eff->Divide(h_cosTheta_Dspi_MINT_rw,h_cosTheta_Dspi_MINT);
-    h_cosTheta_Dspi_MINT_eff->SetLineColor(kBlue);
-    h_cosTheta_Dspi_MINT_eff->DrawNormalized("histsame",1);
-    c->Print("eff_cosTheta_Dspi.eps");
-    c->Print("eff_cosTheta_Dspi.pdf");
-
-    h_phi_Kpi_Dspi->DrawNormalized("",1);
-    h_phi_Kpi_Dspi_gen->SetLineColor(kRed);
-    h_phi_Kpi_Dspi_gen->DrawNormalized("histsame",1);
-    h_phi_Kpi_Dspi_gen_rw->SetLineColor(kBlue);
-    h_phi_Kpi_Dspi_gen_rw->DrawNormalized("histsame",1);
-    c->Print("h_phi_Kpi_Dspi.eps");
-    c->Print("h_phi_Kpi_Dspi.pdf");
-
-    TH1D* h_phi_Kpi_Dspi_eff = (TH1D*)h_phi_Kpi_Dspi->Clone();
-    h_phi_Kpi_Dspi_eff->Divide(h_phi_Kpi_Dspi,h_phi_Kpi_Dspi_gen);
-    h_phi_Kpi_Dspi_eff->GetYaxis()->SetTitle("Efficiency (norm.)");
-    h_phi_Kpi_Dspi_eff->DrawNormalized("e",1);
-    TH1D* h_phi_Kpi_Dspi_MINT_eff = (TH1D*)h_phi_Kpi_Dspi_MINT->Clone();
-    h_phi_Kpi_Dspi_MINT_eff->Divide(h_phi_Kpi_Dspi_MINT_rw,h_phi_Kpi_Dspi_MINT);
-    h_phi_Kpi_Dspi_MINT_eff->SetLineColor(kBlue);
-    h_phi_Kpi_Dspi_MINT_eff->DrawNormalized("histsame",1);
-    c->Print("eff_phi_Kpi_Dspi.eps");
-    c->Print("eff_phi_Kpi_Dspi.pdf");
+    h_Kspi->DrawNormalized("",1);
+    h_Kspi_gen->SetLineColor(kRed);
+    h_Kspi_gen->DrawNormalized("histsame",1);
+    h_Kspi_gen_rw->SetLineColor(kBlue);
+    h_Kspi_gen_rw->DrawNormalized("histsame",1);
+    c->Print("m_Kspi.eps");
+    TH1D* h_Kspi_eff = (TH1D*)h_Kspi->Clone();
+    h_Kspi_eff->Divide(h_Kspi,h_Kspi_gen);
+    h_Kspi_eff->GetYaxis()->SetTitle("Efficiency (norm.)");
+    h_Kspi_eff->DrawNormalized("e",1);
+    TH1D* h_Kspi_MINT_eff = (TH1D*)h_Kspi_MINT->Clone();
+    h_Kspi_MINT_eff->Divide(h_Kspi_MINT_rw,h_Kspi_MINT);
+    h_Kspi_MINT_eff->SetLineColor(kBlue);
+    h_Kspi_MINT_eff->DrawNormalized("histsame",1);
+    c->Print("eff_m_Kspi.eps");
 }
 
 int main(int argc, char** argv){

@@ -532,22 +532,63 @@ int NamedDecayTreeList::makeB02DKspiList() {
     this->add(*dk);
     delete dk;
     
-    //
+    // D- pi+
     dk = new DecayTree(511);
     dk->addDgtr(310, 10421)->addDgtr(-411,211);
     this->add(*dk);
     delete dk;
 
     dk = new DecayTree(511);
+    dk->addDgtr(310, 10423)->addDgtr(-411,211);
+    this->add(*dk);
+    delete dk;
+    
+    dk = new DecayTree(511);
     dk->addDgtr(310, 425)->addDgtr(-411,211);
     this->add(*dk);
     delete dk;
     
-    //
+    dk = new DecayTree(511);
+    dk->addDgtr(310, 9425)->addDgtr(-411,211);
+    this->add(*dk);
+    delete dk;
+    
+    dk = new DecayTree(511);
+    dk->addDgtr(310, 99425)->addDgtr(-411,211);
+    this->add(*dk);
+    delete dk;
+    
+    dk = new DecayTree(511);
+    dk->addDgtr(310, 999425)->addDgtr(-411,211);
+    this->add(*dk);
+    delete dk;
+    
+    // D- K0
     dk = new DecayTree(511);
     dk->addDgtr(211,-435)->addDgtr(-411,310);
     this->add(*dk);
     delete dk;    
+
+    dk = new DecayTree(511);
+    dk->addDgtr(211,-9435)->addDgtr(-411,310);
+    this->add(*dk);
+    delete dk;    
+
+    dk = new DecayTree(511);
+    dk->addDgtr(211,-99435)->addDgtr(-411,310);
+    this->add(*dk);
+    delete dk;    
+
+    dk = new DecayTree(511);
+    dk->addDgtr(211,-999435)->addDgtr(-411,310);
+    this->add(*dk);
+    delete dk;    
+
+    dk = new DecayTree(511);
+    dk->addDgtr(211,-9999435)->addDgtr(-411,310);
+    this->add(*dk);
+    delete dk;    
+
     
     //non resonant
     dk = new DecayTree(511);

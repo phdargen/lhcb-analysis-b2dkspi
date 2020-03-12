@@ -11,8 +11,8 @@
 #include "TObjString.h"
 #include "TSystem.h"
 #include "TROOT.h"
-/*
 #include "TMVAGui.C"
+/*
 #include "/work/dargent/TMVA-v4.2.0/test/variables.C"
 #include "/work/dargent/TMVA-v4.2.0/test/efficiencies.C"
 #include "/work/dargent/TMVA-v4.2.0/test/mvas.C"
@@ -75,7 +75,7 @@ void TMVAClassification( TString myMethodList = "BDTG", TString run = "run1", TS
    // Create a ROOT output file where TMVA will store ntuples, histograms, etc.
 
    //TString outDir = "plots";
-   TString outDir = "../TD-AnaNote/latex/figs/TMVA/";
+   TString outDir = "figs/";
    outDir +=  myMethodList + "_" + run + "_" + trigger;
  
    TString outfileName = "TMVA_Bs2DsKpipi_" +  myMethodList + "_" + run + "_" + trigger + ".root";
@@ -85,51 +85,29 @@ void TMVAClassification( TString myMethodList = "BDTG", TString run = "run1", TS
    TMVA::Factory *factory = new TMVA::Factory( "TMVAClassification_" + run + "_" + trigger, outputFile,
                                                "!V:!Silent:Color:DrawProgressBar:Transformations=I;D;P;G,D:AnalysisType=Classification" );
 
-
    signal->SetBranchStatus("*",0);  // disable all branches   signal->SetBranchStatus("s_*",1); 
-   signal->SetBranchStatus("s_*",1); 
-   signal->SetBranchStatus("cos_*",1); 
-   signal->SetBranchStatus("phi_*",1); 
-   //signal->SetBranchStatus("weight",1); 
-
+   signal->SetBranchStatus("*m_*",1); 
    background->SetBranchStatus("*",0);  // disable all branches
-   background->SetBranchStatus("s_*",1);
-   background->SetBranchStatus("cos_*",1); 
-   background->SetBranchStatus("phi_*",1); 
+   background->SetBranchStatus("*m_*",1);
 
    // Define the input variables that shall be used for the MVA training
-   //factory->AddVariable( "s_Kpipi", "m(K#pi#pi)", "MeV", 'F' );
-   factory->AddVariable( "s_Kpi", "m(K#pi)", "MeV", 'F' );
-   //factory->AddVariable( "s_pipi", "m(#pi#pi)", "MeV", 'F' );
-   factory->AddVariable( "s_Dspi", "m(D_{s}#pi)", "MeV", 'F' );
-   //factory->AddVariable( "s_Dspipi", "m(D_{s}#pi#pi)", "MeV", 'F' );
-   
-   //factory->AddVariable( "s_DsK", "m(D_{s}K)", "MeV", 'F' );
-   //factory->AddVariable( "s_DsKpi", "m(D_{s}K#pi)", "MeV", 'F' );
-   //factory->AddVariable( "s_Kpip", "m(Kpi)", "MeV", 'F' );
-
-   factory->AddVariable( "cos_theta_Kpi", "cos(theta_{K#pi})", "", 'F' );
-   factory->AddVariable( "cos_theta_Dspi", "cos(theta_{D_{s}#pi})", "", 'F' );
-   factory->AddVariable( "phi_Kpi_Dspi", "phi_{K#pi,D_{s}#pi}", "", 'F' );
-
-   //factory->AddVariable( "cos_theta_pipi", "cos_theta_pipi", "", 'F' );
-   //factory->AddVariable( "theta_DsK:=acos(cos_theta_DsK)", "theta_DsK", "", 'F' );
-   //factory->AddVariable( "phi_pipi_DsK", "phi_pipi_DsK", "", 'F' );
+   //factory->AddVariable( "TRUE_m_DKs", "m(DKs)", "MeV", 'F' );
+   factory->AddVariable( "TRUE_m_Dpi", "m(D#pi)", "MeV", 'F' );
+   factory->AddVariable( "TRUE_m_Kspi", "m(Ks#pi)", "MeV", 'F' );
 
    // global event weights per tree (see below for setting event-wise weights)
    Double_t signalWeight     = 1.0;
    Double_t backgroundWeight = 1.0;
 
    // Apply additional cuts on the signal and background samples (can be different)
-   TCut mycuts = "s_Kpipi > 1000 && s_Kpipi < 1950 && s_Kpi < 1200 && s_pipi < 1200 && s_Kpi > 200 && s_Dspi > 1900 && s_Dspi < 5000 && s_Dspipi > 2000 && s_Dspipi < 5100 && cos_theta_Dspi > 0"; 
+   TCut mycuts = ""; 
    //mycuts = "run == " + run.ReplaceAll("run","")  ;
    //mycuts += "TriggerCat == " + trigger.ReplaceAll("t","")  ;
-   TCut mycutb = "s_Kpipi > 1000 && s_Kpipi < 1950 && s_Kpi < 1200 && s_pipi < 1200 && s_Kpi > 200 && s_Dspi > 1900 && s_Dspi < 5000 && s_Dspipi > 2000 && s_Dspipi < 5100 && cos_theta_Dspi > 0 ";
+   TCut mycutb = "";
    
    factory->AddSignalTree    ( signal,     signalWeight     );
    factory->AddBackgroundTree( background, backgroundWeight );
-   factory->PrepareTrainingAndTestTree( mycuts, mycutb,
-                                        "nTrain_Signal=12000:nTrain_Background=150000:nTest_Background=15000:SplitMode=Random:NormMode=NumEvents:!V" );
+   factory->PrepareTrainingAndTestTree( mycuts, mycutb, "nTrain_Signal=1800:nTrain_Background=100000:nTest_Background=100000:SplitMode=Random:NormMode=NumEvents:!V" );
 
    //factory->SetSignalWeightExpression("weight");
    // ---- Book MVA methods
@@ -182,16 +160,10 @@ void TMVAClassification( TString myMethodList = "BDTG", TString run = "run1", TS
    //mvas( outfileName, CompareType,  kTRUE , outDir, true);
 
    // Launch the GUI for the root macros
-//    if (!gROOT->IsBatch()) TMVAGui( outfileName );
- 
-
+   if (!gROOT->IsBatch()) TMVAGui( outfileName );
 }
 
-
 void trainAll( TString myMethodList = "BDTG", TString trainOn = "MC") {
-
-	gROOT->SetBatch(true);
-	TMVAClassification( myMethodList, "run1",  "t0" );
-
-
+	//gROOT->SetBatch(true);
+	TMVAClassification( myMethodList, "all",  "all" );
 }
