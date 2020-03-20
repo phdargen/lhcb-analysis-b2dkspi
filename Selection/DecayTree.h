@@ -415,6 +415,21 @@ public :
    Bool_t          B_Hlt2Phys_Dec;
    Bool_t          B_Hlt2Phys_TIS;
    Bool_t          B_Hlt2Phys_TOS;
+    
+    Bool_t          B_Hlt1TrackAllL0Decision_Dec;
+    Bool_t          B_Hlt1TrackAllL0Decision_TIS;
+    Bool_t          B_Hlt1TrackAllL0Decision_TOS;
+
+    Bool_t          B_Hlt2Topo2BodyBBDTDecision_Dec;
+    Bool_t          B_Hlt2Topo2BodyBBDTDecision_TIS;
+    Bool_t          B_Hlt2Topo2BodyBBDTDecision_TOS;
+    Bool_t          B_Hlt2Topo3BodyBBDTDecision_Dec;
+    Bool_t          B_Hlt2Topo3BodyBBDTDecision_TIS;
+    Bool_t          B_Hlt2Topo3BodyBBDTDecision_TOS;
+    Bool_t          B_Hlt2Topo4BodyBBDTDecision_Dec;
+    Bool_t          B_Hlt2Topo4BodyBBDTDecision_TIS;
+    Bool_t          B_Hlt2Topo4BodyBBDTDecision_TOS;
+    
    Bool_t          B_L0HadronDecision_Dec;
    Bool_t          B_L0HadronDecision_TIS;
    Bool_t          B_L0HadronDecision_TOS;
@@ -1629,6 +1644,20 @@ public :
    TBranch        *b_B_PV_piplus_PY;   //!
    TBranch        *b_B_PV_piplus_PZ;   //!
    TBranch        *b_B_PV_status;   //!
+    
+    TBranch        *b_B_Hlt1TrackAllL0Decision_Dec;   //!
+    TBranch        *b_B_Hlt1TrackAllL0Decision_TIS;   //!
+    TBranch        *b_B_Hlt1TrackAllL0Decision_TOS;   //!
+    TBranch        *b_B_Hlt2Topo2BodyBBDTDecision_Dec;   //!
+    TBranch        *b_B_Hlt2Topo2BodyBBDTDecision_TIS;   //!
+    TBranch        *b_B_Hlt2Topo2BodyBBDTDecision_TOS;   //!
+    TBranch        *b_B_Hlt2Topo3BodyBBDTDecision_Dec;   //!
+    TBranch        *b_B_Hlt2Topo3BodyBBDTDecision_TIS;   //!
+    TBranch        *b_B_Hlt2Topo3BodyBBDTDecision_TOS;   //!
+    TBranch        *b_B_Hlt2Topo4BodyBBDTDecision_Dec;   //!
+    TBranch        *b_B_Hlt2Topo4BodyBBDTDecision_TIS;   //!
+    TBranch        *b_B_Hlt2Topo4BodyBBDTDecision_TOS;   //!
+    
    TBranch        *b_B_L0Global_Dec;   //!
    TBranch        *b_B_L0Global_TIS;   //!
    TBranch        *b_B_L0Global_TOS;   //!
@@ -2928,27 +2957,35 @@ void DecayTree::Init()
    fChain->SetBranchAddress("B_L0PhotonDecision_Dec", &B_L0PhotonDecision_Dec, &b_B_L0PhotonDecision_Dec);
    fChain->SetBranchAddress("B_L0PhotonDecision_TIS", &B_L0PhotonDecision_TIS, &b_B_L0PhotonDecision_TIS);
    fChain->SetBranchAddress("B_L0PhotonDecision_TOS", &B_L0PhotonDecision_TOS, &b_B_L0PhotonDecision_TOS);
-   fChain->SetBranchAddress("B_Hlt1TrackMVADecision_Dec", &B_Hlt1TrackMVADecision_Dec, &b_B_Hlt1TrackMVADecision_Dec);
-   fChain->SetBranchAddress("B_Hlt1TrackMVADecision_TIS", &B_Hlt1TrackMVADecision_TIS, &b_B_Hlt1TrackMVADecision_TIS);
-   fChain->SetBranchAddress("B_Hlt1TrackMVADecision_TOS", &B_Hlt1TrackMVADecision_TOS, &b_B_Hlt1TrackMVADecision_TOS);
-   fChain->SetBranchAddress("B_Hlt1TwoTrackMVADecision_Dec", &B_Hlt1TwoTrackMVADecision_Dec, &b_B_Hlt1TwoTrackMVADecision_Dec);
-   fChain->SetBranchAddress("B_Hlt1TwoTrackMVADecision_TIS", &B_Hlt1TwoTrackMVADecision_TIS, &b_B_Hlt1TwoTrackMVADecision_TIS);
-   fChain->SetBranchAddress("B_Hlt1TwoTrackMVADecision_TOS", &B_Hlt1TwoTrackMVADecision_TOS, &b_B_Hlt1TwoTrackMVADecision_TOS);
+   if(_year < 15){
+       fChain->SetBranchAddress("B_Hlt1TrackAllL0Decision_TOS", &B_Hlt1TrackAllL0Decision_TOS, &b_B_Hlt1TrackAllL0Decision_TOS); 
+       fChain->SetBranchAddress("B_Hlt2Topo2BodyBBDTDecision_TOS", &B_Hlt2Topo2BodyBBDTDecision_TOS, &b_B_Hlt2Topo2BodyBBDTDecision_TOS);
+       fChain->SetBranchAddress("B_Hlt2Topo3BodyBBDTDecision_TOS", &B_Hlt2Topo3BodyBBDTDecision_TOS, &b_B_Hlt2Topo3BodyBBDTDecision_TOS);
+       fChain->SetBranchAddress("B_Hlt2Topo4BodyBBDTDecision_TOS", &B_Hlt2Topo4BodyBBDTDecision_TOS, &b_B_Hlt2Topo4BodyBBDTDecision_TOS);
+   }
+   else{
+       fChain->SetBranchAddress("B_Hlt1TrackMVADecision_Dec", &B_Hlt1TrackMVADecision_Dec, &b_B_Hlt1TrackMVADecision_Dec);
+       fChain->SetBranchAddress("B_Hlt1TrackMVADecision_TIS", &B_Hlt1TrackMVADecision_TIS, &b_B_Hlt1TrackMVADecision_TIS);
+       fChain->SetBranchAddress("B_Hlt1TrackMVADecision_TOS", &B_Hlt1TrackMVADecision_TOS, &b_B_Hlt1TrackMVADecision_TOS);
+       fChain->SetBranchAddress("B_Hlt1TwoTrackMVADecision_Dec", &B_Hlt1TwoTrackMVADecision_Dec, &b_B_Hlt1TwoTrackMVADecision_Dec);
+       fChain->SetBranchAddress("B_Hlt1TwoTrackMVADecision_TIS", &B_Hlt1TwoTrackMVADecision_TIS, &b_B_Hlt1TwoTrackMVADecision_TIS);
+       fChain->SetBranchAddress("B_Hlt1TwoTrackMVADecision_TOS", &B_Hlt1TwoTrackMVADecision_TOS, &b_B_Hlt1TwoTrackMVADecision_TOS);
+       fChain->SetBranchAddress("B_Hlt2Topo2BodyDecision_Dec", &B_Hlt2Topo2BodyDecision_Dec, &b_B_Hlt2Topo2BodyDecision_Dec);
+       fChain->SetBranchAddress("B_Hlt2Topo2BodyDecision_TIS", &B_Hlt2Topo2BodyDecision_TIS, &b_B_Hlt2Topo2BodyDecision_TIS);
+       fChain->SetBranchAddress("B_Hlt2Topo2BodyDecision_TOS", &B_Hlt2Topo2BodyDecision_TOS, &b_B_Hlt2Topo2BodyDecision_TOS);
+       fChain->SetBranchAddress("B_Hlt2Topo3BodyDecision_Dec", &B_Hlt2Topo3BodyDecision_Dec, &b_B_Hlt2Topo3BodyDecision_Dec);
+       fChain->SetBranchAddress("B_Hlt2Topo3BodyDecision_TIS", &B_Hlt2Topo3BodyDecision_TIS, &b_B_Hlt2Topo3BodyDecision_TIS);
+       fChain->SetBranchAddress("B_Hlt2Topo3BodyDecision_TOS", &B_Hlt2Topo3BodyDecision_TOS, &b_B_Hlt2Topo3BodyDecision_TOS);
+       fChain->SetBranchAddress("B_Hlt2Topo4BodyDecision_Dec", &B_Hlt2Topo4BodyDecision_Dec, &b_B_Hlt2Topo4BodyDecision_Dec);
+       fChain->SetBranchAddress("B_Hlt2Topo4BodyDecision_TIS", &B_Hlt2Topo4BodyDecision_TIS, &b_B_Hlt2Topo4BodyDecision_TIS);
+       fChain->SetBranchAddress("B_Hlt2Topo4BodyDecision_TOS", &B_Hlt2Topo4BodyDecision_TOS, &b_B_Hlt2Topo4BodyDecision_TOS);
+       fChain->SetBranchAddress("B_Hlt2PhiIncPhiDecision_Dec", &B_Hlt2PhiIncPhiDecision_Dec, &b_B_Hlt2PhiIncPhiDecision_Dec);
+       fChain->SetBranchAddress("B_Hlt2PhiIncPhiDecision_TIS", &B_Hlt2PhiIncPhiDecision_TIS, &b_B_Hlt2PhiIncPhiDecision_TIS);
+       fChain->SetBranchAddress("B_Hlt2PhiIncPhiDecision_TOS", &B_Hlt2PhiIncPhiDecision_TOS, &b_B_Hlt2PhiIncPhiDecision_TOS);
+   }    
    fChain->SetBranchAddress("B_Hlt2IncPhiDecision_Dec", &B_Hlt2IncPhiDecision_Dec, &b_B_Hlt2IncPhiDecision_Dec);
    fChain->SetBranchAddress("B_Hlt2IncPhiDecision_TIS", &B_Hlt2IncPhiDecision_TIS, &b_B_Hlt2IncPhiDecision_TIS);
    fChain->SetBranchAddress("B_Hlt2IncPhiDecision_TOS", &B_Hlt2IncPhiDecision_TOS, &b_B_Hlt2IncPhiDecision_TOS);
-   fChain->SetBranchAddress("B_Hlt2PhiIncPhiDecision_Dec", &B_Hlt2PhiIncPhiDecision_Dec, &b_B_Hlt2PhiIncPhiDecision_Dec);
-   fChain->SetBranchAddress("B_Hlt2PhiIncPhiDecision_TIS", &B_Hlt2PhiIncPhiDecision_TIS, &b_B_Hlt2PhiIncPhiDecision_TIS);
-   fChain->SetBranchAddress("B_Hlt2PhiIncPhiDecision_TOS", &B_Hlt2PhiIncPhiDecision_TOS, &b_B_Hlt2PhiIncPhiDecision_TOS);
-   fChain->SetBranchAddress("B_Hlt2Topo2BodyDecision_Dec", &B_Hlt2Topo2BodyDecision_Dec, &b_B_Hlt2Topo2BodyDecision_Dec);
-   fChain->SetBranchAddress("B_Hlt2Topo2BodyDecision_TIS", &B_Hlt2Topo2BodyDecision_TIS, &b_B_Hlt2Topo2BodyDecision_TIS);
-   fChain->SetBranchAddress("B_Hlt2Topo2BodyDecision_TOS", &B_Hlt2Topo2BodyDecision_TOS, &b_B_Hlt2Topo2BodyDecision_TOS);
-   fChain->SetBranchAddress("B_Hlt2Topo3BodyDecision_Dec", &B_Hlt2Topo3BodyDecision_Dec, &b_B_Hlt2Topo3BodyDecision_Dec);
-   fChain->SetBranchAddress("B_Hlt2Topo3BodyDecision_TIS", &B_Hlt2Topo3BodyDecision_TIS, &b_B_Hlt2Topo3BodyDecision_TIS);
-   fChain->SetBranchAddress("B_Hlt2Topo3BodyDecision_TOS", &B_Hlt2Topo3BodyDecision_TOS, &b_B_Hlt2Topo3BodyDecision_TOS);
-   fChain->SetBranchAddress("B_Hlt2Topo4BodyDecision_Dec", &B_Hlt2Topo4BodyDecision_Dec, &b_B_Hlt2Topo4BodyDecision_Dec);
-   fChain->SetBranchAddress("B_Hlt2Topo4BodyDecision_TIS", &B_Hlt2Topo4BodyDecision_TIS, &b_B_Hlt2Topo4BodyDecision_TIS);
-   fChain->SetBranchAddress("B_Hlt2Topo4BodyDecision_TOS", &B_Hlt2Topo4BodyDecision_TOS, &b_B_Hlt2Topo4BodyDecision_TOS);
    fChain->SetBranchAddress("D_ETA", &D_ETA, &b_D_ETA);
    fChain->SetBranchAddress("D_MINIP", &D_MINIP, &b_D_MINIP);
    fChain->SetBranchAddress("D_MINIPCHI2", &D_MINIPCHI2, &b_D_MINIPCHI2);
