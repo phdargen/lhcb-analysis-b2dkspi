@@ -1,14 +1,18 @@
 * general options
 "nBins"		100
-"min_MM"	5000.
+"min_MM"	5200.
 "max_MM"	5800.
 
 "numCPU"	 1
 
-"sWeightSignal"	 	1
+"sWeightSignal"	 	0
+"sWeightMC"		0
 "outFileNameSignal"	"b2dkspi_sw.root"
 *"inFileNameSignal"	"b2dkspi_LL_17.root"
 
-"cut_BDT"			"BDTG > 0. && m_Dpi < 4800 && abs(D_PV_MM-1869.61)<25 && abs(Ks_PV_MM-497.611) < 25 && pi_ProbNNk < 0.2"
+"cut_BDT"			"(BDTG > 0. && m_Dpi < 4800 && abs(D_PV_MM-1869.61)<25  && pi_ProbNNk < 0.2)"
+"cutMC_BDT"			"(BDTG > 0. && abs(Ks_PV_MM-497.611) < 30 && m_Dpi < 4800 && abs(D_PV_MM-1869.61)<25  && pi_ProbNNk < 0.2)"
+
+
 "fixSignalShapeFromMC" 		1
 "fixExpBkgFromSidebands"	0

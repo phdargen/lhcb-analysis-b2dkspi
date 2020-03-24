@@ -520,6 +520,7 @@ int NamedDecayTreeList::makeB02DKspiList() {
     dk->addDgtr(-411, 10321)->addDgtr(310,211);
     this->add(*dk);
     this->add(AmpInitialiser(*dk, "Lass"));  
+    this->add(AmpInitialiser(*dk, "GLass"));  
     delete dk;
 
     dk = new DecayTree(511);

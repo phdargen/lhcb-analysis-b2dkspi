@@ -216,10 +216,9 @@ TTree* DecayTree::GetInputTree(){
     else {
         fileName+= "MC/";
         //fileName+= "bkg/";
-        fileName+= str_year; 
+        //fileName+= str_year; 
         //fileName+= "U";
-
-        fileName+= "/b2dkspi*.root"; 
+        fileName+= "*.root"; 
         //fileName+= "/bkg_bs2dstarkspi.root"; 
         
         cout << "Using the files: " << endl;
@@ -702,18 +701,6 @@ void DecayTree::Loop()
         B_FullDTF_TAU = B_FullDTF_ctau[0] * 3.33564095;
         B_FullDTF_TAUERR = B_FullDTF_ctauErr[0] * 3.33564095;
         
-        //if(B_FullDTF_TAU < 0.4 || B_FullDTF_TAU > 10.) continue;
-        if(B_FullDTF_TAUERR < 0. || B_FullDTF_TAUERR > 0.5) continue;
-
-        B_RFD = sqrt(pow(B_ENDVERTEX_X-B_OWNPV_X,2)+pow(B_ENDVERTEX_Y-B_OWNPV_Y,2));
-        D_RFD = sqrt(pow(D_ENDVERTEX_X-D_OWNPV_X,2)+pow(D_ENDVERTEX_Y-D_OWNPV_Y,2));
-        D_FDsig = (D_ENDVERTEX_Z-D_ORIVX_Z)/sqrt(pow(D_ENDVERTEX_ZERR,2)+pow(D_ORIVX_ZERR,2));
-        D_z = D_ENDVERTEX_Z - B_ENDVERTEX_Z;
-      
-        Ks_RFD = sqrt(pow(Ks_ENDVERTEX_X-Ks_OWNPV_X,2)+pow(Ks_ENDVERTEX_Y-Ks_OWNPV_Y,2));
-        Ks_FDsig = (Ks_ENDVERTEX_Z-Ks_ORIVX_Z)/sqrt(pow(Ks_ENDVERTEX_ZERR,2)+pow(Ks_ORIVX_ZERR,2));
-        Ks_z = Ks_ENDVERTEX_Z - B_ENDVERTEX_Z;
-
         PV_status = B_PV_status[0];
         DTF_status = B_DTF_status[0];
         FullDTF_status = B_FullDTF_status[0];
@@ -730,7 +717,23 @@ void DecayTree::Loop()
         B_DTF_MMERR = B_DTF_MERR[0];
         D_PV_MMERR = B_PV_Dplus_MERR[0];
         Ks_PV_MMERR = B_PV_KS0_MERR[0];
-                
+        
+        if(FullDTF_status > 1)continue;
+        if(DTF_status > 1)continue;
+        if(PV_status > 1)continue;
+        if(TMath::IsNaN(B_DTF_MM))continue;
+        //if(B_FullDTF_TAU < 0.4 || B_FullDTF_TAU > 10.) continue;
+        if(B_FullDTF_TAUERR < 0. || B_FullDTF_TAUERR > 0.5) continue;
+
+        B_RFD = sqrt(pow(B_ENDVERTEX_X-B_OWNPV_X,2)+pow(B_ENDVERTEX_Y-B_OWNPV_Y,2));
+        D_RFD = sqrt(pow(D_ENDVERTEX_X-D_OWNPV_X,2)+pow(D_ENDVERTEX_Y-D_OWNPV_Y,2));
+        D_FDsig = (D_ENDVERTEX_Z-D_ORIVX_Z)/sqrt(pow(D_ENDVERTEX_ZERR,2)+pow(D_ORIVX_ZERR,2));
+        D_z = D_ENDVERTEX_Z - B_ENDVERTEX_Z;
+      
+        Ks_RFD = sqrt(pow(Ks_ENDVERTEX_X-Ks_OWNPV_X,2)+pow(Ks_ENDVERTEX_Y-Ks_OWNPV_Y,2));
+        Ks_FDsig = (Ks_ENDVERTEX_Z-Ks_ORIVX_Z)/sqrt(pow(Ks_ENDVERTEX_ZERR,2)+pow(Ks_ORIVX_ZERR,2));
+        Ks_z = Ks_ENDVERTEX_Z - B_ENDVERTEX_Z;
+
         FullDTF_D_PX = FullDTF_D.Px() ;
         FullDTF_D_PY = FullDTF_D.Py() ;
         FullDTF_D_PZ = FullDTF_D.Pz() ;

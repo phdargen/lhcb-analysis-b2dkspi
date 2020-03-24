@@ -363,6 +363,7 @@ int ampFit(int step=0){
         double Ks[4];
         double pi[4];
         double D[4];
+        int KsCat;
         
         TChain* tree;
         tree=new TChain("DecayTree");
@@ -371,8 +372,10 @@ int ampFit(int step=0){
         tree->SetBranchStatus("N_B_sw",1);
         tree->SetBranchStatus("weight",1);
         tree->SetBranchStatus("FullDTF*",1);
+        tree->SetBranchStatus("KsCat",1);
 
         tree->SetBranchAddress("N_B_sw",&sw);
+        tree->SetBranchAddress("KsCat",&KsCat);
         
         tree->SetBranchAddress("FullDTF_Ks_PX",&Ks[0]);
         tree->SetBranchAddress("FullDTF_Ks_PY",&Ks[1]);
@@ -420,8 +423,11 @@ int ampFit(int step=0){
                 badEvents++;
                 //continue;
             }
-            
-            if(abs(sqrt(evt.s(2,3))-1968.30)<30)continue;
+
+            if(KsCat==0)continue;
+            //if(sqrt(evt.s(2,3))<1200)continue;            
+            if(abs(sqrt(evt.s(2,3))-1869.61)<20)continue;
+            if(abs(sqrt(evt.s(2,3))-1968.30)<20)continue;
             
             evt.setWeight(sw);
             eventList.Add(evt);	
@@ -772,7 +778,7 @@ int ampFit(int step=0){
             c->Print(((string)OutputDir+"m_Dpi_log.eps").c_str());
             gPad->SetLogy(0);
 
-            m_Kspi->SetMinimum(0.01);
+            m_Kspi->SetMinimum(0.0001);
             m_Kspi->SetLineColor(kBlack);
             m_Kspi->DrawNormalized("e1",1);
             m_Kspi_fit->SetLineColor(kBlue);

@@ -14,6 +14,8 @@
 #include <string>
 #include <math.h>
 
+#include "TMath.h"
+
 #include "TFile.h"
 #include "TTree.h"
 #include "TString.h"
@@ -33,7 +35,7 @@
 using namespace std;
 using namespace TMVA;
 
-void TMVAClassificationApplication(TString decay = "Signal", TString dataType = "Data", TString myMethod = "BDTG", TString trainedOn = "Data" ) 
+void TMVAClassificationApplication(TString decay = "Signal", TString dataType = "Data", TString myMethod = "BDTG", TString trainedOn = "MC" ) 
 {   
 #ifdef __CINT__
    gROOT->ProcessLine( ".O0" ); // turn off optimization in CINT
@@ -46,8 +48,21 @@ void TMVAClassificationApplication(TString decay = "Signal", TString dataType = 
    TString outFileName = "BDT/";
 
    if(decay == "Signal" && dataType == "Data"){ 	  
-	theTree->Add("Preselected/Data_b2dkspi_DD_17.root");
-	outFileName += "signal_data.root";
+	theTree->Add("Preselected/Data_b2dkspi_LL_11.root");
+    theTree->Add("Preselected/Data_b2dkspi_LL_12.root");
+    theTree->Add("Preselected/Data_b2dkspi_LL_15.root");
+    theTree->Add("Preselected/Data_b2dkspi_LL_16.root");
+    theTree->Add("Preselected/Data_b2dkspi_LL_17.root");
+    theTree->Add("Preselected/Data_b2dkspi_LL_18.root");
+
+    theTree->Add("Preselected/Data_b2dkspi_DD_11.root");
+    theTree->Add("Preselected/Data_b2dkspi_DD_12.root");
+    theTree->Add("Preselected/Data_b2dkspi_DD_15.root");
+    theTree->Add("Preselected/Data_b2dkspi_DD_16.root");
+    theTree->Add("Preselected/Data_b2dkspi_DD_17.root");
+    theTree->Add("Preselected/Data_b2dkspi_DD_18.root");
+       
+    outFileName += "signal_data.root";
    }
 
    else if(decay == "Signal" && dataType == "MC"){ 	  
@@ -107,16 +122,12 @@ void TMVAClassificationApplication(TString decay = "Signal", TString dataType = 
    TString prefix = "weights/TMVAClassification_"+trainedOn+ "_";
 
    std::vector<TString> weightFiles;
-   weightFiles.push_back("all_all_all");
-   //weightFiles.push_back("run1_t0_odd");
-   //weightFiles.push_back("run1_t0_even");
-   //weightFiles.push_back("run1_t1_odd");
-   //weightFiles.push_back("run1_t1_even");
-   //weightFiles.push_back("run2_t0_odd");
-   //weightFiles.push_back("run2_t0_even");
-   //weightFiles.push_back("run2_t1_odd");
-   //weightFiles.push_back("run2_t1_even");
- 
+   //weightFiles.push_back("all_all_all");
+   weightFiles.push_back("run1_LL_all");
+   weightFiles.push_back("run2_LL_all");
+   weightFiles.push_back("run1_DD_all");
+   weightFiles.push_back("run2_DD_all");
+
    for(int i= 0 ; i < weightFiles.size(); i++) 
         reader->BookMVA( myMethod + weightFiles[i], prefix + weightFiles[i] + "_" + myMethod + ".weights.xml" ); 
 
@@ -150,14 +161,22 @@ void TMVAClassificationApplication(TString decay = "Signal", TString dataType = 
     theTree->SetBranchAddress( "track_min_IPCHI2", &min_IPCHI2 );
     theTree->SetBranchAddress( "maxCos2", &maxCos );
    
-    
-   Int_t year, run, Ds_finalState, TriggerCat; 
+   Int_t year, run, Ds_finalState, TriggerCat, KsCat; 
    ULong64_t eventNumber;
-
    theTree->SetBranchAddress( "year", &year );
    theTree->SetBranchAddress( "run", &run );
    theTree->SetBranchAddress( "TriggerCat", &TriggerCat );
    theTree->SetBranchAddress( "eventNumber", &eventNumber );
+   theTree->SetBranchAddress( "KsCat", &KsCat );
+    
+   Double_t FullDTF_status;
+   Double_t DTF_status;
+   Double_t PV_status;
+   Double_t B_DTF_MM;
+   theTree->SetBranchAddress( "FullDTF_status", &FullDTF_status );
+   theTree->SetBranchAddress( "DTF_status", &DTF_status );
+   theTree->SetBranchAddress( "PV_status", &PV_status );
+   theTree->SetBranchAddress( "B_DTF_MM", &B_DTF_MM );
 
    //output file---------------------------------------------------------------------------------------------------------------------------------------
    Float_t BDTG_response;
@@ -175,6 +194,10 @@ void TMVAClassificationApplication(TString decay = "Signal", TString dataType = 
       if (ievt%5000 == 0) std::cout << "--- ... Processing event: " << ievt << std::endl;
 
         theTree->GetEntry(ievt);
+        if(FullDTF_status > 1)continue;
+        if(DTF_status > 1)continue;
+        if(PV_status > 1)continue;
+        if(TMath::IsNaN(B_DTF_MM))continue;
 
         r_log_B_FDCHI2_OWNPV = float(log(B_FDCHI2_OWNPV));
         r_log_B_IPCHI2_OWNPV = float(log(B_IPCHI2_OWNPV));
@@ -191,14 +214,17 @@ void TMVAClassificationApplication(TString decay = "Signal", TString dataType = 
         r_log_min_IPCHI2 = float(log(min_IPCHI2)); 
         r_maxCos = float(maxCos);
 
-        //TString methodName = myMethod + "run";
-        //methodName += run;
+        TString methodName = myMethod + "run";
+        methodName += run;
         //methodName += "_t"; 
         //methodName += TriggerCat;
         //if(eventNumber % 2 == 0) methodName += "_odd" ;
         //else methodName += "_even";
-
-        TString methodName = myMethod + "all_all_all";
+        if(KsCat == 0) methodName += "_LL" ;
+        else methodName += "_DD";
+        methodName += "_all" ;
+       
+        //TString methodName = myMethod + "all_all_all";
         BDTG_response=reader->EvaluateMVA(methodName);
         BDTG = double(BDTG_response);
         tree->Fill();    
@@ -216,7 +242,7 @@ void TMVAClassificationApplication(TString decay = "Signal", TString dataType = 
    cout << "==> TMVAClassificationApplication is done!" << endl << endl;
 } 
 
-void applyToAll(TString myMethod = "BDTG", TString trainedOn = "Data" ){
+void applyToAll(TString myMethod = "BDTG", TString trainedOn = "MC" ){
 
     TMVAClassificationApplication("Signal", "Data", myMethod, trainedOn );
     TMVAClassificationApplication("Signal", "MC", myMethod, trainedOn );    

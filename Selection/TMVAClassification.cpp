@@ -25,18 +25,39 @@
 #include "TMVA/Tools.h"
 #endif
 
-void TMVAClassification( TString myMethodList = "BDTG", TString trainOn = "MC", TString run = "run1", TString trigger = "t0", TString sample = "even" )
+void TMVAClassification( TString myMethodList = "BDTG", TString trainOn = "MC", TString run = "run1", TString Ks = "all", TString sample = "even" )
 {
    TChain* background = new TChain("DecayTree");
    if(run == "run1" || run == "all"){
-
+       if(Ks == "LL" || Ks == "all"){
+           background->Add("Preselected/Data_b2dkspi_LL_11.root");
+           background->Add("Preselected/Data_b2dkspi_LL_12.root");
+       }
+       if(Ks == "DD" || Ks == "all"){
+           background->Add("Preselected/Data_b2dkspi_DD_11.root");
+           background->Add("Preselected/Data_b2dkspi_DD_12.root");
+       }
    }
    if(run == "run2" || run == "all") {
-	   background->Add("Preselected/Data_b2dkspi_DD_17.root");
+       if(Ks == "LL" || Ks == "all"){
+           background->Add("Preselected/Data_b2dkspi_LL_15.root");
+           background->Add("Preselected/Data_b2dkspi_LL_16.root");
+           background->Add("Preselected/Data_b2dkspi_LL_17.root");
+           background->Add("Preselected/Data_b2dkspi_LL_18.root");
+       }
+       if(Ks == "DD" || Ks == "all"){
+           background->Add("Preselected/Data_b2dkspi_DD_15.root");
+           background->Add("Preselected/Data_b2dkspi_DD_16.root");
+           background->Add("Preselected/Data_b2dkspi_DD_17.root");
+           background->Add("Preselected/Data_b2dkspi_DD_18.root");
+       }
    }
 
    TChain* signal = new TChain("DecayTree");
-   if(trainOn == "MC")signal->Add("Preselected/MC_b2dkspi_DD_12.root");
+   if(trainOn == "MC"){
+       if(Ks == "LL" || Ks == "all")signal->Add("Preselected/MC_b2dkspi_LL_12.root");
+       if(Ks == "DD" || Ks == "all")signal->Add("Preselected/MC_b2dkspi_DD_12.root");
+   }
    else signal->Add("");
 
    //---------------------------------------------------------------
@@ -83,13 +104,13 @@ void TMVAClassification( TString myMethodList = "BDTG", TString trainOn = "MC", 
 
    //TString outDir = "plots";
    TString outDir = "figs/TMVA/";
-   outDir +=  myMethodList + "_" + trainOn + "_" + run + "_" + trigger + "_" + sample;
+   outDir +=  myMethodList + "_" + trainOn + "_" + run + "_" + Ks + "_" + sample;
  
-   TString outfileName = "TMVA_" +  myMethodList + "_" + trainOn + "_" + run + "_" + trigger + "_" + sample + ".root";
+   TString outfileName = "TMVA_" +  myMethodList + "_" + trainOn + "_" + run + "_" + Ks + "_" + sample + ".root";
    TFile* outputFile = TFile::Open( outfileName, "RECREATE" );
 
    // Create the factory object. 
-   TMVA::Factory *factory = new TMVA::Factory( "TMVAClassification_" + trainOn + "_" + run + "_" + trigger + "_" + sample, outputFile, "!V:!Silent:Color:DrawProgressBar:Transformations=I;D;P;G,D:AnalysisType=Classification" );
+   TMVA::Factory *factory = new TMVA::Factory( "TMVAClassification_" + trainOn + "_" + run + "_" + Ks + "_" + sample, outputFile, "!V:!Silent:Color:DrawProgressBar:Transformations=I;D;P;G,D:AnalysisType=Classification" );
 
 
    signal->SetBranchStatus("*",0);  // disable all branches
@@ -134,7 +155,6 @@ void TMVAClassification( TString myMethodList = "BDTG", TString trainOn = "MC", 
    background->SetBranchStatus("weight",1);
    background->SetBranchStatus("eventNumber",1);
    background->SetBranchStatus("run",1);
-   background->SetBranchStatus("Ds_finalState",1);
 
    // Define the input variables that shall be used for the MVA training
 
@@ -257,13 +277,13 @@ void TMVAClassification( TString myMethodList = "BDTG", TString trainOn = "MC", 
 
    // Apply additional cuts on the signal and background samples (can be different)
    TCut mycuts;
-   if(run != "all")mycuts += "run == " + run.ReplaceAll("run","");
-   if(trigger != "all")mycuts += "TriggerCat == " + trigger.ReplaceAll("t","");
-   if(trainOn == "MC") mycuts += "B_MM > 5000 && B_MM < 6000 && B_BKGCAT < 30";
+   //if(run != "all")mycuts += "run == " + run.ReplaceAll("run","");
+   //if(trigger != "all")mycuts += "TriggerCat == " + trigger.ReplaceAll("t","");
+   if(trainOn == "MC") mycuts += "B_MM > 5000 && B_MM < 6000 && B_BKGCAT < 30 && PV_CHI2NDOF < 10 && PV_CHI2NDOF > 0";
 
-   TCut mycutb = "B_MM > 5500 && abs(D_MM-1869.61) < 20 && abs(Ks_MM-497.611) < 20";
-   if(run != "all")mycutb += "run == " + run;
-   if(trigger != "all")mycutb += "TriggerCat == " + trigger ;
+   TCut mycutb = "B_MM > 5500 && abs(D_MM-1869.61) < 20 && abs(Ks_MM-497.611) < 20 && PV_CHI2NDOF < 10  && PV_CHI2NDOF > 0";
+   //if(run != "all")mycutb += "run == " + run;
+   //if(trigger != "all")mycutb += "TriggerCat == " + trigger ;
    
    TFile* dummy;
 
@@ -356,21 +376,11 @@ void TMVAClassification( TString myMethodList = "BDTG", TString trainOn = "MC", 
 }
 
 
-void trainAll( TString myMethodList = "BDTG", TString trainOn = "Data") {
+void trainAll( TString myMethodList = "BDTG", TString trainOn = "MC") {
 
 	gROOT->SetBatch(true);
-	TMVAClassification( myMethodList, trainOn , "run1",  "t0", "even" );
- 	TMVAClassification( myMethodList, trainOn , "run1",  "t1", "even" );
- 	TMVAClassification( myMethodList, trainOn , "run2",  "t0", "even" );
- 	TMVAClassification( myMethodList, trainOn , "run2",  "t1", "even" );
-
-	TMVAClassification( myMethodList, trainOn , "run1",  "t0", "odd" );
- 	TMVAClassification( myMethodList, trainOn , "run1",  "t1", "odd" );
- 	TMVAClassification( myMethodList, trainOn , "run2",  "t0", "odd" );
- 	TMVAClassification( myMethodList, trainOn , "run2",  "t1", "odd" );
-
-	TMVAClassification( myMethodList, trainOn , "run1",  "t0", "all" );
- 	TMVAClassification( myMethodList, trainOn , "run1",  "t1", "all" );
- 	TMVAClassification( myMethodList, trainOn , "run2",  "t0", "all" );
- 	TMVAClassification( myMethodList, trainOn , "run2",  "t1", "all" );
+	TMVAClassification( myMethodList, trainOn , "run1",  "LL", "all" );
+ 	TMVAClassification( myMethodList, trainOn , "run2",  "LL", "all" );
+ 	TMVAClassification( myMethodList, trainOn , "run1",  "DD", "all" );
+ 	TMVAClassification( myMethodList, trainOn , "run2",  "DD", "all" );
 }
