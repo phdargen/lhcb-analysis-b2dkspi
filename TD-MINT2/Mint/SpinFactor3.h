@@ -24,7 +24,9 @@ class SpinFactor3 : public SpinFactor{
   double spinOneFromMasses(IDalitzEvent& evt); //db
   double spinTwoFromMasses(IDalitzEvent& evt); //db
 
-  double spinOneFromZemach(IDalitzEvent& evt); //experimental
+  double spinOneFromZemach(IDalitzEvent& evt); //
+  double spinTwoFromZemach(IDalitzEvent& evt); //
+  double spinThreeFromZemach(IDalitzEvent& evt); //
 
   bool setSpin();
 

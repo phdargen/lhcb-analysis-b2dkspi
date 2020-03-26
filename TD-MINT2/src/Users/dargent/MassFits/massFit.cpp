@@ -1378,9 +1378,9 @@ int main(int argc, char** argv){
     str_trigger.push_back(TString("t1"));
 
     
-    //fitSignalShape("Ks");
+    fitSignalShape("signal");
     //fitPartRecoBkgShape();
-    fitSignal2D();
+    //fitSignal2D();
     // plotDalitz();
  
     cout << "==============================================" << endl;

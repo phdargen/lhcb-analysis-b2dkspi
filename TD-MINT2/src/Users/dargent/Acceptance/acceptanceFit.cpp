@@ -1780,3 +1780,21 @@ int main(int argc, char** argv){
     
     return 0;
 }
+
+
+
+
+
+
+
+
+DiracFile:::*.root&&b2dhhh.root->/lhcb/user/p/phdargen/2020_03/353154/353154932/b2dhhh.root:::['CERN-USER']:::995022E7-FBDF-03C1-0DFC-AE1AA95086D4
+DiracFile:::*.root&&b2dhhh.root->/lhcb/user/p/phdargen/2020_03/353154/353154935/b2dhhh.root:::['CNAF-USER']:::50EF6EF5-C693-13AC-1D13-A2199AA978B4
+DiracFile:::*.root&&b2dhhh.root->/lhcb/user/p/phdargen/2020_03/353154/353154939/b2dhhh.root:::['CERN-USER']:::FAA38315-EA09-F4A8-3A8F-E6B7CB7849C9
+DiracFile:::*.root&&b2dhhh.root->/lhcb/user/p/phdargen/2020_03/353154/353154943/b2dhhh.root:::['GRIDKA-USER']:::D5751BB1-EB54-C7E9-D0E5-85B7052F0B4A
+DiracFile:::*.root&&b2dhhh.root->/lhcb/user/p/phdargen/2020_03/353154/353154945/b2dhhh.root:::['CERN-USER']:::A3220237-A890-5E82-8A60-2360E91DFA8D
+DiracFile:::*.root&&b2dhhh.root->/lhcb/user/p/phdargen/2020_03/353154/353154948/b2dhhh.root:::['CNAF-USER']:::2AA59357-1980-4E83-7B28-13AD4319E902
+DiracFile:::*.root&&b2dhhh.root->/lhcb/user/p/phdargen/2020_03/353154/353154953/b2dhhh.root:::['GRIDKA-USER']:::66DAAD43-EC6C-2A7D-43FB-146D642B3E62
+DiracFile:::*.root&&b2dhhh.root->/lhcb/user/p/phdargen/2020_03/353154/353154956/b2dhhh.root:::['GRIDKA-USER']:::2851007C-ECB2-1191-1613-F937BF90A3DA
+DiracFile:::*.root&&b2dhhh.root->/lhcb/user/p/phdargen/2020_03/353154/353154962/b2dhhh.root:::['GRIDKA-USER']:::D7C3609C-C47E-0EFC-44CF-DD72EBDCF7ED
+DiracFile:::*.root&&b2dhhh.root->/lhcb/user/p/phdargen/2020_03/353154/353154965/b2dhhh.root:::['CERN-USER']:::4A845CE0-5A80-AE3D-D465-667635959073

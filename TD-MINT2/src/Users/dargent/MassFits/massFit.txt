@@ -6,7 +6,7 @@
 "numCPU"	 1
 
 "sWeightSignal"	 	0
-"sWeightMC"		0
+"sWeightMC"		1
 "outFileNameSignal"	"b2dkspi_sw.root"
 *"inFileNameSignal"	"b2dkspi_LL_17.root"
 

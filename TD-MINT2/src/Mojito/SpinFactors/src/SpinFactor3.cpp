@@ -45,6 +45,8 @@ bool SpinFactor3::setSpin(){
     _spin = 1;
   }else if(R->getVal().J() == "2"){
     _spin = 2;
+  }else if(R->getVal().J() == "3"){
+      _spin = 3;
   }else{    
     cout << "SpinFactor3::setSpin() Don't know how to"
 	 << " handle resonance with spin = " << R->getVal().J()
@@ -119,9 +121,11 @@ double SpinFactor3::getVal(IDalitzEvent& evt){
   if(_spin == 0){
     return spinZeroVal();
   }else if(_spin == 1){
-    return spinOneVal(evt);
+    return spinOneFromZemach(evt);
   }else if(_spin == 2){
-    return spinTwoVal(evt);
+    return spinTwoFromZemach(evt);
+  }else if(_spin == 3){
+      return spinThreeFromZemach(evt);
   }else{    
     cout << "SpinFactor3::getVal() Don't know how to"
 	 << " handle resonance with spin = " << R->getVal().J()
@@ -130,7 +134,6 @@ double SpinFactor3::getVal(IDalitzEvent& evt){
     throw "sorry";
   }
   return -9999;
-  
 }
 
 double SpinFactor3::GSSpinFactor(IDalitzEvent& evt){
@@ -179,32 +182,58 @@ double SpinFactor3::spinOneVal(IDalitzEvent& evt){
 }
 
 double SpinFactor3::spinOneFromZemach(IDalitzEvent& evt){
-  // all wrong - just experimenting - don't use!!
+  TLorentzVector pR = p(1, evt) + p(2, evt);
+  TLorentzVector qR = p(1, evt) - p(2, evt);
+  TLorentzVector pD = pR + p(0, evt);
+  TLorentzVector qD = pR - p(0, evt);
 
-  TLorentzVector pV = p(1, evt) + p(2, evt);
-  TLorentzVector qV = p(1, evt) - p(2, evt);
-  TLorentzVector pD = pV + p(0, evt);
-  TLorentzVector qD = pV - p(0, evt);
-  //TLorentzVector qD = pD + p(0);
-
-  double mr = mRes(R, evt);
+  double mR = mRes(R, evt);
   double mD = pD.M();
 
-  ZTspin1 tV(qV, pV, mr);
-  ZTspin1 tD(qD, pD, mD);
-  //  ZTspin1 tP(pD + p(0), pD-p(0), mD);
-  ZTspin1 tP(p(0, evt), pD, mD);
-  //double norm = 1.;//tV.M() * tD.M();
-  //return tV.Contract(pD + p(0)); << this works
-  return tV.Contract(tP );
-  //  return tV.Contract(tD)/norm;
-
-  //ZTspin1 tVinD(tV, pD, mD);
-
-  //double norm = 1.;// tVinD.M() * tD.M();
-  //return tD.Contract(tVinD)/norm;
-
+  ZTspin1 LR(qR, pR, mR);
+  ZTspin1 LD(qD, pD, mD);
+  return LD.Contract(LR)/(GeV*GeV);
 }
+
+double SpinFactor3::spinTwoFromZemach(IDalitzEvent& evt){
+    TLorentzVector pR = p(1, evt) + p(2, evt);
+    TLorentzVector qR = p(1, evt) - p(2, evt);
+    TLorentzVector pD = pR + p(0, evt);
+    TLorentzVector qD = pR - p(0, evt);
+    
+    double mR = mRes(R, evt);
+    double mD = pD.M();
+    
+    ZTspin2 LR(qR, pR, mR);
+    ZTspin2 LD(qD, pD, mD);
+    return LD.Contract_2(LR)/(GeV*GeV*GeV*GeV);
+}
+
+double SpinFactor3::spinThreeFromZemach(IDalitzEvent& evt){
+    TLorentzVector pR = p(1, evt) + p(2, evt);
+    TLorentzVector qR = p(1, evt) - p(2, evt);
+    TLorentzVector pD = pR + p(0, evt);
+    TLorentzVector qD = pR - p(0, evt);
+    
+    double mR = mRes(R, evt);
+    double mD = pD.M();
+    
+    ZTspin1 LR(qR, pR, mR);
+    ZTspin1 LD(qD, pD, mD);
+    
+    SpinSumV PR(pR,mR);  
+    SpinSumV PD(pD,mD);  
+
+    double val = pow(LD.Contract(LR),3);
+    val -= 3./5. * pR.M2() * LD.Contract(LR) * PR.Sandwich(LD,LD);
+    val -= 3./5. * pD.M2() * LD.Contract(LR) * PD.Sandwich(LR,LR);
+    val += 3./25. * pR.M2() * pD.M2() * LD.Contract(LR) * (2. + pow(pR.Dot(pD),2)/(pR.M2() * pD.M2()));
+    val += 6./25. * pR.M2() * pD.M2() * (PD.Dot(LR)).Dot((PR.Dot(LD)));    
+
+    return val/(GeV*GeV*GeV*GeV*GeV*GeV);
+}
+
+
 
 double SpinFactor3::spinOneFromMasses(IDalitzEvent& evt){
   // parsed as:

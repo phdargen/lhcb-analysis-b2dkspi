@@ -743,21 +743,30 @@ double BW_BW::Fr_BELLE(double prSquared){
     double R_pr_sq  = R*R * prSquared;
     double R_pAB_sq = R*R * pABSq();
     if(twoLPlusOne() == 3){                        // spin = 1
-      if(dbThis) cout << "in Fr() " << sqrt(prSqForGofM())
-		      << ", " << sqrt(prSquared) << endl;
-      
-      if(dbThis)cout << "BW Fr R = " << R << "prSquared = " << prSqForGofM()
-		     << " pABSq() " << prSquared
-		     << endl;
       Fr_BELLE = sqrt( (1. + R_pr_sq)/(1. + R_pAB_sq) );
-    }else if(twoLPlusOne() == 5){                   // spin == 2
+    }
+    else if(twoLPlusOne() == 5){                   // spin == 2
       double R_pr_4  = R_pr_sq*R_pr_sq;
       double R_pAB_4 = R_pAB_sq*R_pAB_sq;
-      
-      Fr_BELLE = sqrt( (  9. + 3.*R_pr_sq  + R_pr_4)
-		  /( 9. + 3.*R_pAB_sq + R_pAB_4) 
-		  );
-    } else{
+      Fr_BELLE = sqrt( (  9. + 3.*R_pr_sq  + R_pr_4) / ( 9. + 3.*R_pAB_sq + R_pAB_4) );
+    } 
+    else if(twoLPlusOne() == 7){                   // spin == 3
+        double R_pr_4  = R_pr_sq*R_pr_sq;
+        double R_pAB_4 = R_pAB_sq*R_pAB_sq;
+        double R_pr_6  = R_pr_4*R_pr_sq;
+        double R_pAB_6 = R_pAB_4*R_pAB_sq;
+        Fr_BELLE = sqrt( (  225. + 45.*R_pr_sq  + 6.* R_pr_4 + R_pr_6) / ( 225. + 45.*R_pAB_sq + 6. * R_pAB_4 + R_pAB_6) );
+    } 
+    else if(twoLPlusOne() == 9){                   // spin == 4
+        double R_pr_4  = R_pr_sq*R_pr_sq;
+        double R_pAB_4 = R_pAB_sq*R_pAB_sq;
+        double R_pr_6  = R_pr_4*R_pr_sq;
+        double R_pAB_6 = R_pAB_4*R_pAB_sq;
+        double R_pr_8  = R_pr_6*R_pr_sq;
+        double R_pAB_8 = R_pAB_6*R_pAB_sq;
+        Fr_BELLE = sqrt( (  11025. + 1575.*R_pr_sq  + 135.* R_pr_4 + 10.*R_pr_6 + R_pr_8) / ( 11025 + 1575.*R_pAB_sq + 135. * R_pAB_4 + 10.*R_pAB_6 + R_pAB_8) );
+    } 
+    else{
       std::cout << "BW_BW for decay \n" << _theDecay 
 		<< "\n ERROR! Can't deal with L == " 
 		<< twoLPlusOne()

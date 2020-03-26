@@ -143,7 +143,7 @@ void prepareFilesForBDT(){
     summary_tree_gen->Write();
     output_gen->Close();
 
-    NamedParameter<string> InputSelectedMC("InputSelectedMC", (std::string) "../../../../../Selection/BDT/signal_mc.root");
+    NamedParameter<string> InputSelectedMC("InputSelectedMC", (std::string) "../../../../../Selection/Final/signal_mc.root");
     TChain* tree=new TChain("DecayTree");
     tree->Add(((string)InputSelectedMC).c_str());
     double Ks[5]; 
@@ -333,6 +333,9 @@ void reweightGen(){
 
         DalitzEvent evt(eventList[i]);
         evt.setWeight(evt.getWeight()*weight);
+
+        if(evt.getGeneratorPdfRelativeToPhaseSpace()>1000.)continue;
+
         eventList_rw.Add(evt);
         evt.CP_conjugateYourself();
         eventList_rw_CP.Add(evt);

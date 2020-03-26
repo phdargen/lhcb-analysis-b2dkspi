@@ -330,7 +330,9 @@ int ampFit(int step=0){
     NamedParameter<int>  doBootstrap("doBootstrap", 0);
     NamedParameter<int>  N_bootstrap("N_bootstrap", 10000);
     NamedParameter<int>  doPlots("doPlots", 1);
-    
+    NamedParameter<int>  makeNewIntegratorFile("makeNewIntegratorFile", 0);
+    NamedParameter<string> weightVar("weightVar", (std::string) "N_B_sw");
+
     NamedParameter<int> EventPattern("Event Pattern", 521, 321, 211, -211, 443);
     DalitzEventPattern pat(EventPattern.getVector());
     cout << " got event pattern: " << pat << endl;
@@ -369,12 +371,12 @@ int ampFit(int step=0){
         tree=new TChain("DecayTree");
         tree->Add(((string)InputFileName).c_str());
         tree->SetBranchStatus("*",0);
-        tree->SetBranchStatus("N_B_sw",1);
+        tree->SetBranchStatus("*sw",1);
         tree->SetBranchStatus("weight",1);
         tree->SetBranchStatus("FullDTF*",1);
         tree->SetBranchStatus("KsCat",1);
 
-        tree->SetBranchAddress("N_B_sw",&sw);
+        tree->SetBranchAddress(((string)weightVar).c_str(),&sw);
         tree->SetBranchAddress("KsCat",&KsCat);
         
         tree->SetBranchAddress("FullDTF_Ks_PX",&Ks[0]);
@@ -419,12 +421,12 @@ int ampFit(int step=0){
             vectorOfvectors.push_back(pi_p*MeV);
         
             DalitzEvent evt = DalitzEvent(pat, vectorOfvectors);
-            if(!(evt.phaseSpace() > 0.)){
+            if( evt.s(1,3) < pat.sijMin(1,3) || evt.s(1,3) > pat.sijMax(1,3) || evt.s(1,2) < pat.sijMin(1,2) || evt.s(1,2) > pat.sijMax(1,2)  || evt.s(2,3) < pat.sijMin(2,3) || evt.s(2,3) > pat.sijMax(2,3) )
+            {
                 badEvents++;
-                //continue;
+                continue;
             }
-
-            if(KsCat==0)continue;
+            //if(KsCat==0)continue;
             //if(sqrt(evt.s(2,3))<1200)continue;            
             if(abs(sqrt(evt.s(2,3))-1869.61)<20)continue;
             if(abs(sqrt(evt.s(2,3))-1968.30)<20)continue;
@@ -438,7 +440,7 @@ int ampFit(int step=0){
     AmpsPdfFlexiFast* ampsSig;
     if(useLASSO) ampsSig = new AmpsPdfFlexiFast(pat, &fas, 0, integPrecision,integMethod, (std::string) IntegratorEventFile);
     else ampsSig = new AmpsPdfFlexiFast(pat, &fas, 0, integPrecision,integMethod, (std::string) IntegratorEventFile);
-    AmpsPdfFlexiFast ampsBkg(pat, &fasBkg, 0, integPrecision,integMethod, (std::string) IntegratorEventFile);
+    AmpsPdfFlexiFast ampsBkg(pat, &fasBkg, 0, integPrecision*100,integMethod, (std::string) IntegratorEventFile);
     DalitzSumPdf amps(sigfraction,*ampsSig,ampsBkg);
     
     Neg2LL neg2ll(amps, eventList);
@@ -591,7 +593,7 @@ int ampFit(int step=0){
     if(doPlots){
         
             cout << "Now plotting:" << endl;
-            double nBins = 60;
+            double nBins = 50;
             TH1D* m_DKs = new TH1D("m_DKs","; m(DK_{s}) [GeV]; Yield",nBins,2,5.5);
             TH1D* m_Dpi = new TH1D("m_Dpi","; m(D#pi) [GeV]; Yield",nBins,1,5.5);
             TH1D* m_Kspi = new TH1D("m_Kspi","; m(K_{s}#pi) [GeV]; Yield",nBins,0,4);
@@ -651,6 +653,8 @@ int ampFit(int step=0){
             ampNames3.push_back("D*(2600)0");
             ampNames3.push_back("D(3)*(2750)0");
             ampNames3.push_back("D(3000)0");
+            ampNames3.push_back("X_S0");
+            ampNames3.push_back("X_V0");
 
             vector<string> ampNames4;
             ampNames4.push_back("D(s2)(2573)");
@@ -658,6 +662,8 @@ int ampFit(int step=0){
             ampNames4.push_back("D(s1)*(2860)");
             ampNames4.push_back("D(s3)*(2860)");
             ampNames4.push_back("D(s2)(3040)-");
+            ampNames4.push_back("X2_S");
+            ampNames4.push_back("X2_V");
 
             vector<string> ampNames5;
             ampNames5.push_back("NonRes");
@@ -719,18 +725,18 @@ int ampFit(int step=0){
             m_DKs_fit_5->DrawNormalized("histcsame",m_DKs_fit_5->Integral()/m_DKs_fit->Integral());
             m_DKs_fit_1->SetLineColor(kRed+1);
             m_DKs_fit_1->SetLineWidth(2);
-            m_DKs_fit_1->SetFillColor(kRed+1);
-            m_DKs_fit_1->SetFillStyle(3353);
+            //m_DKs_fit_1->SetFillColor(kRed+1);
+            //m_DKs_fit_1->SetFillStyle(3353);
             m_DKs_fit_1->DrawNormalized("histcsame",m_DKs_fit_1->Integral()/m_DKs_fit->Integral());
             m_DKs_fit_2->SetLineColor(kGreen+3);
             m_DKs_fit_2->SetLineWidth(2);
-            m_DKs_fit_2->SetFillColor(kGreen+3);
-            m_DKs_fit_2->SetFillStyle(3353);
+            //m_DKs_fit_2->SetFillColor(kGreen+3);
+            //m_DKs_fit_2->SetFillStyle(3353);
             m_DKs_fit_2->DrawNormalized("histcsame",m_DKs_fit_2->Integral()/m_DKs_fit->Integral());
             m_DKs_fit_3->SetLineColor(kMagenta+3);
             m_DKs_fit_3->SetLineWidth(2);
-            m_DKs_fit_3->SetFillColor(kMagenta+3);
-            m_DKs_fit_3->SetFillStyle(3353);
+            //m_DKs_fit_3->SetFillColor(kMagenta+3);
+            //m_DKs_fit_3->SetFillStyle(3353);
             m_DKs_fit_3->DrawNormalized("histcsame",m_DKs_fit_3->Integral()/m_DKs_fit->Integral());
             m_DKs_fit_4->SetLineColor(kBlack);
             m_DKs_fit_4->SetLineWidth(3);
@@ -755,18 +761,18 @@ int ampFit(int step=0){
              m_Dpi_fit_5->DrawNormalized("histcsame",m_Dpi_fit_5->Integral()/m_Dpi_fit->Integral());
              m_Dpi_fit_1->SetLineColor(kRed+1);
              m_Dpi_fit_1->SetLineWidth(2);
-             m_Dpi_fit_1->SetFillColor(kRed+1);
-             m_Dpi_fit_1->SetFillStyle(3353);
+             //m_Dpi_fit_1->SetFillColor(kRed+1);
+             //m_Dpi_fit_1->SetFillStyle(3353);
              m_Dpi_fit_1->DrawNormalized("histcsame",m_Dpi_fit_1->Integral()/m_Dpi_fit->Integral());
              m_Dpi_fit_2->SetLineColor(kGreen+3);
              m_Dpi_fit_2->SetLineWidth(2);
-             m_Dpi_fit_2->SetFillColor(kGreen+3);
-             m_Dpi_fit_2->SetFillStyle(3353);
+             //m_Dpi_fit_2->SetFillColor(kGreen+3);
+             //m_Dpi_fit_2->SetFillStyle(3353);
              m_Dpi_fit_2->DrawNormalized("histcsame",m_Dpi_fit_2->Integral()/m_Dpi_fit->Integral());
              m_Dpi_fit_3->SetLineColor(kMagenta+3);
              m_Dpi_fit_3->SetLineWidth(2);
-             m_Dpi_fit_3->SetFillColor(kMagenta+3);
-             m_Dpi_fit_3->SetFillStyle(3353);
+             //m_Dpi_fit_3->SetFillColor(kMagenta+3);
+             //m_Dpi_fit_3->SetFillStyle(3353);
              m_Dpi_fit_3->DrawNormalized("histcsame",m_Dpi_fit_3->Integral()/m_Dpi_fit->Integral());
              m_Dpi_fit_4->SetLineColor(kBlack);
              m_Dpi_fit_4->SetLineWidth(3);
@@ -791,18 +797,18 @@ int ampFit(int step=0){
             m_Kspi_fit_5->DrawNormalized("histcsame",m_Kspi_fit_5->Integral()/m_Kspi_fit->Integral());
              m_Kspi_fit_1->SetLineColor(kRed+1);
              m_Kspi_fit_1->SetLineWidth(2);
-             m_Kspi_fit_1->SetFillColor(kRed+1);
-             m_Kspi_fit_1->SetFillStyle(3353);
+             //m_Kspi_fit_1->SetFillColor(kRed+1);
+             //m_Kspi_fit_1->SetFillStyle(3353);
              m_Kspi_fit_1->DrawNormalized("histcsame",m_Kspi_fit_1->Integral()/m_Kspi_fit->Integral());
              m_Kspi_fit_2->SetLineColor(kGreen+3);
              m_Kspi_fit_2->SetLineWidth(2);
-             m_Kspi_fit_2->SetFillColor(kGreen+3);
-             m_Kspi_fit_2->SetFillStyle(3353);
+             //m_Kspi_fit_2->SetFillColor(kGreen+3);
+             //m_Kspi_fit_2->SetFillStyle(3353);
              m_Kspi_fit_2->DrawNormalized("histcsame",m_Kspi_fit_2->Integral()/m_Kspi_fit->Integral());
              m_Kspi_fit_3->SetLineColor(kMagenta+3);
              m_Kspi_fit_3->SetLineWidth(2);
-             m_Kspi_fit_3->SetFillColor(kMagenta+3);
-             m_Kspi_fit_3->SetFillStyle(3353);
+             //m_Kspi_fit_3->SetFillColor(kMagenta+3);
+             //m_Kspi_fit_3->SetFillStyle(3353);
              m_Kspi_fit_3->DrawNormalized("histcsame",m_Kspi_fit_3->Integral()/m_Kspi_fit->Integral());
              m_Kspi_fit_4->SetLineColor(kBlack);
              m_Kspi_fit_4->SetLineWidth(3);
@@ -816,6 +822,21 @@ int ampFit(int step=0){
     
             //getChi2(eventList,eventListMC);
     }
+    
+    if(makeNewIntegratorFile){
+        DalitzEventList eventListToy, eventListToyCut;
+        SignalGenerator sg(pat,&fas);    
+        sg.FillEventList(eventListToy, 500000);
+        
+        for(int i = 0; i < eventListToy.size(); i++){
+            if(abs(sqrt(eventListToy[i].s(2,3))-1869.61)<20)continue;
+            if(abs(sqrt(eventListToy[i].s(2,3))-1968.30)<20)continue;
+            eventListToyCut.Add(eventListToy[i]);
+        }
+        cout << "Generated " << eventListToyCut.size() << " events inside selected phasespace region" << endl;
+        eventListToyCut.saveAsNtuple("SignalIntegrationEvents.root");
+    }
+    
     return 0;
 }
 
@@ -831,7 +852,6 @@ void makeIntegratorFile(){
     NamedParameter<int>  IntegratorEvents("IntegratorEvents", 300000);
     
     DalitzEventList eventListPhsp,eventList,eventList_cut;
-    
     eventListPhsp.generatePhaseSpaceEvents(100000,pat);
     
     FitAmpIncoherentSum fas((DalitzEventPattern)pat);
@@ -842,13 +862,38 @@ void makeIntegratorFile(){
     SignalGenerator sg(pat,&fas);    
     sg.FillEventList(eventList, IntegratorEvents);
 
-    for(int i = 0; i < eventList.size(); i++){
-            if(abs(sqrt(eventList[i].s(2,3))-1968.30)<30)continue;
-            eventList_cut.Add(eventList[i]);
-    }
-
-    cout << "Generated " << eventList_cut.size() << " events inside selected phasespace region" << endl;
+    double nBins = 50;
+    TH1D* m_DKs = new TH1D("m_DKs","; m(DK_{s}) [GeV]; Yield",nBins,2,5.5);
+    TH1D* m_Dpi = new TH1D("m_Dpi","; m(D#pi) [GeV]; Yield",nBins,1,5.5);
+    TH1D* m_Kspi = new TH1D("m_Kspi","; m(K_{s}#pi) [GeV]; Yield",nBins,0,4);
     
+    for(int i = 0; i < eventList.size(); i++){
+            if(abs(sqrt(eventList[i].s(2,3))-1869.61)<20)continue;
+            if(abs(sqrt(eventList[i].s(2,3))-1968.30)<20)continue;
+            eventList_cut.Add(eventList[i]);
+        
+            m_DKs->Fill(sqrt(eventList[i].s(1,2)/(GeV*GeV)),eventList[i].getWeight());
+            m_Dpi->Fill(sqrt(eventList[i].s(1,3)/(GeV*GeV)),eventList[i].getWeight());
+            m_Kspi->Fill(sqrt(eventList[i].s(2,3)/(GeV*GeV)),eventList[i].getWeight());
+    }
+    cout << "Generated " << eventList_cut.size() << " events inside selected phasespace region" << endl;
+
+    TCanvas* c = new TCanvas();
+
+    m_DKs->SetMinimum(0.01);
+    m_DKs->DrawNormalized("e1",1);
+    c->Print("m_DKs.eps");
+
+    m_Dpi->SetMinimum(0.01);
+    m_Dpi->SetLineColor(kBlack);
+    m_Dpi->DrawNormalized("e1",1);
+    c->Print("m_Dpi.eps");
+
+    m_Kspi->SetMinimum(0.0001);
+    m_Kspi->SetLineColor(kBlack);
+    m_Kspi->DrawNormalized("e1",1);
+    c->Print("m_Kspi.eps");
+
     eventList_cut.saveAsNtuple(IntegratorEventFile);
     return;
 }

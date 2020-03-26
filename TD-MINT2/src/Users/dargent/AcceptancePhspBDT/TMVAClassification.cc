@@ -24,7 +24,7 @@
 #include "TMVA/Tools.h"
 #endif
 
-void TMVAClassification( TString myMethodList = "BDTG", TString run = "run1", TString trigger = "t0")
+void TMVAClassification( TString myMethodList = "BDTG", TString run = "all", TString trigger = "all")
 {
    TChain* background = new TChain("MCDecayTree");
    background->Add("GenMC.root");
@@ -109,7 +109,7 @@ void TMVAClassification( TString myMethodList = "BDTG", TString run = "run1", TS
    factory->AddBackgroundTree( background, backgroundWeight );
    factory->PrepareTrainingAndTestTree( mycuts, mycutb, "nTrain_Signal=1800:nTrain_Background=100000:nTest_Background=100000:SplitMode=Random:NormMode=NumEvents:!V" );
 
-   //factory->SetSignalWeightExpression("weight");
+   factory->SetSignalWeightExpression("weight");
    // ---- Book MVA methods
 
    // Boosted Decision Trees

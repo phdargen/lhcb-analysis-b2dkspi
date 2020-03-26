@@ -67,6 +67,7 @@ void TMVAClassificationApplication(TString decay = "Signal", TString dataType = 
 
    else if(decay == "Signal" && dataType == "MC"){ 	  
 	theTree->Add("Preselected/MC_b2dkspi_DD_12.root");
+    theTree->Add("Preselected/MC_b2dkspi_LL_12.root");
 	outFileName += "signal_mc.root";
    }
    else {
