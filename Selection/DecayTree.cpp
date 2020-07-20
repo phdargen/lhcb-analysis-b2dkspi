@@ -14,13 +14,13 @@ using namespace std;
 TTree* DecayTree::GetInputTree(){
     
     TString s2;
-    if(_decay==Decay::LL)s2="LL";
-    else s2 = "DD";
+    if(_decay==Decay::B2DKspi_LL)s2="B2DKspi_LL";
+    else if(_decay==Decay::B2DKspi_DD) s2 = "B2DKspi_DD";
+    else if(_decay==Decay::B2DKsK_LL) s2 = "B2DKsK_LL";
+    else if(_decay==Decay::B2DKsK_DD) s2 = "B2DKsK_DD";
     
-    TString tupleName;
-    //if(_data==DataType::data) tupleName = "DecayTree";                                                                                                   
-    //else                                                                                                                                                 
-    tupleName = "B2DKspi_"+s2+"_Tuple/DecayTree";
+    TString tupleName;                                                                                                                                       
+    tupleName = s2+"_Tuple/DecayTree";
     TChain* chain = new TChain(tupleName);
     
     TString fileName = _inFileLoc;
@@ -32,198 +32,302 @@ TTree* DecayTree::GetInputTree(){
         fileName+= "Data/";
         fileName+= str_year; 
         if(_year==18){
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00104615/0000/00104615_00000001_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00104615/0000/00104615_00000001_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00104615/0000/00104615_00000002_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00104615/0000/00104615_00000003_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00104615/0000/00104615_00000004_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00104615/0000/00104615_00000005_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00104615/0000/00104615_00000006_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00104615/0000/00104615_00000007_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00104615/0000/00104615_00000008_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00104615/0000/00104615_00000009_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00104615/0000/00104615_00000010_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00104615/0000/00104615_00000011_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00104615/0000/00104615_00000012_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00104615/0000/00104615_00000013_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00104615/0000/00104615_00000014_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00104615/0000/00104615_00000015_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00104615/0000/00104615_00000016_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00104615/0000/00104615_00000017_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00104615/0000/00104615_00000018_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00104615/0000/00104615_00000019_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00104615/0000/00104615_00000020_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00104615/0000/00104615_00000021_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00104617/0000/00104617_00000001_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00104617/0000/00104617_00000002_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00104617/0000/00104617_00000003_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00104617/0000/00104617_00000004_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00104617/0000/00104617_00000005_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00104617/0000/00104617_00000006_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00104617/0000/00104617_00000007_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00104617/0000/00104617_00000008_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00104617/0000/00104617_00000009_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00104617/0000/00104617_00000010_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00104617/0000/00104617_00000011_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00104617/0000/00104617_00000012_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00104617/0000/00104617_00000013_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00104617/0000/00104617_00000014_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00104617/0000/00104617_00000015_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00104617/0000/00104617_00000016_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00104617/0000/00104617_00000017_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00104617/0000/00104617_00000018_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00104617/0000/00104617_00000019_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00111544/0000/00111544_00000001_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00111544/0000/00111544_00000002_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00111544/0000/00111544_00000003_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00111544/0000/00111544_00000004_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00111544/0000/00111544_00000005_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00111544/0000/00111544_00000006_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00111544/0000/00111544_00000007_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00111544/0000/00111544_00000008_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00111544/0000/00111544_00000009_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00111544/0000/00111544_00000010_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00111544/0000/00111544_00000011_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00111544/0000/00111544_00000012_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00111544/0000/00111544_00000013_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00111544/0000/00111544_00000014_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00111544/0000/00111544_00000015_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00111544/0000/00111544_00000016_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00111544/0000/00111544_00000017_1.b02dks0pi_dvntuple.root");
+
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00111546/0000/00111546_00000001_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00111546/0000/00111546_00000002_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00111546/0000/00111546_00000003_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00111546/0000/00111546_00000004_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00111546/0000/00111546_00000005_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00111546/0000/00111546_00000006_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00111546/0000/00111546_00000007_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00111546/0000/00111546_00000008_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00111546/0000/00111546_00000009_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00111546/0000/00111546_00000010_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00111546/0000/00111546_00000011_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00111546/0000/00111546_00000012_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00111546/0000/00111546_00000013_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00111546/0000/00111546_00000014_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00111546/0000/00111546_00000015_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision18/B02DKS0PI_DVNTUPLE.ROOT/00111546/0000/00111546_00000016_1.b02dks0pi_dvntuple.root");
             }
         if(_year==17){
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00104619/0000/00104619_00000001_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00104619/0000/00104619_00000002_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00104619/0000/00104619_00000003_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00104619/0000/00104619_00000004_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00104619/0000/00104619_00000005_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00104619/0000/00104619_00000006_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00104619/0000/00104619_00000007_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00104619/0000/00104619_00000008_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00104619/0000/00104619_00000009_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00104619/0000/00104619_00000010_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00104619/0000/00104619_00000011_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00104619/0000/00104619_00000012_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00104619/0000/00104619_00000013_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00104619/0000/00104619_00000014_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00104619/0000/00104619_00000015_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00104619/0000/00104619_00000016_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00104619/0000/00104619_00000017_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00104621/0000/00104621_00000001_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00104621/0000/00104621_00000002_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00104621/0000/00104621_00000003_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00104621/0000/00104621_00000004_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00104621/0000/00104621_00000005_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00104621/0000/00104621_00000006_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00104621/0000/00104621_00000007_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00104621/0000/00104621_00000008_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00104621/0000/00104621_00000009_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00104621/0000/00104621_00000010_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00104621/0000/00104621_00000011_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00104621/0000/00104621_00000012_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00104621/0000/00104621_00000013_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00104621/0000/00104621_00000014_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00104621/0000/00104621_00000015_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00104621/0000/00104621_00000016_1.b02dks0pi_dvntuple.root");
-        }
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00111548/0000/00111548_00000001_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00111548/0000/00111548_00000002_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00111548/0000/00111548_00000003_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00111548/0000/00111548_00000004_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00111548/0000/00111548_00000005_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00111548/0000/00111548_00000006_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00111548/0000/00111548_00000007_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00111548/0000/00111548_00000008_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00111548/0000/00111548_00000009_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00111548/0000/00111548_00000010_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00111548/0000/00111548_00000011_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00111548/0000/00111548_00000012_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00111548/0000/00111548_00000013_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00111548/0000/00111548_00000014_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00111548/0000/00111548_00000015_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00111548/0000/00111548_00000016_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00111548/0000/00111548_00000017_1.b02dks0pi_dvntuple.root");
+
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00111550/0000/00111550_00000001_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00111550/0000/00111550_00000002_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00111550/0000/00111550_00000003_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00111550/0000/00111550_00000004_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00111550/0000/00111550_00000005_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00111550/0000/00111550_00000006_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00111550/0000/00111550_00000007_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00111550/0000/00111550_00000008_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00111550/0000/00111550_00000009_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00111550/0000/00111550_00000010_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00111550/0000/00111550_00000011_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00111550/0000/00111550_00000012_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00111550/0000/00111550_00000013_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00111550/0000/00111550_00000014_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00111550/0000/00111550_00000015_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00111550/0000/00111550_00000016_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00111550/0000/00111550_00000017_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision17/B02DKS0PI_DVNTUPLE.ROOT/00111550/0000/00111550_00000018_1.b02dks0pi_dvntuple.root");
+         }
 
         if(_year==16){
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00104623/0000/00104623_00000001_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00104623/0000/00104623_00000002_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00104623/0000/00104623_00000003_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00104623/0000/00104623_00000004_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00104623/0000/00104623_00000005_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00104623/0000/00104623_00000006_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00104623/0000/00104623_00000007_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00104623/0000/00104623_00000008_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00104623/0000/00104623_00000009_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00104623/0000/00104623_00000010_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00104623/0000/00104623_00000011_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00104623/0000/00104623_00000012_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00104623/0000/00104623_00000013_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00104623/0000/00104623_00000014_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00104623/0000/00104623_00000015_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00104623/0000/00104623_00000016_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00104623/0000/00104623_00000017_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00104625/0000/00104625_00000001_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00104625/0000/00104625_00000002_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00104625/0000/00104625_00000003_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00104625/0000/00104625_00000004_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00104625/0000/00104625_00000005_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00104625/0000/00104625_00000006_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00104625/0000/00104625_00000007_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00104625/0000/00104625_00000008_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00104625/0000/00104625_00000009_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00104625/0000/00104625_00000010_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00104625/0000/00104625_00000011_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00104625/0000/00104625_00000012_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00104625/0000/00104625_00000013_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00104625/0000/00104625_00000014_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00104625/0000/00104625_00000015_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00104625/0000/00104625_00000016_1.b02dks0pi_dvntuple.root");
+            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111552/0000/00111552_00000001_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111552/0000/00111552_00000002_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111552/0000/00111552_00000003_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111552/0000/00111552_00000004_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111552/0000/00111552_00000005_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111552/0000/00111552_00000006_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111552/0000/00111552_00000007_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111552/0000/00111552_00000008_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111552/0000/00111552_00000009_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111552/0000/00111552_00000010_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111552/0000/00111552_00000011_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111552/0000/00111552_00000012_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111552/0000/00111552_00000013_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111552/0000/00111552_00000014_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111552/0000/00111552_00000015_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111552/0000/00111552_00000016_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111552/0000/00111552_00000017_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111552/0000/00111552_00000018_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111552/0000/00111552_00000019_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111552/0000/00111552_00000020_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111552/0000/00111552_00000021_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111552/0000/00111552_00000022_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111552/0000/00111552_00000023_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111552/0000/00111552_00000024_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111552/0000/00111552_00000025_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111552/0000/00111552_00000026_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111552/0000/00111552_00000027_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111552/0000/00111552_00000028_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111552/0000/00111552_00000029_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111552/0000/00111552_00000030_1.b02dks0pi_dvntuple.root");
+
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111554/0000/00111554_00000001_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111554/0000/00111554_00000002_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111554/0000/00111554_00000003_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111554/0000/00111554_00000004_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111554/0000/00111554_00000005_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111554/0000/00111554_00000006_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111554/0000/00111554_00000007_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111554/0000/00111554_00000008_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111554/0000/00111554_00000009_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111554/0000/00111554_00000010_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111554/0000/00111554_00000011_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111554/0000/00111554_00000012_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111554/0000/00111554_00000013_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111554/0000/00111554_00000014_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111554/0000/00111554_00000015_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111554/0000/00111554_00000016_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111554/0000/00111554_00000017_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111554/0000/00111554_00000018_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111554/0000/00111554_00000019_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111554/0000/00111554_00000020_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111554/0000/00111554_00000021_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111554/0000/00111554_00000022_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111554/0000/00111554_00000023_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111554/0000/00111554_00000024_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111554/0000/00111554_00000025_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111554/0000/00111554_00000026_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111554/0000/00111554_00000027_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111554/0000/00111554_00000028_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111554/0000/00111554_00000029_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111554/0000/00111554_00000030_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111554/0000/00111554_00000031_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision16/B02DKS0PI_DVNTUPLE.ROOT/00111554/0000/00111554_00000032_1.b02dks0pi_dvntuple.root");
+
         }
 
         if(_year==15){
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision15/B02DKS0PI_DVNTUPLE.ROOT/00104627/0000/00104627_00000001_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision15/B02DKS0PI_DVNTUPLE.ROOT/00104627/0000/00104627_00000002_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision15/B02DKS0PI_DVNTUPLE.ROOT/00104627/0000/00104627_00000003_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision15/B02DKS0PI_DVNTUPLE.ROOT/00104627/0000/00104627_00000004_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision15/B02DKS0PI_DVNTUPLE.ROOT/00104627/0000/00104627_00000005_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision15/B02DKS0PI_DVNTUPLE.ROOT/00104627/0000/00104627_00000006_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision15/B02DKS0PI_DVNTUPLE.ROOT/00104627/0000/00104627_00000007_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision15/B02DKS0PI_DVNTUPLE.ROOT/00104627/0000/00104627_00000008_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision15/B02DKS0PI_DVNTUPLE.ROOT/00104629/0000/00104629_00000001_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision15/B02DKS0PI_DVNTUPLE.ROOT/00104629/0000/00104629_00000002_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision15/B02DKS0PI_DVNTUPLE.ROOT/00104629/0000/00104629_00000003_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision15/B02DKS0PI_DVNTUPLE.ROOT/00104629/0000/00104629_00000004_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision15/B02DKS0PI_DVNTUPLE.ROOT/00104629/0000/00104629_00000005_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision15/B02DKS0PI_DVNTUPLE.ROOT/00104629/0000/00104629_00000006_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision15/B02DKS0PI_DVNTUPLE.ROOT/00104629/0000/00104629_00000007_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision15/B02DKS0PI_DVNTUPLE.ROOT/00104629/0000/00104629_00000008_1.b02dks0pi_dvntuple.root");
+            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision15/B02DKS0PI_DVNTUPLE.ROOT/00111556/0000/00111556_00000001_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision15/B02DKS0PI_DVNTUPLE.ROOT/00111556/0000/00111556_00000002_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision15/B02DKS0PI_DVNTUPLE.ROOT/00111556/0000/00111556_00000003_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision15/B02DKS0PI_DVNTUPLE.ROOT/00111556/0000/00111556_00000004_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision15/B02DKS0PI_DVNTUPLE.ROOT/00111556/0000/00111556_00000005_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision15/B02DKS0PI_DVNTUPLE.ROOT/00111556/0000/00111556_00000006_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision15/B02DKS0PI_DVNTUPLE.ROOT/00111556/0000/00111556_00000007_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision15/B02DKS0PI_DVNTUPLE.ROOT/00111556/0000/00111556_00000008_1.b02dks0pi_dvntuple.root");
+
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision15/B02DKS0PI_DVNTUPLE.ROOT/00111558/0000/00111558_00000001_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision15/B02DKS0PI_DVNTUPLE.ROOT/00111558/0000/00111558_00000002_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision15/B02DKS0PI_DVNTUPLE.ROOT/00111558/0000/00111558_00000003_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision15/B02DKS0PI_DVNTUPLE.ROOT/00111558/0000/00111558_00000004_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision15/B02DKS0PI_DVNTUPLE.ROOT/00111558/0000/00111558_00000005_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision15/B02DKS0PI_DVNTUPLE.ROOT/00111558/0000/00111558_00000006_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision15/B02DKS0PI_DVNTUPLE.ROOT/00111558/0000/00111558_00000007_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision15/B02DKS0PI_DVNTUPLE.ROOT/00111558/0000/00111558_00000008_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision15/B02DKS0PI_DVNTUPLE.ROOT/00111558/0000/00111558_00000009_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision15/B02DKS0PI_DVNTUPLE.ROOT/00111558/0000/00111558_00000010_1.b02dks0pi_dvntuple.root");
         }
 
         if(_year==12){
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00104631/0000/00104631_00000001_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00104631/0000/00104631_00000002_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00104631/0000/00104631_00000003_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00104631/0000/00104631_00000004_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00104631/0000/00104631_00000005_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00104631/0000/00104631_00000006_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00104631/0000/00104631_00000007_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00104631/0000/00104631_00000008_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00104631/0000/00104631_00000009_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00104631/0000/00104631_00000010_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00104631/0000/00104631_00000011_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00104633/0000/00104633_00000001_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00104633/0000/00104633_00000002_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00104633/0000/00104633_00000003_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00104633/0000/00104633_00000004_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00104633/0000/00104633_00000005_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00104633/0000/00104633_00000006_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00104633/0000/00104633_00000007_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00104633/0000/00104633_00000008_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00104633/0000/00104633_00000009_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00104633/0000/00104633_00000010_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00104633/0000/00104633_00000011_1.b02dks0pi_dvntuple.root");
+            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00111560/0000/00111560_00000001_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00111560/0000/00111560_00000002_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00111560/0000/00111560_00000003_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00111560/0000/00111560_00000004_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00111560/0000/00111560_00000005_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00111560/0000/00111560_00000006_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00111560/0000/00111560_00000007_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00111560/0000/00111560_00000008_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00111560/0000/00111560_00000009_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00111560/0000/00111560_00000010_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00111560/0000/00111560_00000011_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00111560/0000/00111560_00000012_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00111560/0000/00111560_00000013_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00111560/0000/00111560_00000014_1.b02dks0pi_dvntuple.root");
+
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00111562/0000/00111562_00000001_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00111562/0000/00111562_00000002_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00111562/0000/00111562_00000003_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00111562/0000/00111562_00000004_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00111562/0000/00111562_00000005_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00111562/0000/00111562_00000006_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00111562/0000/00111562_00000007_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00111562/0000/00111562_00000008_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00111562/0000/00111562_00000009_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00111562/0000/00111562_00000010_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00111562/0000/00111562_00000011_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00111562/0000/00111562_00000012_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00111562/0000/00111562_00000013_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision12/B02DKS0PI_DVNTUPLE.ROOT/00111562/0000/00111562_00000014_1.b02dks0pi_dvntuple.root");
+
         }
 
         if(_year==11){
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision11/B02DKS0PI_DVNTUPLE.ROOT/00104635/0000/00104635_00000001_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision11/B02DKS0PI_DVNTUPLE.ROOT/00104635/0000/00104635_00000002_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision11/B02DKS0PI_DVNTUPLE.ROOT/00104635/0000/00104635_00000003_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision11/B02DKS0PI_DVNTUPLE.ROOT/00104635/0000/00104635_00000004_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision11/B02DKS0PI_DVNTUPLE.ROOT/00104635/0000/00104635_00000005_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision11/B02DKS0PI_DVNTUPLE.ROOT/00104635/0000/00104635_00000006_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision11/B02DKS0PI_DVNTUPLE.ROOT/00104635/0000/00104635_00000007_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision11/B02DKS0PI_DVNTUPLE.ROOT/00104635/0000/00104635_00000008_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision11/B02DKS0PI_DVNTUPLE.ROOT/00104635/0000/00104635_00000009_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision11/B02DKS0PI_DVNTUPLE.ROOT/00104637/0000/00104637_00000001_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision11/B02DKS0PI_DVNTUPLE.ROOT/00104637/0000/00104637_00000002_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision11/B02DKS0PI_DVNTUPLE.ROOT/00104637/0000/00104637_00000003_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision11/B02DKS0PI_DVNTUPLE.ROOT/00104637/0000/00104637_00000004_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision11/B02DKS0PI_DVNTUPLE.ROOT/00104637/0000/00104637_00000005_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision11/B02DKS0PI_DVNTUPLE.ROOT/00104637/0000/00104637_00000006_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision11/B02DKS0PI_DVNTUPLE.ROOT/00104637/0000/00104637_00000007_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision11/B02DKS0PI_DVNTUPLE.ROOT/00104637/0000/00104637_00000008_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision11/B02DKS0PI_DVNTUPLE.ROOT/00104637/0000/00104637_00000009_1.b02dks0pi_dvntuple.root");
-            chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision11/B02DKS0PI_DVNTUPLE.ROOT/00104637/0000/00104637_00000010_1.b02dks0pi_dvntuple.root");
+ chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision11/B02DKS0PI_DVNTUPLE.ROOT/00111564/0000/00111564_00000001_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision11/B02DKS0PI_DVNTUPLE.ROOT/00111564/0000/00111564_00000002_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision11/B02DKS0PI_DVNTUPLE.ROOT/00111564/0000/00111564_00000003_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision11/B02DKS0PI_DVNTUPLE.ROOT/00111564/0000/00111564_00000004_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision11/B02DKS0PI_DVNTUPLE.ROOT/00111564/0000/00111564_00000005_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision11/B02DKS0PI_DVNTUPLE.ROOT/00111564/0000/00111564_00000006_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision11/B02DKS0PI_DVNTUPLE.ROOT/00111564/0000/00111564_00000007_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision11/B02DKS0PI_DVNTUPLE.ROOT/00111564/0000/00111564_00000008_1.b02dks0pi_dvntuple.root");
+
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision11/B02DKS0PI_DVNTUPLE.ROOT/00111566/0000/00111566_00000001_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision11/B02DKS0PI_DVNTUPLE.ROOT/00111566/0000/00111566_00000003_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision11/B02DKS0PI_DVNTUPLE.ROOT/00111566/0000/00111566_00000004_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision11/B02DKS0PI_DVNTUPLE.ROOT/00111566/0000/00111566_00000005_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision11/B02DKS0PI_DVNTUPLE.ROOT/00111566/0000/00111566_00000006_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision11/B02DKS0PI_DVNTUPLE.ROOT/00111566/0000/00111566_00000007_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision11/B02DKS0PI_DVNTUPLE.ROOT/00111566/0000/00111566_00000008_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision11/B02DKS0PI_DVNTUPLE.ROOT/00111566/0000/00111566_00000009_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/LHCb/Collision11/B02DKS0PI_DVNTUPLE.ROOT/00111566/0000/00111566_00000010_1.b02dks0pi_dvntuple.root");
+
         }
 
     }
     else {
         fileName+= "MC/";
+        fileName+= str_year; 
+        if(_mcEventType == McEventType::BdDKspi){
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/MC/2012/B02DKS0PI_DVNTUPLE.ROOT/00111586/0000/00111586_00000001_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/MC/2012/B02DKS0PI_DVNTUPLE.ROOT/00111586/0000/00111586_00000002_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/MC/2012/B02DKS0PI_DVNTUPLE.ROOT/00111586/0000/00111586_00000003_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/MC/2012/B02DKS0PI_DVNTUPLE.ROOT/00111586/0000/00111586_00000004_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/MC/2012/B02DKS0PI_DVNTUPLE.ROOT/00111586/0000/00111586_00000005_1.b02dks0pi_dvntuple.root");
+
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/MC/2012/B02DKS0PI_DVNTUPLE.ROOT/00111584/0000/00111584_00000001_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/MC/2012/B02DKS0PI_DVNTUPLE.ROOT/00111584/0000/00111584_00000002_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/MC/2012/B02DKS0PI_DVNTUPLE.ROOT/00111584/0000/00111584_00000003_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/MC/2012/B02DKS0PI_DVNTUPLE.ROOT/00111584/0000/00111584_00000004_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/MC/2012/B02DKS0PI_DVNTUPLE.ROOT/00111584/0000/00111584_00000005_1.b02dks0pi_dvntuple.root");
+        }
+
+        if(_mcEventType == McEventType::BsDKsK){
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/MC/2012/B02DKS0PI_DVNTUPLE.ROOT/00111578/0000/00111578_00000001_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/MC/2012/B02DKS0PI_DVNTUPLE.ROOT/00111578/0000/00111578_00000002_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/MC/2012/B02DKS0PI_DVNTUPLE.ROOT/00111578/0000/00111578_00000003_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/MC/2012/B02DKS0PI_DVNTUPLE.ROOT/00111578/0000/00111578_00000004_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/MC/2012/B02DKS0PI_DVNTUPLE.ROOT/00111578/0000/00111578_00000005_1.b02dks0pi_dvntuple.root");
+
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/MC/2012/B02DKS0PI_DVNTUPLE.ROOT/00111576/0000/00111576_00000001_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/MC/2012/B02DKS0PI_DVNTUPLE.ROOT/00111576/0000/00111576_00000002_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/MC/2012/B02DKS0PI_DVNTUPLE.ROOT/00111576/0000/00111576_00000003_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/MC/2012/B02DKS0PI_DVNTUPLE.ROOT/00111576/0000/00111576_00000004_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/MC/2012/B02DKS0PI_DVNTUPLE.ROOT/00111576/0000/00111576_00000005_1.b02dks0pi_dvntuple.root");
+        }
+        if(_mcEventType == McEventType::BsDstKsK){
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/MC/2012/B02DKS0PI_DVNTUPLE.ROOT/00111568/0000/00111568_00000001_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/MC/2012/B02DKS0PI_DVNTUPLE.ROOT/00111568/0000/00111568_00000002_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/MC/2012/B02DKS0PI_DVNTUPLE.ROOT/00111568/0000/00111568_00000003_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/MC/2012/B02DKS0PI_DVNTUPLE.ROOT/00111568/0000/00111568_00000004_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/MC/2012/B02DKS0PI_DVNTUPLE.ROOT/00111568/0000/00111568_00000005_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/MC/2012/B02DKS0PI_DVNTUPLE.ROOT/00111568/0000/00111568_00000006_1.b02dks0pi_dvntuple.root");
+
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/MC/2012/B02DKS0PI_DVNTUPLE.ROOT/00111570/0000/00111570_00000001_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/MC/2012/B02DKS0PI_DVNTUPLE.ROOT/00111570/0000/00111570_00000002_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/MC/2012/B02DKS0PI_DVNTUPLE.ROOT/00111570/0000/00111570_00000003_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/MC/2012/B02DKS0PI_DVNTUPLE.ROOT/00111570/0000/00111570_00000004_1.b02dks0pi_dvntuple.root");
+        }
+        if(_mcEventType == McEventType::BdDstKspi){
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/MC/2012/B02DKS0PI_DVNTUPLE.ROOT/00111582/0000/00111582_00000001_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/MC/2012/B02DKS0PI_DVNTUPLE.ROOT/00111582/0000/00111582_00000002_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/MC/2012/B02DKS0PI_DVNTUPLE.ROOT/00111582/0000/00111582_00000003_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/MC/2012/B02DKS0PI_DVNTUPLE.ROOT/00111582/0000/00111582_00000004_1.b02dks0pi_dvntuple.root");
+
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/MC/2012/B02DKS0PI_DVNTUPLE.ROOT/00111580/0000/00111580_00000001_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/MC/2012/B02DKS0PI_DVNTUPLE.ROOT/00111580/0000/00111580_00000002_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/MC/2012/B02DKS0PI_DVNTUPLE.ROOT/00111580/0000/00111580_00000003_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/MC/2012/B02DKS0PI_DVNTUPLE.ROOT/00111580/0000/00111580_00000004_1.b02dks0pi_dvntuple.root");
+        }
+        if(_mcEventType == McEventType::BsDstKspi){
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/MC/2012/B02DKS0PI_DVNTUPLE.ROOT/00111572/0000/00111572_00000001_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/MC/2012/B02DKS0PI_DVNTUPLE.ROOT/00111572/0000/00111572_00000002_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/MC/2012/B02DKS0PI_DVNTUPLE.ROOT/00111572/0000/00111572_00000003_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/MC/2012/B02DKS0PI_DVNTUPLE.ROOT/00111572/0000/00111572_00000004_1.b02dks0pi_dvntuple.root");
+
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/MC/2012/B02DKS0PI_DVNTUPLE.ROOT/00111574/0000/00111574_00000001_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/MC/2012/B02DKS0PI_DVNTUPLE.ROOT/00111574/0000/00111574_00000002_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/MC/2012/B02DKS0PI_DVNTUPLE.ROOT/00111574/0000/00111574_00000003_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/MC/2012/B02DKS0PI_DVNTUPLE.ROOT/00111574/0000/00111574_00000004_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/MC/2012/B02DKS0PI_DVNTUPLE.ROOT/00111574/0000/00111574_00000005_1.b02dks0pi_dvntuple.root");
+chain->Add("root://eoslhcb.cern.ch//eos/lhcb/grid/prod/lhcb/MC/2012/B02DKS0PI_DVNTUPLE.ROOT/00111574/0000/00111574_00000006_1.b02dks0pi_dvntuple.root");
+        }
+
         //fileName+= "bkg/";
         //fileName+= str_year; 
         //fileName+= "U";
-        fileName+= "*.root"; 
+        //fileName+= "*.root"; 
         //fileName+= "/bkg_bs2dstarkspi.root"; 
         
-        cout << "Using the files: " << endl;
-        cout << fileName << endl << endl;
-        chain->Add(fileName);
+        //cout << "Using the files: " << endl;
+        //cout << fileName << endl << endl;
+        //chain->Add(fileName);
     }
 
     if(chain->GetEntries()==0){
@@ -234,16 +338,25 @@ TTree* DecayTree::GetInputTree(){
     return (TTree*)chain;
 }
 
-DecayTree::DecayTree(Decay::Type decay, Year::Type year, DataType::Type dataType, TString polarity, TString inFileLoc, TString outFileLoc ) : 
-fChain(0), _decay(decay), _year(year), _data(dataType), _polarity(polarity), _inFileLoc(inFileLoc), _outFileLoc(outFileLoc)
+DecayTree::DecayTree(Decay::Type decay, Year::Type year, DataType::Type dataType, TString polarity, TString inFileLoc, TString outFileLoc, McEventType::Type mcEventType ) : 
+fChain(0), _decay(decay), _year(year), _data(dataType), _polarity(polarity), _inFileLoc(inFileLoc), _outFileLoc(outFileLoc), _mcEventType(mcEventType)
 {    
     cout << "Requested to process files with options: " << endl << endl;
     
-    TString s1,s2,s3,s4;
+    TString s1,s2,s3,s4,s5;
     if(_data==DataType::data)s1="Data";
     else s1 = "MC";
-    if(_decay==Decay::LL)s2="LL";
-    else s2 = "DD";
+    if(_decay==Decay::B2DKspi_LL)s2="B2DKspi_LL";
+    else if(_decay==Decay::B2DKspi_DD) s2 = "B2DKspi_DD";
+    else if(_decay==Decay::B2DKsK_LL) s2 = "B2DKsK_LL";
+    else if(_decay==Decay::B2DKsK_DD) s2 = "B2DKsK_DD";
+
+    if(_mcEventType==McEventType::BdDKspi) s5= "BdDKspi";
+    if(_mcEventType==McEventType::BsDKsK) s5= "BsDKsK";
+    if(_mcEventType==McEventType::BsDstKsK) s5= "BsDstKsK";
+    if(_mcEventType==McEventType::BdDstKspi) s5= "BdDstKspi";
+    if(_mcEventType==McEventType::BsDstKspi) s5= "BsDstKspi";
+
     stringstream ss_year;
     ss_year << _year;
     string str_year = ss_year.str();
@@ -252,11 +365,13 @@ fChain(0), _decay(decay), _year(year), _data(dataType), _polarity(polarity), _in
     cout << "Decay: " << s2 << endl;
     cout << "Year: " << _year << endl;
     cout << "Polarity: " << _polarity  << endl;
-    
+    if(s1=="MC")cout << "McEventType: " << s5  << endl;
+
+
     _outFileName = _outFileLoc;   
     _outFileName += s1;  
     _outFileName += "_";  
-    _outFileName += "b2dkspi_";
+    //_outFileName += "b2dkspi_";
     //_outFileName += "bkg_bs2dstarkspi_";
     _outFileName += s2;   
     _outFileName += "_";  
@@ -357,8 +472,11 @@ inline Bool_t DecayTree::LooseCuts(Long64_t i){
     if(pi2_D_ProbNNpi < 0.1) return false;
     
     b_pi_ProbNNpi->GetEntry(i);
-    if(pi_ProbNNpi < 0.15) return false;
+    if(_decay==Decay::B2DKspi_LL || _decay==Decay::B2DKspi_DD)if(pi_ProbNNpi < 0.15) return false;
     
+    b_pi_ProbNNk->GetEntry(i);
+    if(_decay==Decay::B2DKsK_LL || _decay==Decay::B2DKsK_DD)if(pi_ProbNNk < 0.25) return false;
+
     b_pip_Ks_ProbNNpi->GetEntry(i);
     if(pip_Ks_ProbNNpi < 0.1) return false;
     
@@ -366,7 +484,7 @@ inline Bool_t DecayTree::LooseCuts(Long64_t i){
     if(pim_Ks_ProbNNpi < 0.1) return false;
 
     b_pi_isMuon->GetEntry(i);
-    if(pi_isMuon == true) return false;
+    if(_decay==Decay::B2DKspi_LL || _decay==Decay::B2DKspi_DD)if(pi_isMuon == true) return false;
     
     b_pi_hasRich->GetEntry(i);
     if(pi_hasRich == false) return false;
@@ -402,14 +520,14 @@ inline void DecayTree::set_LorentzVectors(){
         Ks = pip_Ks + pim_Ks;
         D = pi1_D + pi2_D + K_D;
     
-FullDTF_pi1_D=TLorentzVector(B_FullDTF_Dplus_piplus_PX[0],B_FullDTF_Dplus_piplus_PY[0],B_FullDTF_Dplus_piplus_PZ[0],B_FullDTF_Dplus_piplus_PE[0]);  
-FullDTF_pi2_D=TLorentzVector(B_FullDTF_Dplus_piplus_0_PX[0],B_FullDTF_Dplus_piplus_0_PY[0],B_FullDTF_Dplus_piplus_0_PZ[0],B_FullDTF_Dplus_piplus_0_PE[0]);  
-FullDTF_K_D=TLorentzVector(B_FullDTF_Dplus_Kplus_PX[0],B_FullDTF_Dplus_Kplus_PY[0],B_FullDTF_Dplus_Kplus_PZ[0],B_FullDTF_Dplus_Kplus_PE[0]);  
+        FullDTF_pi1_D=TLorentzVector(B_FullDTF_Dplus_piplus_PX[0],B_FullDTF_Dplus_piplus_PY[0],B_FullDTF_Dplus_piplus_PZ[0],B_FullDTF_Dplus_piplus_PE[0]);  
+        FullDTF_pi2_D=TLorentzVector(B_FullDTF_Dplus_piplus_0_PX[0],B_FullDTF_Dplus_piplus_0_PY[0],B_FullDTF_Dplus_piplus_0_PZ[0],B_FullDTF_Dplus_piplus_0_PE[0]);  
+        FullDTF_K_D=TLorentzVector(B_FullDTF_Dplus_Kplus_PX[0],B_FullDTF_Dplus_Kplus_PY[0],B_FullDTF_Dplus_Kplus_PZ[0],B_FullDTF_Dplus_Kplus_PE[0]);  
 
-FullDTF_pi=TLorentzVector(B_FullDTF_piplus_PX[0],B_FullDTF_piplus_PY[0],B_FullDTF_piplus_PZ[0],B_FullDTF_piplus_PE[0]);  
+        FullDTF_pi=TLorentzVector(B_FullDTF_piplus_PX[0],B_FullDTF_piplus_PY[0],B_FullDTF_piplus_PZ[0],B_FullDTF_piplus_PE[0]);  
 
-FullDTF_pip_Ks=TLorentzVector(B_FullDTF_KS0_piplus_PX[0],B_FullDTF_KS0_piplus_PY[0],B_FullDTF_KS0_piplus_PZ[0],B_FullDTF_KS0_piplus_PE[0]);  
-FullDTF_pim_Ks=TLorentzVector(B_FullDTF_KS0_piplus_0_PX[0],B_FullDTF_KS0_piplus_0_PY[0],B_FullDTF_KS0_piplus_0_PZ[0],B_FullDTF_KS0_piplus_0_PE[0]);  
+        FullDTF_pip_Ks=TLorentzVector(B_FullDTF_KS0_piplus_PX[0],B_FullDTF_KS0_piplus_PY[0],B_FullDTF_KS0_piplus_PZ[0],B_FullDTF_KS0_piplus_PE[0]);  
+        FullDTF_pim_Ks=TLorentzVector(B_FullDTF_KS0_piplus_0_PX[0],B_FullDTF_KS0_piplus_0_PY[0],B_FullDTF_KS0_piplus_0_PZ[0],B_FullDTF_KS0_piplus_0_PE[0]);  
 
         FullDTF_D = FullDTF_pi1_D + FullDTF_K_D + FullDTF_pi2_D;
         FullDTF_Ks = FullDTF_pip_Ks + FullDTF_pim_Ks;
@@ -483,7 +601,7 @@ void DecayTree::Loop()
     fChain->SetBranchStatus("*MM*",1);  
     fChain->SetBranchStatus("*TAU*",1); 
     fChain->SetBranchStatus("*TAG*",1);  
-    //fChain->SetBranchStatus("*ptasy_1.00",1);  
+    fChain->SetBranchStatus("*ptasy*",1);  
     
     fChain->SetBranchStatus("*DIRA*",1);  
     fChain->SetBranchStatus("D_DOCA*",1);  
@@ -553,7 +671,7 @@ void DecayTree::Loop()
     int year = (int)_year;
     if(year == 11 || year == 12) run = 1;
     else run = 2;
-    if(_decay==Decay::LL) KsCat = 0;
+    if(_decay==Decay::B2DKspi_LL || _decay==Decay::B2DKsK_LL) KsCat = 0;
     else KsCat = 1;
     summary_tree->Branch("KsCat",&KsCat,"KsCat/I");    
     summary_tree->Branch("year", &year, "year/I");

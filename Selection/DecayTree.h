@@ -17,7 +17,7 @@
 using namespace std;
 
 struct Decay{
-    enum  Type { LL, DD };
+    enum  Type { B2DKspi_LL, B2DKspi_DD, B2DKsK_LL, B2DKsK_DD };
 };
 
 struct Year{
@@ -26,6 +26,10 @@ struct Year{
 
 struct DataType{
     enum  Type { mc, data };
+};
+
+struct McEventType{
+    enum  Type { BdDKspi, BsDKsK, BsDstKsK, BdDstKspi, BsDstKspi };
 };
 
 static const double massKs = 497.611;
@@ -84,9 +88,10 @@ public :
     Decay::Type _decay;
     Year::Type _year;
     DataType::Type _data;
+    McEventType::Type _mcEventType;
     TString _polarity;
     
-    DecayTree(Decay::Type decay, Year::Type year, DataType::Type dataType, TString polarity = "Both", TString inFileLoc = "/auto/data/dargent/B2psiKpipi/", TString outFileLoc = "/auto/data/dargent/B2psiKpipi/" );
+    DecayTree(Decay::Type decay, Year::Type year, DataType::Type dataType, TString polarity = "Both", TString inFileLoc = "/auto/data/dargent/B2psiKpipi/", TString outFileLoc = "/auto/data/dargent/B2psiKpipi/", McEventType::Type mcEventType = McEventType::BdDKspi );
     
     virtual ~DecayTree();
     virtual Int_t    GetEntry(Long64_t entry);
@@ -2858,11 +2863,35 @@ void DecayTree::Init()
    fChain->SetBranchAddress("B_FullDTF_decayLengthErr", B_FullDTF_decayLengthErr, &b_B_FullDTF_decayLengthErr);
    fChain->SetBranchAddress("B_FullDTF_nDOF", B_FullDTF_nDOF, &b_B_FullDTF_nDOF);
    fChain->SetBranchAddress("B_FullDTF_nIter", B_FullDTF_nIter, &b_B_FullDTF_nIter);
+
+
+   if(_decay==Decay::B2DKspi_LL || _decay==Decay::B2DKspi_DD){
    fChain->SetBranchAddress("B_FullDTF_piplus_ID", B_FullDTF_piplus_ID, &b_B_FullDTF_piplus_ID);
    fChain->SetBranchAddress("B_FullDTF_piplus_PE", B_FullDTF_piplus_PE, &b_B_FullDTF_piplus_PE);
    fChain->SetBranchAddress("B_FullDTF_piplus_PX", B_FullDTF_piplus_PX, &b_B_FullDTF_piplus_PX);
    fChain->SetBranchAddress("B_FullDTF_piplus_PY", B_FullDTF_piplus_PY, &b_B_FullDTF_piplus_PY);
    fChain->SetBranchAddress("B_FullDTF_piplus_PZ", B_FullDTF_piplus_PZ, &b_B_FullDTF_piplus_PZ);
+
+   fChain->SetBranchAddress("B_PV_piplus_ID", B_PV_piplus_ID, &b_B_PV_piplus_ID);
+   fChain->SetBranchAddress("B_PV_piplus_PE", B_PV_piplus_PE, &b_B_PV_piplus_PE);
+   fChain->SetBranchAddress("B_PV_piplus_PX", B_PV_piplus_PX, &b_B_PV_piplus_PX);
+   fChain->SetBranchAddress("B_PV_piplus_PY", B_PV_piplus_PY, &b_B_PV_piplus_PY);
+   fChain->SetBranchAddress("B_PV_piplus_PZ", B_PV_piplus_PZ, &b_B_PV_piplus_PZ);
+   }
+   else{
+   fChain->SetBranchAddress("B_FullBsDTF_Kplus_ID", B_FullDTF_piplus_ID, &b_B_FullDTF_piplus_ID);
+   fChain->SetBranchAddress("B_FullBsDTF_Kplus_PE", B_FullDTF_piplus_PE, &b_B_FullDTF_piplus_PE);
+   fChain->SetBranchAddress("B_FullBsDTF_Kplus_PX", B_FullDTF_piplus_PX, &b_B_FullDTF_piplus_PX);
+   fChain->SetBranchAddress("B_FullBsDTF_Kplus_PY", B_FullDTF_piplus_PY, &b_B_FullDTF_piplus_PY);
+   fChain->SetBranchAddress("B_FullBsDTF_Kplus_PZ", B_FullDTF_piplus_PZ, &b_B_FullDTF_piplus_PZ);
+
+   fChain->SetBranchAddress("B_PV_Kplus_ID", B_PV_piplus_ID, &b_B_PV_piplus_ID);
+   fChain->SetBranchAddress("B_PV_Kplus_PE", B_PV_piplus_PE, &b_B_PV_piplus_PE);
+   fChain->SetBranchAddress("B_PV_Kplus_PX", B_PV_piplus_PX, &b_B_PV_piplus_PX);
+   fChain->SetBranchAddress("B_PV_Kplus_PY", B_PV_piplus_PY, &b_B_PV_piplus_PY);
+   fChain->SetBranchAddress("B_PV_Kplus_PZ", B_PV_piplus_PZ, &b_B_PV_piplus_PZ);
+   }
+
    fChain->SetBranchAddress("B_FullDTF_status", B_FullDTF_status, &b_B_FullDTF_status);
    fChain->SetBranchAddress("B_PV_nPV", &B_PV_nPV, &b_B_PV_nPV);
    fChain->SetBranchAddress("B_PV_Dplus_Kplus_ID", B_PV_Dplus_Kplus_ID, &b_B_PV_Dplus_Kplus_ID);
@@ -2921,11 +2950,6 @@ void DecayTree::Init()
    fChain->SetBranchAddress("B_PV_decayLengthErr", B_PV_decayLengthErr, &b_B_PV_decayLengthErr);
    fChain->SetBranchAddress("B_PV_nDOF", B_PV_nDOF, &b_B_PV_nDOF);
    fChain->SetBranchAddress("B_PV_nIter", B_PV_nIter, &b_B_PV_nIter);
-   fChain->SetBranchAddress("B_PV_piplus_ID", B_PV_piplus_ID, &b_B_PV_piplus_ID);
-   fChain->SetBranchAddress("B_PV_piplus_PE", B_PV_piplus_PE, &b_B_PV_piplus_PE);
-   fChain->SetBranchAddress("B_PV_piplus_PX", B_PV_piplus_PX, &b_B_PV_piplus_PX);
-   fChain->SetBranchAddress("B_PV_piplus_PY", B_PV_piplus_PY, &b_B_PV_piplus_PY);
-   fChain->SetBranchAddress("B_PV_piplus_PZ", B_PV_piplus_PZ, &b_B_PV_piplus_PZ);
    fChain->SetBranchAddress("B_PV_status", B_PV_status, &b_B_PV_status);
    fChain->SetBranchAddress("B_L0Global_Dec", &B_L0Global_Dec, &b_B_L0Global_Dec);
    fChain->SetBranchAddress("B_L0Global_TIS", &B_L0Global_TIS, &b_B_L0Global_TIS);

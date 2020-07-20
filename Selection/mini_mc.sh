@@ -1,9 +1,14 @@
-qsub submit/mini_signal_Ds2KKpi_mc_11.sh 
-qsub submit/mini_signal_Ds2KKpi_mc_12.sh
-#qsub submit/mini_signal_Ds2KKpi_mc_15.sh
-#qsub submit/mini_signal_Ds2KKpi_mc_16.sh
+./MiniMaker "B2DKsK_LL" "MC" 12 "BsDKsK" 
+./MiniMaker "B2DKsK_DD" "MC" 12 "BsDKsK"
 
-qsub submit/mini_norm_Ds2KKpi_mc_11.sh
-qsub submit/mini_norm_Ds2KKpi_mc_12.sh 
-#qsub submit/mini_norm_Ds2KKpi_mc_15.sh
-#qsub submit/mini_norm_Ds2KKpi_mc_16.sh
+./MiniMaker "B2DKsK_LL" "MC" 12  
+./MiniMaker "B2DKsK_DD" "MC" 12 
+
+./MiniMaker "B2DKsK_LL" "MC" 12 "BsDstKsK" 
+./MiniMaker "B2DKsK_DD" "MC" 12 "BsDstKsK"
+
+./MiniMaker "B2DKsK_LL" "MC" 12 "BdDstKspi" 
+./MiniMaker "B2DKsK_DD" "MC" 12 "BdDstKspi"
+
+./MiniMaker "B2DKsK_LL" "MC" 12 "BsDstKspi" 
+./MiniMaker "B2DKsK_DD" "MC" 12 "BsDstKspi"

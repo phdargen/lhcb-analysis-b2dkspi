@@ -35,7 +35,7 @@
 using namespace std;
 using namespace TMVA;
 
-void TMVAClassificationApplication(TString decay = "Signal", TString dataType = "Data", TString myMethod = "BDTG", TString trainedOn = "MC" ) 
+void TMVAClassificationApplication(TString decay = "B2DKspi", TString dataType = "Data", TString myMethod = "BDTG", TString trainedOn = "MC" ) 
 {   
 #ifdef __CINT__
    gROOT->ProcessLine( ".O0" ); // turn off optimization in CINT
@@ -47,32 +47,32 @@ void TMVAClassificationApplication(TString decay = "Signal", TString dataType = 
 
    TString outFileName = "BDT/";
 
-   if(decay == "Signal" && dataType == "Data"){ 	  
-	theTree->Add("Preselected/Data_b2dkspi_LL_11.root");
-    theTree->Add("Preselected/Data_b2dkspi_LL_12.root");
-    theTree->Add("Preselected/Data_b2dkspi_LL_15.root");
-    theTree->Add("Preselected/Data_b2dkspi_LL_16.root");
-    theTree->Add("Preselected/Data_b2dkspi_LL_17.root");
-    theTree->Add("Preselected/Data_b2dkspi_LL_18.root");
+   if(dataType == "Data"){ 	  
+	 theTree->Add("Preselected/Data_"+decay+"_LL_11.root");
+    theTree->Add("Preselected/Data_"+decay+"_LL_12.root");
+    theTree->Add("Preselected/Data_"+decay+"_LL_15.root");
+    theTree->Add("Preselected/Data_"+decay+"_LL_16.root");
+    theTree->Add("Preselected/Data_"+decay+"_LL_17.root");
+    theTree->Add("Preselected/Data_"+decay+"_LL_18.root");
 
-    theTree->Add("Preselected/Data_b2dkspi_DD_11.root");
-    theTree->Add("Preselected/Data_b2dkspi_DD_12.root");
-    theTree->Add("Preselected/Data_b2dkspi_DD_15.root");
-    theTree->Add("Preselected/Data_b2dkspi_DD_16.root");
-    theTree->Add("Preselected/Data_b2dkspi_DD_17.root");
-    theTree->Add("Preselected/Data_b2dkspi_DD_18.root");
+    theTree->Add("Preselected/Data_"+decay+"_DD_11.root");
+    theTree->Add("Preselected/Data_"+decay+"_DD_12.root");
+    theTree->Add("Preselected/Data_"+decay+"_DD_15.root");
+    theTree->Add("Preselected/Data_"+decay+"_DD_16.root");
+    theTree->Add("Preselected/Data_"+decay+"_DD_17.root");
+    theTree->Add("Preselected/Data_"+decay+"_DD_18.root");
        
-    outFileName += "signal_data.root";
+    outFileName += decay+"_data.root";
    }
 
-   else if(decay == "Signal" && dataType == "MC"){ 	  
-	theTree->Add("Preselected/MC_b2dkspi_DD_12.root");
-    theTree->Add("Preselected/MC_b2dkspi_LL_12.root");
-	outFileName += "signal_mc.root";
+   else if(dataType == "MC"){ 	  
+	   theTree->Add("Preselected/MC_"+decay+"_DD_12.root");
+      theTree->Add("Preselected/MC_"+decay+"_LL_12.root");
+	   outFileName += decay+"_mc.root";
    }
    else {
-	cout << "Unknown options, I'll crash now." << endl;
-	throw "ERROR";
+   	cout << "Unknown options, I'll crash now." << endl;
+   	throw "ERROR";
    }
 
    // Ouput tree
@@ -110,7 +110,8 @@ void TMVAClassificationApplication(TString decay = "Signal", TString dataType = 
    reader->AddVariable( "log_D_RFD:=log(D_RFD)",&r_log_D_RFD);
     
    reader->AddVariable( "PV_CHI2NDOF", &r_PV_CHI2NDOF );
-   reader->AddVariable( "log_pi_ProbNNpi := log(1-pi_ProbNNpi)",&r_log_pi_ProbNNpi);
+   if(decay=="B2DKspi")reader->AddVariable( "log_pi_ProbNNpi := log(1-pi_ProbNNpi)",&r_log_pi_ProbNNpi);
+   else if(decay=="B2DKsK")reader->AddVariable( "log_pi_ProbNNk := log(1-pi_ProbNNk)",&r_log_pi_ProbNNpi);
    reader->AddVariable( "log_K_D_ProbNNk := log(1-K_D_ProbNNk)",&r_log_K_D_ProbNNk);
 
    reader->AddVariable( "log_min_IPCHI2 := log(track_min_IPCHI2)",&r_log_min_IPCHI2);
@@ -120,7 +121,7 @@ void TMVAClassificationApplication(TString decay = "Signal", TString dataType = 
    //reader->AddVariable("max_ghostProb",&r_max_ghostProb);
 
    // --- Book the MVA methods
-   TString prefix = "weights/TMVAClassification_"+trainedOn+ "_";
+   TString prefix = "weights/TMVAClassification_" + decay + "_" + trainedOn + "_";
 
    std::vector<TString> weightFiles;
    //weightFiles.push_back("all_all_all");
@@ -141,7 +142,7 @@ void TMVAClassificationApplication(TString decay = "Signal", TString dataType = 
     Double_t D_RFD; 
     
     Double_t PV_CHI2NDOF;
-    Double_t pi_ProbNNpi;
+    Double_t pi_ProbNNpi,pi_ProbNNk;
     Double_t K_D_ProbNNk;
     
     Double_t min_IPCHI2; 
@@ -157,6 +158,7 @@ void TMVAClassificationApplication(TString decay = "Signal", TString dataType = 
     
     theTree->SetBranchAddress( "PV_CHI2NDOF", &PV_CHI2NDOF );
     theTree->SetBranchAddress( "pi_ProbNNpi", &pi_ProbNNpi );
+    theTree->SetBranchAddress( "pi_ProbNNk", &pi_ProbNNk );
     theTree->SetBranchAddress( "K_D_ProbNNk", &K_D_ProbNNk );
 
     theTree->SetBranchAddress( "track_min_IPCHI2", &min_IPCHI2 );
@@ -209,7 +211,8 @@ void TMVAClassificationApplication(TString decay = "Signal", TString dataType = 
         r_log_D_RFD = float(log(D_RFD));
        
         r_PV_CHI2NDOF = float(PV_CHI2NDOF);
-        r_log_pi_ProbNNpi = float(log(1-pi_ProbNNpi));
+        if(decay=="B2DKspi")r_log_pi_ProbNNpi = float(log(1-pi_ProbNNpi));
+        else if(decay=="B2DKsK")r_log_pi_ProbNNpi = float(log(1-pi_ProbNNk));
         r_log_K_D_ProbNNk = float(log(1-K_D_ProbNNk));
        
         r_log_min_IPCHI2 = float(log(min_IPCHI2)); 

@@ -25,38 +25,38 @@
 #include "TMVA/Tools.h"
 #endif
 
-void TMVAClassification( TString myMethodList = "BDTG", TString trainOn = "MC", TString run = "run1", TString Ks = "all", TString sample = "even" )
+void TMVAClassification( TString myMethodList = "BDTG", TString trainOn = "MC", TString decay = "B2DKspi", TString run = "run1", TString Ks = "all", TString sample = "even" )
 {
    TChain* background = new TChain("DecayTree");
    if(run == "run1" || run == "all"){
        if(Ks == "LL" || Ks == "all"){
-           background->Add("Preselected/Data_b2dkspi_LL_11.root");
-           background->Add("Preselected/Data_b2dkspi_LL_12.root");
+           background->Add("Preselected/Data_"+decay+"_LL_11.root");
+           background->Add("Preselected/Data_"+decay+"_LL_12.root");
        }
        if(Ks == "DD" || Ks == "all"){
-           background->Add("Preselected/Data_b2dkspi_DD_11.root");
-           background->Add("Preselected/Data_b2dkspi_DD_12.root");
+           background->Add("Preselected/Data_"+decay+"_DD_11.root");
+           background->Add("Preselected/Data_"+decay+"_DD_12.root");
        }
    }
    if(run == "run2" || run == "all") {
        if(Ks == "LL" || Ks == "all"){
-           background->Add("Preselected/Data_b2dkspi_LL_15.root");
-           background->Add("Preselected/Data_b2dkspi_LL_16.root");
-           background->Add("Preselected/Data_b2dkspi_LL_17.root");
-           background->Add("Preselected/Data_b2dkspi_LL_18.root");
+           background->Add("Preselected/Data_"+decay+"_LL_15.root");
+           background->Add("Preselected/Data_"+decay+"_LL_16.root");
+           background->Add("Preselected/Data_"+decay+"_LL_17.root");
+           background->Add("Preselected/Data_"+decay+"_LL_18.root");
        }
        if(Ks == "DD" || Ks == "all"){
-           background->Add("Preselected/Data_b2dkspi_DD_15.root");
-           background->Add("Preselected/Data_b2dkspi_DD_16.root");
-           background->Add("Preselected/Data_b2dkspi_DD_17.root");
-           background->Add("Preselected/Data_b2dkspi_DD_18.root");
+           background->Add("Preselected/Data_"+decay+"_DD_15.root");
+           background->Add("Preselected/Data_"+decay+"_DD_16.root");
+           background->Add("Preselected/Data_"+decay+"_DD_17.root");
+           background->Add("Preselected/Data_"+decay+"_DD_18.root");
        }
    }
 
    TChain* signal = new TChain("DecayTree");
    if(trainOn == "MC"){
-       if(Ks == "LL" || Ks == "all")signal->Add("Preselected/MC_b2dkspi_LL_12.root");
-       if(Ks == "DD" || Ks == "all")signal->Add("Preselected/MC_b2dkspi_DD_12.root");
+       if(Ks == "LL" || Ks == "all")signal->Add("Preselected/MC_"+decay+"_LL_12.root");
+       if(Ks == "DD" || Ks == "all")signal->Add("Preselected/MC_"+decay+"_DD_12.root");
    }
    else signal->Add("");
 
@@ -104,13 +104,13 @@ void TMVAClassification( TString myMethodList = "BDTG", TString trainOn = "MC", 
 
    //TString outDir = "plots";
    TString outDir = "figs/TMVA/";
-   outDir +=  myMethodList + "_" + trainOn + "_" + run + "_" + Ks + "_" + sample;
+   outDir +=  myMethodList+ "_" + decay + "_" + trainOn + "_" + run + "_" + Ks + "_" + sample;
  
-   TString outfileName = "TMVA_" +  myMethodList + "_" + trainOn + "_" + run + "_" + Ks + "_" + sample + ".root";
+   TString outfileName = "TMVA_" + decay + "_" +  myMethodList + "_" + trainOn + "_" + run + "_" + Ks + "_" + sample + ".root";
    TFile* outputFile = TFile::Open( outfileName, "RECREATE" );
 
    // Create the factory object. 
-   TMVA::Factory *factory = new TMVA::Factory( "TMVAClassification_" + trainOn + "_" + run + "_" + Ks + "_" + sample, outputFile, "!V:!Silent:Color:DrawProgressBar:Transformations=I;D;P;G,D:AnalysisType=Classification" );
+   TMVA::Factory *factory = new TMVA::Factory( "TMVAClassification_" + decay + "_" + trainOn + "_" + run + "_" + Ks + "_" + sample, outputFile, "!V:!Silent:Color:DrawProgressBar:Transformations=I;D;P;G,D:AnalysisType=Classification" );
 
 
    signal->SetBranchStatus("*",0);  // disable all branches
@@ -128,6 +128,7 @@ void TMVAClassification( TString myMethodList = "BDTG", TString trainOn = "MC", 
    signal->SetBranchStatus("*PT",1);
    signal->SetBranchStatus("*m1*",1);
    signal->SetBranchStatus("*PIDK",1);
+   signal->SetBranchStatus("*ProbNN*",1);
    signal->SetBranchStatus("*BKG*",1);
    signal->SetBranchStatus("*State*",1);
    signal->SetBranchStatus("m*",1);
@@ -149,6 +150,7 @@ void TMVAClassification( TString myMethodList = "BDTG", TString trainOn = "MC", 
    background->SetBranchStatus("*PT",1);
    background->SetBranchStatus("*m1*",1);
    background->SetBranchStatus("*PIDK",1);
+   background->SetBranchStatus("*ProbNN*",1);
    background->SetBranchStatus("*State*",1);
    background->SetBranchStatus("*TAU*",1);
    background->SetBranchStatus("m*",1);
@@ -167,7 +169,8 @@ void TMVAClassification( TString myMethodList = "BDTG", TString trainOn = "MC", 
     factory->AddVariable( "log_D_RFD:=log(D_RFD)","D log(RFD)", "", 'F' );
         
     factory->AddVariable( "PV_CHI2NDOF", "#chi^{2}_{DTF}/ndf", "", 'F' );
-    factory->AddVariable( "log_pi_ProbNNpi := log(1-pi_ProbNNpi)", "pi_ProbNNpi", "", 'F' );
+    if(decay=="B2DKspi")factory->AddVariable( "log_pi_ProbNNpi := log(1-pi_ProbNNpi)", "pi_ProbNNpi", "", 'F' );
+    else if(decay=="B2DKsK")factory->AddVariable( "log_pi_ProbNNk := log(1-pi_ProbNNk)", "K_ProbNNk", "", 'F' );
     factory->AddVariable( "log_K_D_ProbNNk := log(1-K_D_ProbNNk)", "K_D_ProbNNk", "", 'F' );
 
     factory->AddVariable( "log_min_IPCHI2 := log(track_min_IPCHI2)","min[ln(IP#chi^{2})]", "", 'F' );
@@ -379,8 +382,13 @@ void TMVAClassification( TString myMethodList = "BDTG", TString trainOn = "MC", 
 void trainAll( TString myMethodList = "BDTG", TString trainOn = "MC") {
 
 	gROOT->SetBatch(true);
-	TMVAClassification( myMethodList, trainOn , "run1",  "LL", "all" );
- 	TMVAClassification( myMethodList, trainOn , "run2",  "LL", "all" );
- 	TMVAClassification( myMethodList, trainOn , "run1",  "DD", "all" );
- 	TMVAClassification( myMethodList, trainOn , "run2",  "DD", "all" );
+	// TMVAClassification( myMethodList, trainOn , "B2DKspi", "run1",  "LL", "all" );
+ 	// TMVAClassification( myMethodList, trainOn , "B2DKspi", "run2",  "LL", "all" );
+ 	// TMVAClassification( myMethodList, trainOn , "B2DKspi", "run1",  "DD", "all" );
+ 	// TMVAClassification( myMethodList, trainOn , "B2DKspi", "run2",  "DD", "all" );
+
+	TMVAClassification( myMethodList, trainOn , "B2DKsK", "run1",  "LL", "all" );
+ 	TMVAClassification( myMethodList, trainOn , "B2DKsK", "run2",  "LL", "all" );
+ 	TMVAClassification( myMethodList, trainOn , "B2DKsK", "run1",  "DD", "all" );
+ 	TMVAClassification( myMethodList, trainOn , "B2DKsK", "run2",  "DD", "all" );
 }
