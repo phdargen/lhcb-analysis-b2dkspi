@@ -376,6 +376,8 @@ fChain(0), _decay(decay), _year(year), _data(dataType), _polarity(polarity), _in
     _outFileName += s2;   
     _outFileName += "_";  
     _outFileName += str_year;
+    if(s1=="MC") _outFileName += "_" + s5;
+
     if(_polarity == "Up") _outFileName += "_up";
     if(_polarity == "Down") _outFileName += "_down";
     _outFileName += ".root";   
