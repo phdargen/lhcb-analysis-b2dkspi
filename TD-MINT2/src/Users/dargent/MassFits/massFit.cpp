@@ -83,7 +83,7 @@ vector<double> fitPartRecoBkgShape(){
      
     double min_MM = 5050;
     double max_MM = 5280;
-    RooRealVar Bs_MM("B_DTF_MM", "m(D*K#pi)", min_MM, max_MM,"MeV");
+    RooRealVar Bs_MM("B_MM", "m(D*K#pi)", min_MM, max_MM,"MeV");
     //mean of gaussians
     RooRealVar mean1("mean1","mu", 5059.,5040.,5070.);
     RooRealVar mean2("mean2","mu", 5182.,5140.,5205.);
@@ -106,15 +106,15 @@ vector<double> fitPartRecoBkgShape(){
     RooAbsPdf* pdf=new RooAddPdf("BkgShape", "BkgShape", RooArgList(BifGauss1, BifGauss2, BifGauss3), RooArgList(f_1,f_2),kTRUE);
     
     /// Load file
-    TFile* file = new TFile("../../../../../Selection/Preselected/MC_bkg_bs2dstarkspi_DD_12.root");
-    TTree* tree = (TTree*) file->Get("DecayTree");
+    TFile* file = new TFile("../../../../../Selection/bkg/bkg_bs2dstarkspi.root");
+    TTree* tree = (TTree*) file->Get("B2DKspi_DD_Tuple/DecayTree");
     tree->SetBranchStatus("*",0);
     tree->SetBranchStatus("B*M",1);
     tree->SetBranchStatus("*BKGCAT",1);
     tree->SetBranchStatus("*TRUEID",1);
 
     TFile* output = new TFile("dummy.root","RECREATE");    
-    TTree* out_tree = tree->CopyTree(("B_DTF_MM >= " + anythingToString((double)min_MM) + " && B_DTF_MM <= " + anythingToString((double)max_MM) + "&& B_BKGCAT == 50" ).c_str() );
+    TTree* out_tree = tree->CopyTree(("B_MM >= " + anythingToString((double)min_MM) + " && B_MM <= " + anythingToString((double)max_MM) + "&& B_BKGCAT == 50" ).c_str() );
     RooDataSet* data = new RooDataSet("data","data",RooArgSet(Bs_MM),Import(*out_tree));
     
     /// Fit
@@ -208,6 +208,7 @@ vector<double> fitSignalShape(TString channel = "signal"){
     tree->SetBranchStatus("m_Dpi",1);
     tree->SetBranchStatus("*MM*",1);
     tree->SetBranchStatus("*ProbNN*",1);
+    tree->SetBranchStatus("FullDTF_m_Kspi",1);
 
     TFile* output;
     if(!sWeight || fitPreselected) output = new TFile("dummy.root","RECREATE");
@@ -787,6 +788,7 @@ void fitSignal2D(){
     tree->SetBranchStatus("KsCat",1);
     tree->SetBranchStatus("run",1);
     tree->SetBranchStatus("TriggerCat",1);
+    tree->SetBranchStatus("FullDTF_m_Kspi",1);
     
     RooRealVar DTF_B_M("B_DTF_MM", "m(D^{-}K_{S}#pi^{+})", min_MM, max_MM,"MeV/c^{2}");    
     RooRealVar BDTG("BDTG", "BDTG", 0.);    
@@ -795,6 +797,7 @@ void fitSignal2D(){
     RooRealVar Ks_PV_MM("Ks_PV_MM", "Ks_PV_MM", 475 ,525);    
     RooRealVar pi_ProbNNpi("pi_ProbNNpi", "pi_ProbNNpi", 0.);    
     RooRealVar pi_ProbNNk("pi_ProbNNk", "pi_ProbNNk", 0.);    
+    RooRealVar FullDTF_m_Kspi("FullDTF_m_Kspi", "FullDTF_m_Kspi", 0.);    
     
     ///define categories
     RooCategory run("run","run") ;
@@ -807,7 +810,7 @@ void fitSignal2D(){
     KsCat.defineType("LL",0);
     KsCat.defineType("DD",1);
     
-    RooArgList list =  RooArgList(DTF_B_M,BDTG,m_Dpi,D_PV_MM,Ks_PV_MM,pi_ProbNNk,pi_ProbNNpi);
+    RooArgList list =  RooArgList(DTF_B_M,BDTG,m_Dpi,D_PV_MM,Ks_PV_MM,pi_ProbNNk,pi_ProbNNpi,FullDTF_m_Kspi);
     RooArgList list2 =  RooArgList(KsCat,run,TriggerCat);
     list.add(list2);
     RooDataSet*  data = new RooDataSet("data","data",tree,list,((string)cut_BDT).c_str());    
@@ -1285,7 +1288,7 @@ void fitSignal2D(){
 
 void plotDalitz(){
     
-    TFile* f = new TFile("b2dkspi_sw.root");
+    TFile* f = new TFile("b2dksk_sw.root");
     TTree* t = (TTree*) f->Get("DecayTree");
 
     double sw; 
@@ -1378,10 +1381,10 @@ int main(int argc, char** argv){
     str_trigger.push_back(TString("t1"));
 
     
-    fitSignalShape("signal");
+    //fitSignalShape("signal");
     //fitPartRecoBkgShape();
-    //fitSignal2D();
-    // plotDalitz();
+    fitSignal2D();
+    plotDalitz();
  
     cout << "==============================================" << endl;
     cout << " Done. " << " Total time since start " << (time(0) - startTime)/60.0 << " min." << endl;
