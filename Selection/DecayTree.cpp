@@ -477,7 +477,7 @@ inline Bool_t DecayTree::LooseCuts(Long64_t i){
     if(_decay==Decay::B2DKspi_LL || _decay==Decay::B2DKspi_DD)if(pi_ProbNNpi < 0.15) return false;
     
     b_pi_ProbNNk->GetEntry(i);
-    if(_decay==Decay::B2DKsK_LL || _decay==Decay::B2DKsK_DD)if(pi_ProbNNk < 0.25) return false;
+    if(_decay==Decay::B2DKsK_LL || _decay==Decay::B2DKsK_DD)if(pi_ProbNNk < 0.3) return false;
 
     b_pip_Ks_ProbNNpi->GetEntry(i);
     if(pip_Ks_ProbNNpi < 0.1) return false;
@@ -522,6 +522,7 @@ inline void DecayTree::set_LorentzVectors(){
         Ks = pip_Ks + pim_Ks;
         D = pi1_D + pi2_D + K_D;
     
+        // B
         FullDTF_pi1_D=TLorentzVector(B_FullDTF_Dplus_piplus_PX[0],B_FullDTF_Dplus_piplus_PY[0],B_FullDTF_Dplus_piplus_PZ[0],B_FullDTF_Dplus_piplus_PE[0]);  
         FullDTF_pi2_D=TLorentzVector(B_FullDTF_Dplus_piplus_0_PX[0],B_FullDTF_Dplus_piplus_0_PY[0],B_FullDTF_Dplus_piplus_0_PZ[0],B_FullDTF_Dplus_piplus_0_PE[0]);  
         FullDTF_K_D=TLorentzVector(B_FullDTF_Dplus_Kplus_PX[0],B_FullDTF_Dplus_Kplus_PY[0],B_FullDTF_Dplus_Kplus_PZ[0],B_FullDTF_Dplus_Kplus_PE[0]);  
@@ -534,6 +535,20 @@ inline void DecayTree::set_LorentzVectors(){
         FullDTF_D = FullDTF_pi1_D + FullDTF_K_D + FullDTF_pi2_D;
         FullDTF_Ks = FullDTF_pip_Ks + FullDTF_pim_Ks;
     
+        // Bs
+        FullBsDTF_pi1_D=TLorentzVector(B_FullBsDTF_Dplus_piplus_PX[0],B_FullBsDTF_Dplus_piplus_PY[0],B_FullBsDTF_Dplus_piplus_PZ[0],B_FullBsDTF_Dplus_piplus_PE[0]);  
+        FullBsDTF_pi2_D=TLorentzVector(B_FullBsDTF_Dplus_piplus_0_PX[0],B_FullBsDTF_Dplus_piplus_0_PY[0],B_FullBsDTF_Dplus_piplus_0_PZ[0],B_FullBsDTF_Dplus_piplus_0_PE[0]);  
+        FullBsDTF_K_D=TLorentzVector(B_FullBsDTF_Dplus_Kplus_PX[0],B_FullBsDTF_Dplus_Kplus_PY[0],B_FullBsDTF_Dplus_Kplus_PZ[0],B_FullBsDTF_Dplus_Kplus_PE[0]);  
+        
+        FullBsDTF_pi=TLorentzVector(B_FullBsDTF_piplus_PX[0],B_FullBsDTF_piplus_PY[0],B_FullBsDTF_piplus_PZ[0],B_FullBsDTF_piplus_PE[0]);  
+        
+        FullBsDTF_pip_Ks=TLorentzVector(B_FullBsDTF_KS0_piplus_PX[0],B_FullBsDTF_KS0_piplus_PY[0],B_FullBsDTF_KS0_piplus_PZ[0],B_FullBsDTF_KS0_piplus_PE[0]);  
+        FullBsDTF_pim_Ks=TLorentzVector(B_FullBsDTF_KS0_piplus_0_PX[0],B_FullBsDTF_KS0_piplus_0_PY[0],B_FullBsDTF_KS0_piplus_0_PZ[0],B_FullBsDTF_KS0_piplus_0_PE[0]);  
+        
+        FullBsDTF_D = FullBsDTF_pi1_D + FullBsDTF_K_D + FullBsDTF_pi2_D;
+        FullBsDTF_Ks = FullBsDTF_pip_Ks + FullBsDTF_pim_Ks;
+
+        // MisID
         K_fromD_asP_MissID.SetXYZM(K_D_PX,K_D_PY,K_D_PZ, massProton);
         K_fromD_asPi_MissID.SetXYZM(K_D_PX,K_D_PY,K_D_PZ,massPion);
     
@@ -665,7 +680,12 @@ void DecayTree::Loop()
     summary_tree->Branch("FullDTF_m_DKs", &FullDTF_m_DKs, "FullDTF_m_DKs/D");
     summary_tree->Branch("FullDTF_m_Dpi", &FullDTF_m_Dpi, "FullDTF_m_Dpi/D");
     summary_tree->Branch("FullDTF_m_Kspi", &FullDTF_m_Kspi, "FullDTF_m_Kspi/D");
-    
+
+    double FullBsDTF_m_DKs,FullBsDTF_m_Dpi,FullBsDTF_m_Kspi;
+    summary_tree->Branch("FullBsDTF_m_DKs", &FullBsDTF_m_DKs, "FullBsDTF_m_DKs/D");
+    summary_tree->Branch("FullBsDTF_m_Dpi", &FullBsDTF_m_Dpi, "FullBsDTF_m_Dpi/D");
+    summary_tree->Branch("FullBsDTF_m_Kspi", &FullBsDTF_m_Kspi, "FullBsDTF_m_Kspi/D");
+
     int B_BKGCAT = 0;
     if(_data)summary_tree->Branch("B_BKGCAT", &B_BKGCAT, "B_BKGCAT/I");
 
@@ -747,12 +767,15 @@ void DecayTree::Loop()
     double B_PV_TAU,B_PV_TAUERR;
     double B_DTF_TAU,B_DTF_TAUERR;
     double B_FullDTF_TAU, B_FullDTF_TAUERR;
+    double B_FullBsDTF_TAU, B_FullBsDTF_TAUERR;
     summary_tree->Branch("B_PV_TAU", &B_PV_TAU, "B_PV_TAU/D");
     summary_tree->Branch("B_PV_TAUERR", &B_PV_TAUERR, "B_PV_TAUERR/D");
     summary_tree->Branch("B_DTF_TAU", &B_DTF_TAU, "B_DTF_TAU/D");
     summary_tree->Branch("B_DTF_TAUERR", &B_DTF_TAUERR, "B_DTF_TAUERR/D");
     summary_tree->Branch("B_FullDTF_TAU", &B_FullDTF_TAU, "B_FullDTF_TAU/D");
     summary_tree->Branch("B_FullDTF_TAUERR", &B_FullDTF_TAUERR, "B_FullDTF_TAUERR/D");
+    summary_tree->Branch("B_FullBsDTF_TAU", &B_FullBsDTF_TAU, "B_FullBsDTF_TAU/D");
+    summary_tree->Branch("B_FullBsDTF_TAUERR", &B_FullBsDTF_TAUERR, "B_FullBsDTF_TAUERR/D");
     
     double B_DTF_MM,B_DTF_MMERR;
     summary_tree->Branch("B_DTF_MM", &B_DTF_MM, "B_DTF_MM/D");
@@ -784,6 +807,24 @@ void DecayTree::Loop()
     summary_tree->Branch("FullDTF_pi_PY", &FullDTF_pi_PY, "FullDTF_pi_PY/D");
     summary_tree->Branch("FullDTF_pi_PZ", &FullDTF_pi_PZ, "FullDTF_pi_PZ/D");
     summary_tree->Branch("FullDTF_pi_PE", &FullDTF_pi_PE, "FullDTF_pi_PE/D");   
+
+    double FullBsDTF_D_PX,FullBsDTF_D_PY,FullBsDTF_D_PZ,FullBsDTF_D_PE;
+    summary_tree->Branch("FullBsDTF_D_PX", &FullBsDTF_D_PX, "FullBsDTF_D_PX/D");
+    summary_tree->Branch("FullBsDTF_D_PY", &FullBsDTF_D_PY, "FullBsDTF_D_PY/D");
+    summary_tree->Branch("FullBsDTF_D_PZ", &FullBsDTF_D_PZ, "FullBsDTF_D_PZ/D");
+    summary_tree->Branch("FullBsDTF_D_PE", &FullBsDTF_D_PE, "FullBsDTF_D_PE/D");   
+    
+    double FullBsDTF_Ks_PX,FullBsDTF_Ks_PY,FullBsDTF_Ks_PZ,FullBsDTF_Ks_PE;
+    summary_tree->Branch("FullBsDTF_Ks_PX", &FullBsDTF_Ks_PX, "FullBsDTF_Ks_PX/D");
+    summary_tree->Branch("FullBsDTF_Ks_PY", &FullBsDTF_Ks_PY, "FullBsDTF_Ks_PY/D");
+    summary_tree->Branch("FullBsDTF_Ks_PZ", &FullBsDTF_Ks_PZ, "FullBsDTF_Ks_PZ/D");
+    summary_tree->Branch("FullBsDTF_Ks_PE", &FullBsDTF_Ks_PE, "FullBsDTF_Ks_PE/D");   
+    
+    double FullBsDTF_pi_PX,FullBsDTF_pi_PY,FullBsDTF_pi_PZ,FullBsDTF_pi_PE;
+    summary_tree->Branch("FullBsDTF_pi_PX", &FullBsDTF_pi_PX, "FullBsDTF_pi_PX/D");
+    summary_tree->Branch("FullBsDTF_pi_PY", &FullBsDTF_pi_PY, "FullBsDTF_pi_PY/D");
+    summary_tree->Branch("FullBsDTF_pi_PZ", &FullBsDTF_pi_PZ, "FullBsDTF_pi_PZ/D");
+    summary_tree->Branch("FullBsDTF_pi_PE", &FullBsDTF_pi_PE, "FullBsDTF_pi_PE/D");   
 
     
     Long64_t nentries = fChain->GetEntries();
@@ -820,6 +861,8 @@ void DecayTree::Loop()
         B_DTF_TAUERR = B_DTF_ctauErr[0] * 3.33564095;
         B_FullDTF_TAU = B_FullDTF_ctau[0] * 3.33564095;
         B_FullDTF_TAUERR = B_FullDTF_ctauErr[0] * 3.33564095;
+        B_FullBsDTF_TAU = B_FullBsDTF_ctau[0] * 3.33564095;
+        B_FullBsDTF_TAUERR = B_FullBsDTF_ctauErr[0] * 3.33564095;
         
         PV_status = B_PV_status[0];
         DTF_status = B_DTF_status[0];
@@ -843,7 +886,7 @@ void DecayTree::Loop()
         if(PV_status > 1)continue;
         if(TMath::IsNaN(B_DTF_MM))continue;
         //if(B_FullDTF_TAU < 0.4 || B_FullDTF_TAU > 10.) continue;
-        if(B_FullDTF_TAUERR < 0. || B_FullDTF_TAUERR > 0.5) continue;
+        //if(B_FullDTF_TAUERR < 0. || B_FullDTF_TAUERR > 0.5) continue;
 
         B_RFD = sqrt(pow(B_ENDVERTEX_X-B_OWNPV_X,2)+pow(B_ENDVERTEX_Y-B_OWNPV_Y,2));
         D_RFD = sqrt(pow(D_ENDVERTEX_X-D_OWNPV_X,2)+pow(D_ENDVERTEX_Y-D_OWNPV_Y,2));
@@ -869,6 +912,22 @@ void DecayTree::Loop()
         FullDTF_pi_PZ = FullDTF_pi.Pz() ;
         FullDTF_pi_PE = FullDTF_pi.E() ;
 
+        FullBsDTF_D_PX = FullBsDTF_D.Px() ;
+        FullBsDTF_D_PY = FullBsDTF_D.Py() ;
+        FullBsDTF_D_PZ = FullBsDTF_D.Pz() ;
+        FullBsDTF_D_PE = FullBsDTF_D.E() ;
+        
+        FullBsDTF_Ks_PX = FullBsDTF_Ks.Px() ;
+        FullBsDTF_Ks_PY = FullBsDTF_Ks.Py() ;
+        FullBsDTF_Ks_PZ = FullBsDTF_Ks.Pz() ;
+        FullBsDTF_Ks_PE = FullBsDTF_Ks.E() ;
+        
+        FullBsDTF_pi_PX = FullBsDTF_pi.Px() ;
+        FullBsDTF_pi_PY = FullBsDTF_pi.Py() ;
+        FullBsDTF_pi_PZ = FullBsDTF_pi.Pz() ;
+        FullBsDTF_pi_PE = FullBsDTF_pi.E() ;
+
+        
         m_DKs = (D+Ks).M();
         m_Dpi = (D+pi).M();
         m_Kspi = (pi+Ks).M();
@@ -876,7 +935,11 @@ void DecayTree::Loop()
         FullDTF_m_DKs = (FullDTF_D+FullDTF_Ks).M();
         FullDTF_m_Dpi = (FullDTF_D+FullDTF_pi).M();
         FullDTF_m_Kspi = (FullDTF_pi+FullDTF_Ks).M();
-            
+ 
+        FullBsDTF_m_DKs = (FullBsDTF_D+FullBsDTF_Ks).M();
+        FullBsDTF_m_Dpi = (FullBsDTF_D+FullBsDTF_pi).M();
+        FullBsDTF_m_Kspi = (FullBsDTF_pi+FullBsDTF_Ks).M();
+        
         m_D_Kpi = (K_D+pi1_D).M();
         m_D_Kpi2 = (K_D+pi2_D).M();
         m_D_pipi = (pi2_D+pi1_D).M();

@@ -109,6 +109,7 @@ public :
     
    TLorentzVector pi,pip_Ks,pim_Ks,pi1_D,pi2_D,K_D,Ks,D;
    TLorentzVector FullDTF_pi,FullDTF_pip_Ks,FullDTF_pim_Ks,FullDTF_pi1_D,FullDTF_pi2_D,FullDTF_K_D,FullDTF_Ks,FullDTF_D;
+   TLorentzVector FullBsDTF_pi,FullBsDTF_pip_Ks,FullBsDTF_pim_Ks,FullBsDTF_pi1_D,FullBsDTF_pi2_D,FullBsDTF_K_D,FullBsDTF_Ks,FullBsDTF_D;
     
    TLorentzVector K_fromD_asP_MissID,K_fromD_asPi_MissID;
    TLorentzVector pi_asP_MissID,pi_asK_MissID;
@@ -279,6 +280,7 @@ public :
    Float_t         B_DTF_nDOF[100];   //[B_DTF_nPV]
    Float_t         B_DTF_nIter[100];   //[B_DTF_nPV]
    Float_t         B_DTF_status[100];   //[B_DTF_nPV]
+
    Int_t           B_FullDTF_nPV;
    Float_t         B_FullDTF_Dplus_Kplus_ID[100];   //[B_FullDTF_nPV]
    Float_t         B_FullDTF_Dplus_Kplus_PE[100];   //[B_FullDTF_nPV]
@@ -336,12 +338,77 @@ public :
    Float_t         B_FullDTF_decayLengthErr[100];   //[B_FullDTF_nPV]
    Float_t         B_FullDTF_nDOF[100];   //[B_FullDTF_nPV]
    Float_t         B_FullDTF_nIter[100];   //[B_FullDTF_nPV]
-   Float_t         B_FullDTF_piplus_ID[100];   //[B_FullDTF_nPV]
-   Float_t         B_FullDTF_piplus_PE[100];   //[B_FullDTF_nPV]
-   Float_t         B_FullDTF_piplus_PX[100];   //[B_FullDTF_nPV]
-   Float_t         B_FullDTF_piplus_PY[100];   //[B_FullDTF_nPV]
-   Float_t         B_FullDTF_piplus_PZ[100];   //[B_FullDTF_nPV]
    Float_t         B_FullDTF_status[100];   //[B_FullDTF_nPV]
+    Float_t         B_FullDTF_piplus_ID[100];   //[B_FullDTF_nPV]
+    Float_t         B_FullDTF_piplus_PE[100];   //[B_FullDTF_nPV]
+    Float_t         B_FullDTF_piplus_PX[100];   //[B_FullDTF_nPV]
+    Float_t         B_FullDTF_piplus_PY[100];   //[B_FullDTF_nPV]
+    Float_t         B_FullDTF_piplus_PZ[100];   //[B_FullDTF_nPV]
+    
+    Int_t           B_FullBsDTF_nPV;
+    Float_t         B_FullBsDTF_Dplus_Kplus_ID[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_Dplus_Kplus_PE[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_Dplus_Kplus_PX[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_Dplus_Kplus_PY[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_Dplus_Kplus_PZ[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_Dplus_M[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_Dplus_MERR[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_Dplus_P[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_Dplus_PERR[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_Dplus_ctau[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_Dplus_ctauErr[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_Dplus_decayLength[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_Dplus_decayLengthErr[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_Dplus_piplus_0_ID[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_Dplus_piplus_0_PE[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_Dplus_piplus_0_PX[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_Dplus_piplus_0_PY[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_Dplus_piplus_0_PZ[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_Dplus_piplus_ID[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_Dplus_piplus_PE[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_Dplus_piplus_PX[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_Dplus_piplus_PY[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_Dplus_piplus_PZ[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_KS0_M[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_KS0_MERR[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_KS0_P[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_KS0_PERR[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_KS0_ctau[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_KS0_ctauErr[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_KS0_decayLength[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_KS0_decayLengthErr[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_KS0_piplus_0_ID[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_KS0_piplus_0_PE[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_KS0_piplus_0_PX[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_KS0_piplus_0_PY[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_KS0_piplus_0_PZ[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_KS0_piplus_ID[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_KS0_piplus_PE[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_KS0_piplus_PX[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_KS0_piplus_PY[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_KS0_piplus_PZ[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_M[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_MERR[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_P[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_PERR[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_PV_X[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_PV_Y[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_PV_Z[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_PV_key[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_chi2[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_ctau[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_ctauErr[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_decayLength[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_decayLengthErr[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_nDOF[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_nIter[100];   //[B_FullBsDTF_nPV]
+    Float_t         B_FullBsDTF_piplus_ID[100];   //[B_FullDTF_nPV]
+    Float_t         B_FullBsDTF_piplus_PE[100];   //[B_FullDTF_nPV]
+    Float_t         B_FullBsDTF_piplus_PX[100];   //[B_FullDTF_nPV]
+    Float_t         B_FullBsDTF_piplus_PY[100];   //[B_FullDTF_nPV]
+    Float_t         B_FullBsDTF_piplus_PZ[100];   //[B_FullDTF_nPV]
+    Float_t         B_FullBsDTF_status[100];   //[B_FullBsDTF_nPV]
+     
    Int_t           B_PV_nPV;
    Float_t         B_PV_Dplus_Kplus_ID[100];   //[B_PV_nPV]
    Float_t         B_PV_Dplus_Kplus_PE[100];   //[B_PV_nPV]
@@ -1523,6 +1590,7 @@ public :
    TBranch        *b_B_DTF_nDOF;   //!
    TBranch        *b_B_DTF_nIter;   //!
    TBranch        *b_B_DTF_status;   //!
+    
    TBranch        *b_B_FullDTF_nPV;   //!
    TBranch        *b_B_FullDTF_Dplus_Kplus_ID;   //!
    TBranch        *b_B_FullDTF_Dplus_Kplus_PE;   //!
@@ -1586,6 +1654,72 @@ public :
    TBranch        *b_B_FullDTF_piplus_PY;   //!
    TBranch        *b_B_FullDTF_piplus_PZ;   //!
    TBranch        *b_B_FullDTF_status;   //!
+
+    TBranch        *b_B_FullBsDTF_nPV;   //!
+    TBranch        *b_B_FullBsDTF_Dplus_Kplus_ID;   //!
+    TBranch        *b_B_FullBsDTF_Dplus_Kplus_PE;   //!
+    TBranch        *b_B_FullBsDTF_Dplus_Kplus_PX;   //!
+    TBranch        *b_B_FullBsDTF_Dplus_Kplus_PY;   //!
+    TBranch        *b_B_FullBsDTF_Dplus_Kplus_PZ;   //!
+    TBranch        *b_B_FullBsDTF_Dplus_M;   //!
+    TBranch        *b_B_FullBsDTF_Dplus_MERR;   //!
+    TBranch        *b_B_FullBsDTF_Dplus_P;   //!
+    TBranch        *b_B_FullBsDTF_Dplus_PERR;   //!
+    TBranch        *b_B_FullBsDTF_Dplus_ctau;   //!
+    TBranch        *b_B_FullBsDTF_Dplus_ctauErr;   //!
+    TBranch        *b_B_FullBsDTF_Dplus_decayLength;   //!
+    TBranch        *b_B_FullBsDTF_Dplus_decayLengthErr;   //!
+    TBranch        *b_B_FullBsDTF_Dplus_piplus_0_ID;   //!
+    TBranch        *b_B_FullBsDTF_Dplus_piplus_0_PE;   //!
+    TBranch        *b_B_FullBsDTF_Dplus_piplus_0_PX;   //!
+    TBranch        *b_B_FullBsDTF_Dplus_piplus_0_PY;   //!
+    TBranch        *b_B_FullBsDTF_Dplus_piplus_0_PZ;   //!
+    TBranch        *b_B_FullBsDTF_Dplus_piplus_ID;   //!
+    TBranch        *b_B_FullBsDTF_Dplus_piplus_PE;   //!
+    TBranch        *b_B_FullBsDTF_Dplus_piplus_PX;   //!
+    TBranch        *b_B_FullBsDTF_Dplus_piplus_PY;   //!
+    TBranch        *b_B_FullBsDTF_Dplus_piplus_PZ;   //!
+    TBranch        *b_B_FullBsDTF_KS0_M;   //!
+    TBranch        *b_B_FullBsDTF_KS0_MERR;   //!
+    TBranch        *b_B_FullBsDTF_KS0_P;   //!
+    TBranch        *b_B_FullBsDTF_KS0_PERR;   //!
+    TBranch        *b_B_FullBsDTF_KS0_ctau;   //!
+    TBranch        *b_B_FullBsDTF_KS0_ctauErr;   //!
+    TBranch        *b_B_FullBsDTF_KS0_decayLength;   //!
+    TBranch        *b_B_FullBsDTF_KS0_decayLengthErr;   //!
+    TBranch        *b_B_FullBsDTF_KS0_piplus_0_ID;   //!
+    TBranch        *b_B_FullBsDTF_KS0_piplus_0_PE;   //!
+    TBranch        *b_B_FullBsDTF_KS0_piplus_0_PX;   //!
+    TBranch        *b_B_FullBsDTF_KS0_piplus_0_PY;   //!
+    TBranch        *b_B_FullBsDTF_KS0_piplus_0_PZ;   //!
+    TBranch        *b_B_FullBsDTF_KS0_piplus_ID;   //!
+    TBranch        *b_B_FullBsDTF_KS0_piplus_PE;   //!
+    TBranch        *b_B_FullBsDTF_KS0_piplus_PX;   //!
+    TBranch        *b_B_FullBsDTF_KS0_piplus_PY;   //!
+    TBranch        *b_B_FullBsDTF_KS0_piplus_PZ;   //!
+    TBranch        *b_B_FullBsDTF_M;   //!
+    TBranch        *b_B_FullBsDTF_MERR;   //!
+    TBranch        *b_B_FullBsDTF_P;   //!
+    TBranch        *b_B_FullBsDTF_PERR;   //!
+    TBranch        *b_B_FullBsDTF_PV_X;   //!
+    TBranch        *b_B_FullBsDTF_PV_Y;   //!
+    TBranch        *b_B_FullBsDTF_PV_Z;   //!
+    TBranch        *b_B_FullBsDTF_PV_key;   //!
+    TBranch        *b_B_FullBsDTF_chi2;   //!
+    TBranch        *b_B_FullBsDTF_ctau;   //!
+    TBranch        *b_B_FullBsDTF_ctauErr;   //!
+    TBranch        *b_B_FullBsDTF_decayLength;   //!
+    TBranch        *b_B_FullBsDTF_decayLengthErr;   //!
+    TBranch        *b_B_FullBsDTF_nDOF;   //!
+    TBranch        *b_B_FullBsDTF_nIter;   //!
+    TBranch        *b_B_FullBsDTF_piplus_ID;   //!
+    TBranch        *b_B_FullBsDTF_piplus_PE;   //!
+    TBranch        *b_B_FullBsDTF_piplus_PX;   //!
+    TBranch        *b_B_FullBsDTF_piplus_PY;   //!
+    TBranch        *b_B_FullBsDTF_piplus_PZ;   //!
+    TBranch        *b_B_FullBsDTF_status;   //!
+
+    
    TBranch        *b_B_PV_nPV;   //!
    TBranch        *b_B_PV_Dplus_Kplus_ID;   //!
    TBranch        *b_B_PV_Dplus_Kplus_PE;   //!
@@ -2863,37 +2997,105 @@ void DecayTree::Init()
    fChain->SetBranchAddress("B_FullDTF_decayLengthErr", B_FullDTF_decayLengthErr, &b_B_FullDTF_decayLengthErr);
    fChain->SetBranchAddress("B_FullDTF_nDOF", B_FullDTF_nDOF, &b_B_FullDTF_nDOF);
    fChain->SetBranchAddress("B_FullDTF_nIter", B_FullDTF_nIter, &b_B_FullDTF_nIter);
+    fChain->SetBranchAddress("B_FullDTF_status", B_FullDTF_status, &b_B_FullDTF_status);
 
+    fChain->SetBranchAddress("B_FullBsDTF_nPV", &B_FullBsDTF_nPV, &b_B_FullBsDTF_nPV);
+    fChain->SetBranchAddress("B_FullBsDTF_Dplus_Kplus_ID", B_FullBsDTF_Dplus_Kplus_ID, &b_B_FullBsDTF_Dplus_Kplus_ID);
+    fChain->SetBranchAddress("B_FullBsDTF_Dplus_Kplus_PE", B_FullBsDTF_Dplus_Kplus_PE, &b_B_FullBsDTF_Dplus_Kplus_PE);
+    fChain->SetBranchAddress("B_FullBsDTF_Dplus_Kplus_PX", B_FullBsDTF_Dplus_Kplus_PX, &b_B_FullBsDTF_Dplus_Kplus_PX);
+    fChain->SetBranchAddress("B_FullBsDTF_Dplus_Kplus_PY", B_FullBsDTF_Dplus_Kplus_PY, &b_B_FullBsDTF_Dplus_Kplus_PY);
+    fChain->SetBranchAddress("B_FullBsDTF_Dplus_Kplus_PZ", B_FullBsDTF_Dplus_Kplus_PZ, &b_B_FullBsDTF_Dplus_Kplus_PZ);
+    fChain->SetBranchAddress("B_FullBsDTF_Dplus_M", B_FullBsDTF_Dplus_M, &b_B_FullBsDTF_Dplus_M);
+    fChain->SetBranchAddress("B_FullBsDTF_Dplus_MERR", B_FullBsDTF_Dplus_MERR, &b_B_FullBsDTF_Dplus_MERR);
+    fChain->SetBranchAddress("B_FullBsDTF_Dplus_P", B_FullBsDTF_Dplus_P, &b_B_FullBsDTF_Dplus_P);
+    fChain->SetBranchAddress("B_FullBsDTF_Dplus_PERR", B_FullBsDTF_Dplus_PERR, &b_B_FullBsDTF_Dplus_PERR);
+    fChain->SetBranchAddress("B_FullBsDTF_Dplus_ctau", B_FullBsDTF_Dplus_ctau, &b_B_FullBsDTF_Dplus_ctau);
+    fChain->SetBranchAddress("B_FullBsDTF_Dplus_ctauErr", B_FullBsDTF_Dplus_ctauErr, &b_B_FullBsDTF_Dplus_ctauErr);
+    fChain->SetBranchAddress("B_FullBsDTF_Dplus_decayLength", B_FullBsDTF_Dplus_decayLength, &b_B_FullBsDTF_Dplus_decayLength);
+    fChain->SetBranchAddress("B_FullBsDTF_Dplus_decayLengthErr", B_FullBsDTF_Dplus_decayLengthErr, &b_B_FullBsDTF_Dplus_decayLengthErr);
+    fChain->SetBranchAddress("B_FullBsDTF_Dplus_piplus_0_ID", B_FullBsDTF_Dplus_piplus_0_ID, &b_B_FullBsDTF_Dplus_piplus_0_ID);
+    fChain->SetBranchAddress("B_FullBsDTF_Dplus_piplus_0_PE", B_FullBsDTF_Dplus_piplus_0_PE, &b_B_FullBsDTF_Dplus_piplus_0_PE);
+    fChain->SetBranchAddress("B_FullBsDTF_Dplus_piplus_0_PX", B_FullBsDTF_Dplus_piplus_0_PX, &b_B_FullBsDTF_Dplus_piplus_0_PX);
+    fChain->SetBranchAddress("B_FullBsDTF_Dplus_piplus_0_PY", B_FullBsDTF_Dplus_piplus_0_PY, &b_B_FullBsDTF_Dplus_piplus_0_PY);
+    fChain->SetBranchAddress("B_FullBsDTF_Dplus_piplus_0_PZ", B_FullBsDTF_Dplus_piplus_0_PZ, &b_B_FullBsDTF_Dplus_piplus_0_PZ);
+    fChain->SetBranchAddress("B_FullBsDTF_Dplus_piplus_ID", B_FullBsDTF_Dplus_piplus_ID, &b_B_FullBsDTF_Dplus_piplus_ID);
+    fChain->SetBranchAddress("B_FullBsDTF_Dplus_piplus_PE", B_FullBsDTF_Dplus_piplus_PE, &b_B_FullBsDTF_Dplus_piplus_PE);
+    fChain->SetBranchAddress("B_FullBsDTF_Dplus_piplus_PX", B_FullBsDTF_Dplus_piplus_PX, &b_B_FullBsDTF_Dplus_piplus_PX);
+    fChain->SetBranchAddress("B_FullBsDTF_Dplus_piplus_PY", B_FullBsDTF_Dplus_piplus_PY, &b_B_FullBsDTF_Dplus_piplus_PY);
+    fChain->SetBranchAddress("B_FullBsDTF_Dplus_piplus_PZ", B_FullBsDTF_Dplus_piplus_PZ, &b_B_FullBsDTF_Dplus_piplus_PZ);
+    fChain->SetBranchAddress("B_FullBsDTF_KS0_M", B_FullBsDTF_KS0_M, &b_B_FullBsDTF_KS0_M);
+    fChain->SetBranchAddress("B_FullBsDTF_KS0_MERR", B_FullBsDTF_KS0_MERR, &b_B_FullBsDTF_KS0_MERR);
+    fChain->SetBranchAddress("B_FullBsDTF_KS0_P", B_FullBsDTF_KS0_P, &b_B_FullBsDTF_KS0_P);
+    fChain->SetBranchAddress("B_FullBsDTF_KS0_PERR", B_FullBsDTF_KS0_PERR, &b_B_FullBsDTF_KS0_PERR);
+    fChain->SetBranchAddress("B_FullBsDTF_KS0_ctau", B_FullBsDTF_KS0_ctau, &b_B_FullBsDTF_KS0_ctau);
+    fChain->SetBranchAddress("B_FullBsDTF_KS0_ctauErr", B_FullBsDTF_KS0_ctauErr, &b_B_FullBsDTF_KS0_ctauErr);
+    fChain->SetBranchAddress("B_FullBsDTF_KS0_decayLength", B_FullBsDTF_KS0_decayLength, &b_B_FullBsDTF_KS0_decayLength);
+    fChain->SetBranchAddress("B_FullBsDTF_KS0_decayLengthErr", B_FullBsDTF_KS0_decayLengthErr, &b_B_FullBsDTF_KS0_decayLengthErr);
+    fChain->SetBranchAddress("B_FullBsDTF_KS0_piplus_0_ID", B_FullBsDTF_KS0_piplus_0_ID, &b_B_FullBsDTF_KS0_piplus_0_ID);
+    fChain->SetBranchAddress("B_FullBsDTF_KS0_piplus_0_PE", B_FullBsDTF_KS0_piplus_0_PE, &b_B_FullBsDTF_KS0_piplus_0_PE);
+    fChain->SetBranchAddress("B_FullBsDTF_KS0_piplus_0_PX", B_FullBsDTF_KS0_piplus_0_PX, &b_B_FullBsDTF_KS0_piplus_0_PX);
+    fChain->SetBranchAddress("B_FullBsDTF_KS0_piplus_0_PY", B_FullBsDTF_KS0_piplus_0_PY, &b_B_FullBsDTF_KS0_piplus_0_PY);
+    fChain->SetBranchAddress("B_FullBsDTF_KS0_piplus_0_PZ", B_FullBsDTF_KS0_piplus_0_PZ, &b_B_FullBsDTF_KS0_piplus_0_PZ);
+    fChain->SetBranchAddress("B_FullBsDTF_KS0_piplus_ID", B_FullBsDTF_KS0_piplus_ID, &b_B_FullBsDTF_KS0_piplus_ID);
+    fChain->SetBranchAddress("B_FullBsDTF_KS0_piplus_PE", B_FullBsDTF_KS0_piplus_PE, &b_B_FullBsDTF_KS0_piplus_PE);
+    fChain->SetBranchAddress("B_FullBsDTF_KS0_piplus_PX", B_FullBsDTF_KS0_piplus_PX, &b_B_FullBsDTF_KS0_piplus_PX);
+    fChain->SetBranchAddress("B_FullBsDTF_KS0_piplus_PY", B_FullBsDTF_KS0_piplus_PY, &b_B_FullBsDTF_KS0_piplus_PY);
+    fChain->SetBranchAddress("B_FullBsDTF_KS0_piplus_PZ", B_FullBsDTF_KS0_piplus_PZ, &b_B_FullBsDTF_KS0_piplus_PZ);
+    fChain->SetBranchAddress("B_FullBsDTF_M", B_FullBsDTF_M, &b_B_FullBsDTF_M);
+    fChain->SetBranchAddress("B_FullBsDTF_MERR", B_FullBsDTF_MERR, &b_B_FullBsDTF_MERR);
+    fChain->SetBranchAddress("B_FullBsDTF_P", B_FullBsDTF_P, &b_B_FullBsDTF_P);
+    fChain->SetBranchAddress("B_FullBsDTF_PERR", B_FullBsDTF_PERR, &b_B_FullBsDTF_PERR);
+    fChain->SetBranchAddress("B_FullBsDTF_PV_X", B_FullBsDTF_PV_X, &b_B_FullBsDTF_PV_X);
+    fChain->SetBranchAddress("B_FullBsDTF_PV_Y", B_FullBsDTF_PV_Y, &b_B_FullBsDTF_PV_Y);
+    fChain->SetBranchAddress("B_FullBsDTF_PV_Z", B_FullBsDTF_PV_Z, &b_B_FullBsDTF_PV_Z);
+    fChain->SetBranchAddress("B_FullBsDTF_PV_key", B_FullBsDTF_PV_key, &b_B_FullBsDTF_PV_key);
+    fChain->SetBranchAddress("B_FullBsDTF_chi2", B_FullBsDTF_chi2, &b_B_FullBsDTF_chi2);
+    fChain->SetBranchAddress("B_FullBsDTF_ctau", B_FullBsDTF_ctau, &b_B_FullBsDTF_ctau);
+    fChain->SetBranchAddress("B_FullBsDTF_ctauErr", B_FullBsDTF_ctauErr, &b_B_FullBsDTF_ctauErr);
+    fChain->SetBranchAddress("B_FullBsDTF_decayLength", B_FullBsDTF_decayLength, &b_B_FullBsDTF_decayLength);
+    fChain->SetBranchAddress("B_FullBsDTF_decayLengthErr", B_FullBsDTF_decayLengthErr, &b_B_FullBsDTF_decayLengthErr);
+    fChain->SetBranchAddress("B_FullBsDTF_nDOF", B_FullBsDTF_nDOF, &b_B_FullBsDTF_nDOF);
+    fChain->SetBranchAddress("B_FullBsDTF_nIter", B_FullBsDTF_nIter, &b_B_FullBsDTF_nIter);
+    fChain->SetBranchAddress("B_FullBsDTF_status", B_FullBsDTF_status, &b_B_FullBsDTF_status);        
+        
+    if(_decay==Decay::B2DKspi_LL || _decay==Decay::B2DKspi_DD){
+        fChain->SetBranchAddress("B_FullDTF_piplus_ID", B_FullDTF_piplus_ID, &b_B_FullDTF_piplus_ID);
+        fChain->SetBranchAddress("B_FullDTF_piplus_PE", B_FullDTF_piplus_PE, &b_B_FullDTF_piplus_PE);
+        fChain->SetBranchAddress("B_FullDTF_piplus_PX", B_FullDTF_piplus_PX, &b_B_FullDTF_piplus_PX);
+        fChain->SetBranchAddress("B_FullDTF_piplus_PY", B_FullDTF_piplus_PY, &b_B_FullDTF_piplus_PY);
+        fChain->SetBranchAddress("B_FullDTF_piplus_PZ", B_FullDTF_piplus_PZ, &b_B_FullDTF_piplus_PZ);
 
-   if(_decay==Decay::B2DKspi_LL || _decay==Decay::B2DKspi_DD){
-   fChain->SetBranchAddress("B_FullDTF_piplus_ID", B_FullDTF_piplus_ID, &b_B_FullDTF_piplus_ID);
-   fChain->SetBranchAddress("B_FullDTF_piplus_PE", B_FullDTF_piplus_PE, &b_B_FullDTF_piplus_PE);
-   fChain->SetBranchAddress("B_FullDTF_piplus_PX", B_FullDTF_piplus_PX, &b_B_FullDTF_piplus_PX);
-   fChain->SetBranchAddress("B_FullDTF_piplus_PY", B_FullDTF_piplus_PY, &b_B_FullDTF_piplus_PY);
-   fChain->SetBranchAddress("B_FullDTF_piplus_PZ", B_FullDTF_piplus_PZ, &b_B_FullDTF_piplus_PZ);
+        fChain->SetBranchAddress("B_FullBsDTF_piplus_ID", B_FullBsDTF_piplus_ID, &b_B_FullBsDTF_piplus_ID);
+        fChain->SetBranchAddress("B_FullBsDTF_piplus_PE", B_FullBsDTF_piplus_PE, &b_B_FullBsDTF_piplus_PE);
+        fChain->SetBranchAddress("B_FullBsDTF_piplus_PX", B_FullBsDTF_piplus_PX, &b_B_FullBsDTF_piplus_PX);
+        fChain->SetBranchAddress("B_FullBsDTF_piplus_PY", B_FullBsDTF_piplus_PY, &b_B_FullBsDTF_piplus_PY);
+        fChain->SetBranchAddress("B_FullBsDTF_piplus_PZ", B_FullBsDTF_piplus_PZ, &b_B_FullBsDTF_piplus_PZ);        
+    }
+    else {
+        fChain->SetBranchAddress("B_FullDTF_Kplus_ID", B_FullDTF_piplus_ID, &b_B_FullDTF_piplus_ID);
+        fChain->SetBranchAddress("B_FullDTF_Kplus_PE", B_FullDTF_piplus_PE, &b_B_FullDTF_piplus_PE);
+        fChain->SetBranchAddress("B_FullDTF_Kplus_PX", B_FullDTF_piplus_PX, &b_B_FullDTF_piplus_PX);
+        fChain->SetBranchAddress("B_FullDTF_Kplus_PY", B_FullDTF_piplus_PY, &b_B_FullDTF_piplus_PY);
+        fChain->SetBranchAddress("B_FullDTF_Kplus_PZ", B_FullDTF_piplus_PZ, &b_B_FullDTF_piplus_PZ);
+        
+        fChain->SetBranchAddress("B_FullBsDTF_Kplus_ID", B_FullBsDTF_piplus_ID, &b_B_FullBsDTF_piplus_ID);
+        fChain->SetBranchAddress("B_FullBsDTF_Kplus_PE", B_FullBsDTF_piplus_PE, &b_B_FullBsDTF_piplus_PE);
+        fChain->SetBranchAddress("B_FullBsDTF_Kplus_PX", B_FullBsDTF_piplus_PX, &b_B_FullBsDTF_piplus_PX);
+        fChain->SetBranchAddress("B_FullBsDTF_Kplus_PY", B_FullBsDTF_piplus_PY, &b_B_FullBsDTF_piplus_PY);
+        fChain->SetBranchAddress("B_FullBsDTF_Kplus_PZ", B_FullBsDTF_piplus_PZ, &b_B_FullBsDTF_piplus_PZ);
+    }
 
-   fChain->SetBranchAddress("B_PV_piplus_ID", B_PV_piplus_ID, &b_B_PV_piplus_ID);
-   fChain->SetBranchAddress("B_PV_piplus_PE", B_PV_piplus_PE, &b_B_PV_piplus_PE);
-   fChain->SetBranchAddress("B_PV_piplus_PX", B_PV_piplus_PX, &b_B_PV_piplus_PX);
-   fChain->SetBranchAddress("B_PV_piplus_PY", B_PV_piplus_PY, &b_B_PV_piplus_PY);
-   fChain->SetBranchAddress("B_PV_piplus_PZ", B_PV_piplus_PZ, &b_B_PV_piplus_PZ);
-   }
-   else{
-   fChain->SetBranchAddress("B_FullBsDTF_Kplus_ID", B_FullDTF_piplus_ID, &b_B_FullDTF_piplus_ID);
-   fChain->SetBranchAddress("B_FullBsDTF_Kplus_PE", B_FullDTF_piplus_PE, &b_B_FullDTF_piplus_PE);
-   fChain->SetBranchAddress("B_FullBsDTF_Kplus_PX", B_FullDTF_piplus_PX, &b_B_FullDTF_piplus_PX);
-   fChain->SetBranchAddress("B_FullBsDTF_Kplus_PY", B_FullDTF_piplus_PY, &b_B_FullDTF_piplus_PY);
-   fChain->SetBranchAddress("B_FullBsDTF_Kplus_PZ", B_FullDTF_piplus_PZ, &b_B_FullDTF_piplus_PZ);
-
-   fChain->SetBranchAddress("B_PV_Kplus_ID", B_PV_piplus_ID, &b_B_PV_piplus_ID);
-   fChain->SetBranchAddress("B_PV_Kplus_PE", B_PV_piplus_PE, &b_B_PV_piplus_PE);
-   fChain->SetBranchAddress("B_PV_Kplus_PX", B_PV_piplus_PX, &b_B_PV_piplus_PX);
-   fChain->SetBranchAddress("B_PV_Kplus_PY", B_PV_piplus_PY, &b_B_PV_piplus_PY);
-   fChain->SetBranchAddress("B_PV_Kplus_PZ", B_PV_piplus_PZ, &b_B_PV_piplus_PZ);
-   }
-
-   fChain->SetBranchAddress("B_FullDTF_status", B_FullDTF_status, &b_B_FullDTF_status);
-   fChain->SetBranchAddress("B_PV_nPV", &B_PV_nPV, &b_B_PV_nPV);
+    //fChain->SetBranchAddress("B_PV_piplus_ID", B_PV_piplus_ID, &b_B_PV_piplus_ID);
+    //fChain->SetBranchAddress("B_PV_piplus_PE", B_PV_piplus_PE, &b_B_PV_piplus_PE);
+    //fChain->SetBranchAddress("B_PV_piplus_PX", B_PV_piplus_PX, &b_B_PV_piplus_PX);
+    //fChain->SetBranchAddress("B_PV_piplus_PY", B_PV_piplus_PY, &b_B_PV_piplus_PY);
+    //fChain->SetBranchAddress("B_PV_piplus_PZ", B_PV_piplus_PZ, &b_B_PV_piplus_PZ);
+    //fChain->SetBranchAddress("B_PV_Kplus_ID", B_PV_Kplus_ID, &b_B_PV_Kplus_ID);
+    //fChain->SetBranchAddress("B_PV_Kplus_PE", B_PV_Kplus_PE, &b_B_PV_Kplus_PE);
+    //fChain->SetBranchAddress("B_PV_Kplus_PX", B_PV_Kplus_PX, &b_B_PV_Kplus_PX);
+    //fChain->SetBranchAddress("B_PV_Kplus_PY", B_PV_Kplus_PY, &b_B_PV_Kplus_PY);
+    //fChain->SetBranchAddress("B_PV_Kplus_PZ", B_PV_Kplus_PZ, &b_B_PV_Kplus_PZ);
+    fChain->SetBranchAddress("B_PV_nPV", &B_PV_nPV, &b_B_PV_nPV);
    fChain->SetBranchAddress("B_PV_Dplus_Kplus_ID", B_PV_Dplus_Kplus_ID, &b_B_PV_Dplus_Kplus_ID);
    fChain->SetBranchAddress("B_PV_Dplus_Kplus_PE", B_PV_Dplus_Kplus_PE, &b_B_PV_Dplus_Kplus_PE);
    fChain->SetBranchAddress("B_PV_Dplus_Kplus_PX", B_PV_Dplus_Kplus_PX, &b_B_PV_Dplus_Kplus_PX);

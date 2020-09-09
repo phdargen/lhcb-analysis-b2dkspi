@@ -1,10 +1,11 @@
 # compile code:
+(lhcb-proxy-init)
 source make.sh
 
 # Run over stripped data: 
 Removes not needed branches and applies loose preselection (choose one of the options):
 
-./MiniMaker "Signal\Norm" "Ds2KKpi\Ds2pipipi\Ds2Kpipi" "Data\MC" 11\12\15\16
+./MiniMaker "B2DKspi_LL\DD" "Data\MC" 11\12\15\16\17\18
 
 or submit all jobs to batch:
 
@@ -12,16 +13,6 @@ source mini_mc.sh
 
 source mini_data.sh
 
-# Run over minimized sample: 
-Applies final preselection and adds variables for BDT:
-
-./SelectionMaker "Signal\Norm" "Ds2KKpi\Ds2pipipi\Ds2Kpipi" "Data\MC" 11\12\15\16
-
-or submit all jobs to batch:
-
-source select_mc.sh
-
-source select_data.sh
 
 # train BDT   
 
