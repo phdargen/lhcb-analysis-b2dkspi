@@ -1,0 +1,17 @@
+* general options
+"nBins"		100
+"min_MM"	5200.
+"max_MM"	5800.
+
+"numCPU"	 1
+
+"sWeightSignal"	 	1
+"sWeightMC"		0
+"outFileNameSignal"	"b2dksk_sw.root"
+"inFileNameSignal"	"../../../../../Selection/BDT/B2DKsK_data.root"
+
+"cut_BDT"			"(BDTG > 0. && abs(FullDTF_m_Kspi - 1869.61)>20 && abs(FullDTF_m_Kspi - 1968.3)>20 && abs(D_PV_MM-1869.61)<25 && pi_ProbNNk > 0.5 && pi_ProbNNpi < 0.3)"
+"cutMC_BDT"			"(BDTG > 0. && abs(FullDTF_m_Kspi - 1869.61)>20 && abs(FullDTF_m_Kspi - 1968.3)>20 && abs(Ks_PV_MM-497.611) < 30 && abs(D_PV_MM-1869.61)<25)"
+
+"fixSignalShapeFromMC" 		1
+"fixExpBkgFromSidebands"	0
