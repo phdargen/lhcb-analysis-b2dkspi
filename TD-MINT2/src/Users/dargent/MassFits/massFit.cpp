@@ -106,8 +106,9 @@ vector<double> fitPartRecoBkgShape(){
     RooAbsPdf* pdf=new RooAddPdf("BkgShape", "BkgShape", RooArgList(BifGauss1, BifGauss2, BifGauss3), RooArgList(f_1,f_2),kTRUE);
     
     /// Load file
-    TFile* file = new TFile("../../../../../Selection/bkg/bkg_bs2dstarkspi.root");
-    TTree* tree = (TTree*) file->Get("B2DKspi_DD_Tuple/DecayTree");
+    NamedParameter<string> inFileNamePartReco("inFileNamePartReco",(string)"../../../../../Selection/bkg/bkg_bs2dstarkspi.root");
+    TFile* f = new TFile(((string)inFileNamePartReco).c_str());
+    TTree* tree = (TTree*) f->Get("DecayTree");
     tree->SetBranchStatus("*",0);
     tree->SetBranchStatus("B*M",1);
     tree->SetBranchStatus("*BKGCAT",1);
@@ -150,7 +151,7 @@ vector<double> fitPartRecoBkgShape(){
     params.push_back(f_1.getVal());
     params.push_back(f_2.getVal());
     
-    file->Close();
+    f->Close();
     
     return params;
 }
@@ -170,8 +171,8 @@ vector<double> fitSignalShape(TString channel = "signal"){
     }
     
     /// Load file
-    TString inFileName = "../../../../../Selection/BDT/signal_mc.root";
-    TFile* f = new TFile(inFileName);
+    NamedParameter<string> inFileNameMC("inFileNameMC",(string)"../../../../../Selection/BDT/signal_mc.root");
+    TFile* f = new TFile(((string)inFileNameMC).c_str());
     TTree* tree = (TTree*) f->Get("DecayTree");
     
     if(!sWeight){
@@ -205,14 +206,13 @@ vector<double> fitSignalShape(TString channel = "signal"){
         tree->SetBranchStatus("*DIRA*",1);
     }
     tree->SetBranchStatus("weight",0);
-    tree->SetBranchStatus("m_Dpi",1);
+    tree->SetBranchStatus("*m_*",1);
     tree->SetBranchStatus("*MM*",1);
     tree->SetBranchStatus("*ProbNN*",1);
-    tree->SetBranchStatus("FullDTF_m_Kspi",1);
 
     TFile* output;
     if(!sWeight || fitPreselected) output = new TFile("dummy.root","RECREATE");
-    else if(channel == "signal") output = new TFile((inFileName.ReplaceAll("/BDT/","/Final/")).ReplaceAll(".root",".root"),"RECREATE");
+    else if(channel == "signal") output = new TFile(TString(inFileNameMC).ReplaceAll("/BDT/","/Final/"),"RECREATE");
     
     TTree* out_tree;
     if(fitPreselected)out_tree = tree->CopyTree(("B_DTF_MM >= " + anythingToString((double)min_MM) + " && B_DTF_MM <= " + anythingToString((double)max_MM) ).c_str() );
@@ -244,7 +244,7 @@ vector<double> fitSignalShape(TString channel = "signal"){
     TString channelString;
     if(channel == "norm") channelString = "" ;
     if(channel == "signal") channelString = "m(DK_{s}#pi)" ;
-    if(channel == "Ks") channelString = "m(K_{s}#)" ;
+    if(channel == "Ks") channelString = "m(K_{s})" ;
     
     TString massVar = "B_DTF_MM";
     if(channel == "Ks") massVar = "Ks_PV_MM";
@@ -780,7 +780,6 @@ void fitSignal2D(){
     tree->SetBranchStatus("*",0);
     tree->SetBranchStatus("B_DTF_MM",1);
     tree->SetBranchStatus("BDTG",1);
-    tree->SetBranchStatus("m_Dpi",1);
     tree->SetBranchStatus("D_PV_MM",1);
     tree->SetBranchStatus("Ks_PV_MM",1);
     tree->SetBranchStatus("pi_ProbNNpi",1);
@@ -788,7 +787,7 @@ void fitSignal2D(){
     tree->SetBranchStatus("KsCat",1);
     tree->SetBranchStatus("run",1);
     tree->SetBranchStatus("TriggerCat",1);
-    tree->SetBranchStatus("FullDTF_m_Kspi",1);
+    tree->SetBranchStatus("*m_*",1);
     
     RooRealVar DTF_B_M("B_DTF_MM", "m(D^{-}K_{S}#pi^{+})", min_MM, max_MM,"MeV/c^{2}");    
     RooRealVar BDTG("BDTG", "BDTG", 0.);    
@@ -797,7 +796,9 @@ void fitSignal2D(){
     RooRealVar Ks_PV_MM("Ks_PV_MM", "Ks_PV_MM", 475 ,525);    
     RooRealVar pi_ProbNNpi("pi_ProbNNpi", "pi_ProbNNpi", 0.);    
     RooRealVar pi_ProbNNk("pi_ProbNNk", "pi_ProbNNk", 0.);    
+    RooRealVar m_Kspi("m_Kspi", "m_Kspi", 0.);    
     RooRealVar FullDTF_m_Kspi("FullDTF_m_Kspi", "FullDTF_m_Kspi", 0.);    
+    RooRealVar FullBsDTF_m_Kspi("FullBsDTF_m_Kspi", "FullBsDTF_m_Kspi", 0.);    
     
     ///define categories
     RooCategory run("run","run") ;
@@ -810,8 +811,8 @@ void fitSignal2D(){
     KsCat.defineType("LL",0);
     KsCat.defineType("DD",1);
     
-    RooArgList list =  RooArgList(DTF_B_M,BDTG,m_Dpi,D_PV_MM,Ks_PV_MM,pi_ProbNNk,pi_ProbNNpi,FullDTF_m_Kspi);
-    RooArgList list2 =  RooArgList(KsCat,run,TriggerCat);
+    RooArgList list =  RooArgList(DTF_B_M,BDTG,m_Dpi,D_PV_MM,Ks_PV_MM,pi_ProbNNk,pi_ProbNNpi);
+    RooArgList list2 =  RooArgList(KsCat,run,TriggerCat,m_Kspi,FullBsDTF_m_Kspi,FullDTF_m_Kspi);
     list.add(list2);
     RooDataSet*  data = new RooDataSet("data","data",tree,list,((string)cut_BDT).c_str());    
     
@@ -1288,7 +1289,7 @@ void fitSignal2D(){
 
 void plotDalitz(){
     
-    TFile* f = new TFile("b2dksk_sw.root");
+    TFile* f = new TFile("b2dkspi_sw.root");
     TTree* t = (TTree*) f->Get("DecayTree");
 
     double sw; 

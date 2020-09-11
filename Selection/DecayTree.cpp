@@ -356,7 +356,10 @@ fChain(0), _decay(decay), _year(year), _data(dataType), _polarity(polarity), _in
     if(_mcEventType==McEventType::BsDstKsK) s5= "BsDstKsK";
     if(_mcEventType==McEventType::BdDstKspi) s5= "BdDstKspi";
     if(_mcEventType==McEventType::BsDstKspi) s5= "BsDstKspi";
-
+    
+    if( (_decay==Decay::B2DKspi_LL || _decay==Decay::B2DKspi_DD) && s5== "BdDKspi")s5="";
+    if( (_decay==Decay::B2DKsK_LL || _decay==Decay::B2DKsK_DD) && s5== "BsDKsK")s5="";
+        
     stringstream ss_year;
     ss_year << _year;
     string str_year = ss_year.str();
@@ -367,7 +370,6 @@ fChain(0), _decay(decay), _year(year), _data(dataType), _polarity(polarity), _in
     cout << "Polarity: " << _polarity  << endl;
     if(s1=="MC")cout << "McEventType: " << s5  << endl;
 
-
     _outFileName = _outFileLoc;   
     _outFileName += s1;  
     _outFileName += "_";  
@@ -376,7 +378,7 @@ fChain(0), _decay(decay), _year(year), _data(dataType), _polarity(polarity), _in
     _outFileName += s2;   
     _outFileName += "_";  
     _outFileName += str_year;
-    if(s1=="MC") _outFileName += "_" + s5;
+    if(s1=="MC" && s5 != "") _outFileName += "_" + s5;
 
     if(_polarity == "Up") _outFileName += "_up";
     if(_polarity == "Down") _outFileName += "_down";
