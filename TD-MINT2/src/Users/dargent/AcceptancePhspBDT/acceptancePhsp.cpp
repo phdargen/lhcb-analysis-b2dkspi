@@ -229,6 +229,8 @@ void reweightGen(){
     Double_t m_Kspi;
     Double_t m_DKs;
     double BDTG;
+    double weight = 1;
+    double genPdf = 1;
         
     TChain* tree_gen=new TChain("MCDecayTree");
     tree_gen->Add("GenMC_BDT.root");
@@ -250,6 +252,8 @@ void reweightGen(){
     tree_MINT->SetBranchAddress( "TRUE_m_Kspi", &m_Kspi );
     tree_MINT->SetBranchAddress( "TRUE_m_DKs", &m_DKs );    
     tree_MINT->SetBranchAddress("eff_BDTG",&BDTG);
+    tree_MINT->SetBranchAddress("weight",&weight);
+    tree_MINT->SetBranchAddress("genPdf",&genPdf);
 
     double nBins = 50;
     TH1D* h_DKs = new TH1D("m_DKs","; m(DK_{s}) [GeV]; Yield",nBins,2,5.5);
@@ -317,6 +321,27 @@ void reweightGen(){
     eventList[0].print();
     if(tree_MINT->GetEntries() != tree_integ->GetEntries()) throw "ERROR";
 
+    TFile* out = new TFile("SignalIntegrationEvents_AccBDT.root","RECREATE");
+    TTree* out_tree = new TTree("DalitzEventList","DalitzEventList");
+    double D[4]; 
+    double Ks[4]; 
+    double pi[4]; 
+    
+    out_tree->Branch("weight",&weight);
+    out_tree->Branch("genPdf",&genPdf);
+    out_tree->Branch("Ks_PX",&Ks[0]);
+    out_tree->Branch("Ks_PY",&Ks[1]);
+    out_tree->Branch("Ks_PZ",&Ks[2]); 
+    out_tree->Branch("Ks_PE",&Ks[3]); 
+    out_tree->Branch("pi_PX",&pi[0]);
+    out_tree->Branch("pi_PY",&pi[1]);
+    out_tree->Branch("pi_PZ",&pi[2]); 
+    out_tree->Branch("pi_PE",&pi[3]); 
+    out_tree->Branch("D_PX",&D[0]);
+    out_tree->Branch("D_PY",&D[1]);
+    out_tree->Branch("D_PZ",&D[2]); 
+    out_tree->Branch("D_PE",&D[3]); 
+    
     for(int i=0; i< tree_MINT->GetEntries(); i++)
     {	
         tree_MINT->GetEntry(i);
@@ -326,22 +351,45 @@ void reweightGen(){
         h_Dpi_MINT->Fill(m_Dpi/1000.);
         h_Kspi_MINT->Fill(m_Kspi/1000.);
 
-        double weight = h_weight->GetBinContent(h_weight->FindBin(BDTG));	
-        h_DKs_MINT_rw->Fill(m_DKs/1000.,weight);
-        h_Dpi_MINT_rw->Fill(m_Dpi/1000.,weight);
-        h_Kspi_MINT_rw->Fill(m_Kspi/1000.,weight);
+        double w = h_weight->GetBinContent(h_weight->FindBin(BDTG));	
+        h_DKs_MINT_rw->Fill(m_DKs/1000.,w);
+        h_Dpi_MINT_rw->Fill(m_Dpi/1000.,w);
+        h_Kspi_MINT_rw->Fill(m_Kspi/1000.,w);
 
         DalitzEvent evt(eventList[i]);
-        evt.setWeight(evt.getWeight()*weight);
+        evt.setWeight(evt.getWeight()*w);
 
         if(evt.getGeneratorPdfRelativeToPhaseSpace()>1000.)continue;
 
         eventList_rw.Add(evt);
         evt.CP_conjugateYourself();
         eventList_rw_CP.Add(evt);
+        
+        weight *= w;
+        D[0] = evt.p(1).X();
+        D[1] = evt.p(1).Y();
+        D[2] = evt.p(1).Z();
+        D[3] = evt.p(1).E();
+        
+        Ks[0] = evt.p(2).X();
+        Ks[1] = evt.p(2).Y();
+        Ks[2] = evt.p(2).Z();
+        Ks[3] = evt.p(2).E();
+        
+        pi[0] = evt.p(3).X();
+        pi[1] = evt.p(3).Y();
+        pi[2] = evt.p(3).Z();
+        pi[3] = evt.p(3).E();
+                
+        for(int j=0; j<4; j++){
+            D[j] /= 1000.;
+            Ks[j] /= 1000.;
+            pi[j] /= 1000.;
+        }
+        out_tree->Fill();
     }
     
-    eventList_rw.saveAsNtuple("SignalIntegrationEvents_AccBDT.root");
+    eventList_rw.saveAsNtuple("MINT_SignalIntegrationEvents_AccBDT.root");
     //eventList_rw_CP.saveAsNtuple("SignalIntegrationEvents_AccBDT_CP2.root");
 
     bdt_sel->SetLineColor(kBlue);
