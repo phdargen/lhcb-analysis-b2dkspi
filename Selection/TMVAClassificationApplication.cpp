@@ -44,31 +44,31 @@ void TMVAClassificationApplication(TString decay = "B2DKspi", TString dataType =
    //---------------------------------------------------------------
    TChain* theTree = new TChain("DecayTree");
 
-
-   TString outFileName = "BDT/";
-
+   TString inDir = "/eos/lhcb/user/p/phdargen/B2DKspi/";
+   TString outFileName = inDir+"BDT/";
+    
    if(dataType == "Data"){ 	  
-	 theTree->Add("Preselected/Data_"+decay+"_LL_11.root");
-    theTree->Add("Preselected/Data_"+decay+"_LL_12.root");
-    theTree->Add("Preselected/Data_"+decay+"_LL_15.root");
-    theTree->Add("Preselected/Data_"+decay+"_LL_16.root");
-    theTree->Add("Preselected/Data_"+decay+"_LL_17.root");
-    theTree->Add("Preselected/Data_"+decay+"_LL_18.root");
+    theTree->Add(inDir+"Preselected/Data_"+decay+"_LL_11.root");
+    theTree->Add(inDir+"Preselected/Data_"+decay+"_LL_12.root");
+    theTree->Add(inDir+"Preselected/Data_"+decay+"_LL_15.root");
+    theTree->Add(inDir+"Preselected/Data_"+decay+"_LL_16.root");
+    theTree->Add(inDir+"Preselected/Data_"+decay+"_LL_17.root");
+    theTree->Add(inDir+"Preselected/Data_"+decay+"_LL_18.root");
 
-    theTree->Add("Preselected/Data_"+decay+"_DD_11.root");
-    theTree->Add("Preselected/Data_"+decay+"_DD_12.root");
-    theTree->Add("Preselected/Data_"+decay+"_DD_15.root");
-    theTree->Add("Preselected/Data_"+decay+"_DD_16.root");
-    theTree->Add("Preselected/Data_"+decay+"_DD_17.root");
-    theTree->Add("Preselected/Data_"+decay+"_DD_18.root");
+    theTree->Add(inDir+"Preselected/Data_"+decay+"_DD_11.root");
+    theTree->Add(inDir+"Preselected/Data_"+decay+"_DD_12.root");
+    theTree->Add(inDir+"Preselected/Data_"+decay+"_DD_15.root");
+    theTree->Add(inDir+"Preselected/Data_"+decay+"_DD_16.root");
+    theTree->Add(inDir+"Preselected/Data_"+decay+"_DD_17.root");
+    theTree->Add(inDir+"Preselected/Data_"+decay+"_DD_18.root");
        
     outFileName += decay+"_data.root";
    }
 
    else if(dataType == "MC"){ 	  
-	   theTree->Add("Preselected/MC_"+decay+"_DD_12.root");
-      theTree->Add("Preselected/MC_"+decay+"_LL_12.root");
-	   outFileName += decay+"_mc.root";
+      theTree->Add(inDir+"Preselected/MC_"+decay+"_DD_12.root");
+      theTree->Add(inDir+"Preselected/MC_"+decay+"_LL_12.root");
+      outFileName += decay+"_mc.root";
    }
    else {
    	cout << "Unknown options, I'll crash now." << endl;
@@ -164,7 +164,7 @@ void TMVAClassificationApplication(TString decay = "B2DKspi", TString dataType =
     theTree->SetBranchAddress( "track_min_IPCHI2", &min_IPCHI2 );
     theTree->SetBranchAddress( "maxCos2", &maxCos );
    
-   Int_t year, run, Ds_finalState, TriggerCat, KsCat; 
+   Int_t year, run, TriggerCat, KsCat; 
    ULong64_t eventNumber;
    theTree->SetBranchAddress( "year", &year );
    theTree->SetBranchAddress( "run", &run );
@@ -231,6 +231,9 @@ void TMVAClassificationApplication(TString decay = "B2DKspi", TString dataType =
         //TString methodName = myMethod + "all_all_all";
         BDTG_response=reader->EvaluateMVA(methodName);
         BDTG = double(BDTG_response);
+       
+        if(BDTG<0)continue;
+       
         tree->Fill();    
    }
 
@@ -248,6 +251,9 @@ void TMVAClassificationApplication(TString decay = "B2DKspi", TString dataType =
 
 void applyToAll(TString myMethod = "BDTG", TString trainedOn = "MC" ){
 
-    TMVAClassificationApplication("Signal", "Data", myMethod, trainedOn );
-    TMVAClassificationApplication("Signal", "MC", myMethod, trainedOn );    
+    TMVAClassificationApplication("B2DKspi", "Data", myMethod, trainedOn );
+    TMVAClassificationApplication("B2DKspi", "MC", myMethod, trainedOn );   
+
+    TMVAClassificationApplication("B2DKsK", "Data", myMethod, trainedOn );
+    TMVAClassificationApplication("B2DKsK", "MC", myMethod, trainedOn );   
 }

@@ -28,35 +28,37 @@
 void TMVAClassification( TString myMethodList = "BDTG", TString trainOn = "MC", TString decay = "B2DKspi", TString run = "run1", TString Ks = "all", TString sample = "even" )
 {
    TChain* background = new TChain("DecayTree");
+   TString inDir = "/eos/lhcb/user/p/phdargen/B2DKspi/";
+
    if(run == "run1" || run == "all"){
        if(Ks == "LL" || Ks == "all"){
-           background->Add("Preselected/Data_"+decay+"_LL_11.root");
-           background->Add("Preselected/Data_"+decay+"_LL_12.root");
+           background->Add(inDir+"Preselected/Data_"+decay+"_LL_11.root");
+           background->Add(inDir+"Preselected/Data_"+decay+"_LL_12.root");
        }
        if(Ks == "DD" || Ks == "all"){
-           background->Add("Preselected/Data_"+decay+"_DD_11.root");
-           background->Add("Preselected/Data_"+decay+"_DD_12.root");
+           background->Add(inDir+"Preselected/Data_"+decay+"_DD_11.root");
+           background->Add(inDir+"Preselected/Data_"+decay+"_DD_12.root");
        }
    }
    if(run == "run2" || run == "all") {
        if(Ks == "LL" || Ks == "all"){
-           background->Add("Preselected/Data_"+decay+"_LL_15.root");
-           background->Add("Preselected/Data_"+decay+"_LL_16.root");
-           background->Add("Preselected/Data_"+decay+"_LL_17.root");
-           background->Add("Preselected/Data_"+decay+"_LL_18.root");
+           background->Add(inDir+"Preselected/Data_"+decay+"_LL_15.root");
+           background->Add(inDir+"Preselected/Data_"+decay+"_LL_16.root");
+           background->Add(inDir+"Preselected/Data_"+decay+"_LL_17.root");
+           background->Add(inDir+"Preselected/Data_"+decay+"_LL_18.root");
        }
        if(Ks == "DD" || Ks == "all"){
-           background->Add("Preselected/Data_"+decay+"_DD_15.root");
-           background->Add("Preselected/Data_"+decay+"_DD_16.root");
-           background->Add("Preselected/Data_"+decay+"_DD_17.root");
-           background->Add("Preselected/Data_"+decay+"_DD_18.root");
+           background->Add(inDir+"Preselected/Data_"+decay+"_DD_15.root");
+           background->Add(inDir+"Preselected/Data_"+decay+"_DD_16.root");
+           background->Add(inDir+"Preselected/Data_"+decay+"_DD_17.root");
+           background->Add(inDir+"Preselected/Data_"+decay+"_DD_18.root");
        }
    }
 
    TChain* signal = new TChain("DecayTree");
    if(trainOn == "MC"){
-       if(Ks == "LL" || Ks == "all")signal->Add("Preselected/MC_"+decay+"_LL_12.root");
-       if(Ks == "DD" || Ks == "all")signal->Add("Preselected/MC_"+decay+"_DD_12.root");
+       if(Ks == "LL" || Ks == "all")signal->Add(inDir+"Preselected/MC_"+decay+"_LL_12.root");
+       if(Ks == "DD" || Ks == "all")signal->Add(inDir+"Preselected/MC_"+decay+"_DD_12.root");
    }
    else signal->Add("");
 
@@ -111,7 +113,6 @@ void TMVAClassification( TString myMethodList = "BDTG", TString trainOn = "MC", 
 
    // Create the factory object. 
    TMVA::Factory *factory = new TMVA::Factory( "TMVAClassification_" + decay + "_" + trainOn + "_" + run + "_" + Ks + "_" + sample, outputFile, "!V:!Silent:Color:DrawProgressBar:Transformations=I;D;P;G,D:AnalysisType=Classification" );
-
 
    signal->SetBranchStatus("*",0);  // disable all branches
    signal->SetBranchStatus("*CHI2*",1); 
@@ -330,7 +331,7 @@ void TMVAClassification( TString myMethodList = "BDTG", TString trainOn = "MC", 
    // Boosted Decision Trees
    if (Use["BDTG"]) // Gradient Boost
       factory->BookMethod( TMVA::Types::kBDT, "BDTG",
-                           "!H:!V:NTrees=500:MinNodeSize=2.5%:BoostType=Grad:Shrinkage=0.10:UseBaggedBoost:BaggedSampleFraction=0.5:nCuts=40:MaxDepth=3:NegWeightTreatment=Pray" );
+                           "!H:!V:NTrees=500:MinNodeSize=2.5%:BoostType=Grad:Shrinkage=0.10:nCuts=40:MaxDepth=3:NegWeightTreatment=Pray" );
 
    if (Use["BDT"])  // Adaptive Boost
       factory->BookMethod( TMVA::Types::kBDT, "BDT",
@@ -382,10 +383,10 @@ void TMVAClassification( TString myMethodList = "BDTG", TString trainOn = "MC", 
 void trainAll( TString myMethodList = "BDTG", TString trainOn = "MC") {
 
 	gROOT->SetBatch(true);
-	// TMVAClassification( myMethodList, trainOn , "B2DKspi", "run1",  "LL", "all" );
- 	// TMVAClassification( myMethodList, trainOn , "B2DKspi", "run2",  "LL", "all" );
- 	// TMVAClassification( myMethodList, trainOn , "B2DKspi", "run1",  "DD", "all" );
- 	// TMVAClassification( myMethodList, trainOn , "B2DKspi", "run2",  "DD", "all" );
+	TMVAClassification( myMethodList, trainOn , "B2DKspi", "run1",  "LL", "all" );
+ 	TMVAClassification( myMethodList, trainOn , "B2DKspi", "run2",  "LL", "all" );
+ 	TMVAClassification( myMethodList, trainOn , "B2DKspi", "run1",  "DD", "all" );
+ 	TMVAClassification( myMethodList, trainOn , "B2DKspi", "run2",  "DD", "all" );
 
 	TMVAClassification( myMethodList, trainOn , "B2DKsK", "run1",  "LL", "all" );
  	TMVAClassification( myMethodList, trainOn , "B2DKsK", "run2",  "LL", "all" );
