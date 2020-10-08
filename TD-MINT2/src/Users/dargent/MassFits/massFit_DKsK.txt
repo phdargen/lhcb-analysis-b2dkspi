@@ -5,6 +5,8 @@
 
 "numCPU"	 1
 
+"initialState"	"Bd"
+"finalState"	"DKsK"
 "sWeightSignal"	 	1
 "sWeightMC"		0
 "outFileNameSignal"	"b2dksk_sw.root"

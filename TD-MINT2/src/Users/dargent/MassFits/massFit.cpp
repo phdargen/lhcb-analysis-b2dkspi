@@ -58,6 +58,7 @@
 #include "RooKeysPdf.h"
 #include "RooJohnsonSU.h"
 #include "RooSimPdfBuilder.h"
+#include "RooNumIntConfig.h"
 #ifndef __CINT__
 #include "RooGlobalFunc.h"
 #endif
@@ -163,6 +164,10 @@ vector<double> fitSignalShape(TString channel = "signal"){
     NamedParameter<int> fitPreselected("fitPreselected", 0);
     NamedParameter<int> sWeight("sWeightMC", 0);
     NamedParameter<int> useDoubleRJ("useDoubleRJ", 0);
+    NamedParameter<string> initialState("initialState",(string)"Bd");
+    NamedParameter<string> finalState("finalState",(string)"DKspi");
+    TString outDir = (string)initialState + "2" + (string)finalState + "/";
+    
     double min_MM = 5220. ;
     double max_MM = 5340. ;
     if(channel == "Ks"){
@@ -214,10 +219,22 @@ vector<double> fitSignalShape(TString channel = "signal"){
     if(!sWeight || fitPreselected) output = new TFile("dummy.root","RECREATE");
     else if(channel == "signal") output = new TFile(TString(inFileNameMC).ReplaceAll("/BDT/","/Final/"),"RECREATE");
     
+    static const double massKs = 497.611;
+    static const double massPi = ((string)finalState == "DKspi") ? 139.57 : 493.68;
+    static const double massD = 1869.65;
+    static const double massB = ((string)initialState == "Bd") ? 5279.65 : 5366.88;
+    TString prefix_DTF = ((string)initialState == "Bd") ? "FullDTF_" : "FullBsDTF_";
+
+    TString cutPhsp = "( ";
+    cutPhsp +=  prefix_DTF+"m_Dpi >=" +  anythingToString(massD+massPi) + " && " + prefix_DTF+"m_Dpi <=" + anythingToString(massB - massKs);
+    cutPhsp +=  " && " + prefix_DTF+"m_Kspi >=" +  anythingToString(massKs+massPi) + " && " + prefix_DTF+"m_Kspi <=" +  anythingToString(massB - massD);
+    cutPhsp +=  " && " + prefix_DTF+"m_DKs >=" +  anythingToString(massD+massKs) + " && " + prefix_DTF+"m_DKs <=" + anythingToString(massB - massPi);    
+    cutPhsp += " ) ";
+    
     TTree* out_tree;
     if(fitPreselected)out_tree = tree->CopyTree(("B_DTF_MM >= " + anythingToString((double)min_MM) + " && B_DTF_MM <= " + anythingToString((double)max_MM) ).c_str() );
-    else if(channel == "signal") out_tree = tree->CopyTree(("B_DTF_MM >= " + anythingToString((double)min_MM) + " && B_DTF_MM <= " + anythingToString((double)max_MM) + " && " + (string)cut_BDT ).c_str() );
-    else out_tree = tree->CopyTree(("Ks_PV_MM >= " + anythingToString((double)min_MM) + " && Ks_PV_MM <= " + anythingToString((double)max_MM) + " && " + (string)cut_BDT ).c_str() );
+    else if(channel == "signal") out_tree = tree->CopyTree("B_DTF_MM >= " + anythingToString((double)min_MM) + " && B_DTF_MM <= " + anythingToString((double)max_MM) + " && " + (string)cut_BDT + " && " + cutPhsp  );
+    else out_tree = tree->CopyTree("Ks_PV_MM >= " + anythingToString((double)min_MM) + " && Ks_PV_MM <= " + anythingToString((double)max_MM) + " && " + (string)cut_BDT + " && " + cutPhsp );
     
     int bkgCAT,BKGCAT,Bs_TRUEID;
     double sw;
@@ -243,7 +260,8 @@ vector<double> fitSignalShape(TString channel = "signal"){
     
     TString channelString;
     if(channel == "norm") channelString = "" ;
-    if(channel == "signal") channelString = "m(DK_{s}#pi)" ;
+    if(channel == "signal" && (string)finalState == "DKspi") channelString = "m(DK_{s}#pi)" ;
+    else if(channel == "signal") channelString = "m(DK_{s}K)" ;    
     if(channel == "Ks") channelString = "m(K_{s})" ;
     
     TString massVar = "B_DTF_MM";
@@ -329,14 +347,14 @@ vector<double> fitSignalShape(TString channel = "signal"){
     data->plotOn(frame,Name("data"),Binning(50),Cut("bkgCAT==bkgCAT::signal"));
     simPdf->plotOn(frame,Name("signal"),ProjWData(Bs_BKGCAT,*data),Slice(Bs_BKGCAT,"signal"));
     frame->Draw();
-    c->Print("plots/"+channel+"_MC.eps");
+    c->Print(outDir+channel+"_MC.eps");
     
     RooPlot* frame2= DTF_Bs_M.frame();
     data->plotOn(frame2,Name("data"),Binning(50),Cut("bkgCAT==bkgCAT::ghost"));
     simPdf->plotOn(frame2,Name("signal"),Slice(Bs_BKGCAT,"ghost"),ProjWData(Bs_BKGCAT,*data));
     simPdf->plotOn(frame2,Name("bkg"),ProjWData(Bs_BKGCAT,*data),Slice(Bs_BKGCAT,"ghost"),LineColor(kRed),LineStyle(kDashed),Components("bkg_ghost"));
     frame2->Draw();
-    c->Print("plots/"+channel+"_MC_ghost.eps");
+    c->Print(outDir+channel+"_MC_ghost.eps");
     
     /// Return fit params
     vector<double> params;
@@ -759,21 +777,30 @@ void fitSignal(){
     cout << "Total signal yield = " << signal_yield << endl;
 }
 
-
 void fitSignal2D(){
     
     ///Options
     NamedParameter<int> numCPU("numCPU", 1);
     NamedParameter<int> sWeight("sWeightSignal", 0);
+    NamedParameter<int> sWeightNew("sWeightSignalNew", 0);
+
     NamedParameter<int> nBins("nBins", 80);
     NamedParameter<double> min_MM("min_MM",5100.);
     NamedParameter<double> max_MM("max_MM",5700.);
+
+    NamedParameter<double> signalRange_B_min_MM("signalRange_B_min_MM",5100.);
+    NamedParameter<double> signalRange_B_max_MM("signalRange_B_max_MM",5700.);
+    NamedParameter<double> signalRange_Ks_min_MM("signalRange_Ks_min_MM",475);
+    NamedParameter<double> signalRange_Ks_max_MM("signalRange_Ks_max_MM",525);
+
     NamedParameter<string> cut_BDT("cut_BDT",(string)"");
     NamedParameter<string> inFileName("inFileNameSignal",(string)"../../../../../Selection/BDT/signal_data.root");
     NamedParameter<string> outFileName("outFileNameSignal",(string)"./signal_data.root");
     NamedParameter<int> fixSignalShapeFromMC("fixSignalShapeFromMC", 1);
     NamedParameter<int> fixExpBkgFromSidebands("fixExpBkgFromSidebands", 0);
-    
+    NamedParameter<string> initialState("initialState",(string)"Bd");
+    NamedParameter<string> finalState("finalState",(string)"DKspi");
+    TString outDir = (string)initialState + "2" + (string)finalState + "/";
     ///Load file
     TFile *file= new TFile(((string)inFileName).c_str());
     TTree* tree = (TTree*) file->Get("DecayTree");    
@@ -791,14 +818,29 @@ void fitSignal2D(){
     
     RooRealVar DTF_B_M("B_DTF_MM", "m(D^{-}K_{S}#pi^{+})", min_MM, max_MM,"MeV/c^{2}");    
     RooRealVar BDTG("BDTG", "BDTG", 0.);    
-    RooRealVar m_Dpi("m_Dpi", "m_Dpi", 0.);    
     RooRealVar D_PV_MM("D_PV_MM", "D_PV_MM", 0.);    
     RooRealVar Ks_PV_MM("Ks_PV_MM", "Ks_PV_MM", 475 ,525);    
     RooRealVar pi_ProbNNpi("pi_ProbNNpi", "pi_ProbNNpi", 0.);    
     RooRealVar pi_ProbNNk("pi_ProbNNk", "pi_ProbNNk", 0.);    
+
+    RooRealVar m_Dpi("m_Dpi", "m_Dpi", 0.);    
     RooRealVar m_Kspi("m_Kspi", "m_Kspi", 0.);    
-    RooRealVar FullDTF_m_Kspi("FullDTF_m_Kspi", "FullDTF_m_Kspi", 0.);    
-    RooRealVar FullBsDTF_m_Kspi("FullBsDTF_m_Kspi", "FullBsDTF_m_Kspi", 0.);    
+    RooRealVar m_DKs("m_DKs", "m_DKs", 0.);    
+
+    static const double massKs = 497.611;
+    static const double massPi = ((string)finalState == "DKspi") ? 139.57 : 493.68;
+    static const double massD = 1869.65;
+    static const double massB = ((string)initialState == "Bd") ? 5279.65 : 5366.88;
+    TString prefix_DTF = ((string)initialState == "Bd") ? "FullDTF_" : "FullBsDTF_";
+    RooRealVar FullDTF_m_Dpi(prefix_DTF+"m_Dpi", prefix_DTF+"m_Dpi", massD+massPi, massB - massKs );    
+    RooRealVar FullDTF_m_Kspi(prefix_DTF+"m_Kspi", prefix_DTF+"m_Kspi", massKs+massPi, massB - massD);    
+    RooRealVar FullDTF_m_DKs(prefix_DTF+"m_DKs", prefix_DTF+"m_DKs", massD+massKs, massB - massPi);    
+    TString cutPhsp = "( ";
+    cutPhsp +=  prefix_DTF+"m_Dpi >=" +  anythingToString(massD+massPi) + " && " + prefix_DTF+"m_Dpi <=" + anythingToString(massB - massKs);
+    cutPhsp +=  " && " + prefix_DTF+"m_Kspi >=" +  anythingToString(massKs+massPi) + " && " + prefix_DTF+"m_Kspi <=" +  anythingToString(massB - massD);
+    cutPhsp +=  " && " + prefix_DTF+"m_DKs >=" +  anythingToString(massD+massKs) + " && " + prefix_DTF+"m_DKs <=" + anythingToString(massB - massPi);    
+    cutPhsp += " ) ";
+    cout << cutPhsp << endl;
     
     ///define categories
     RooCategory run("run","run") ;
@@ -811,9 +853,15 @@ void fitSignal2D(){
     KsCat.defineType("LL",0);
     KsCat.defineType("DD",1);
     
-    RooArgList list =  RooArgList(DTF_B_M,BDTG,m_Dpi,D_PV_MM,Ks_PV_MM,pi_ProbNNk,pi_ProbNNpi);
-    RooArgList list2 =  RooArgList(KsCat,run,TriggerCat,m_Kspi,FullBsDTF_m_Kspi,FullDTF_m_Kspi);
+    RooArgList list =  RooArgList(DTF_B_M,BDTG,D_PV_MM,Ks_PV_MM,pi_ProbNNk,pi_ProbNNpi);
+    RooArgList list2 =  RooArgList(KsCat,run,TriggerCat);
+    RooArgList list3 = RooArgList(m_Kspi,FullDTF_m_Kspi);
+    RooArgList list4 = RooArgList(m_Dpi,FullDTF_m_Dpi);
+    RooArgList list5 = RooArgList(m_DKs,FullDTF_m_DKs);
     list.add(list2);
+    list.add(list3);
+    list.add(list4);
+    list.add(list5);
     RooDataSet*  data = new RooDataSet("data","data",tree,list,((string)cut_BDT).c_str());    
     
     /// Signal Pdf
@@ -903,7 +951,7 @@ void fitSignal2D(){
     RooRealVar partReco_f("partReco_f", "partReco_f", 0.5,0,1);
     RooAddPdf bkg_partReco_B("bkg_partReco_B", "bkg_partReco_B", RooArgList(bkg_partReco_Bs, bkg_partReco_B0), RooArgList(partReco_f));
     
-        // 2D pdfs
+    // 2D pdfs
     RooProdPdf signal2D("signal2D","signal2D",signal_B,signal_Ks);
     RooProdPdf signal_Bs2D("signal_Bs2D","signal_Bs2D",signal_Bs,signal_Ks);
 
@@ -983,7 +1031,7 @@ void fitSignal2D(){
     
     /// Plot components 
     /// argh fuck RooFit, is this seriously so complicated ? 
-    TString last_name_signal,last_name_signal_Bs,last_name_exp_bkg,last_name_partReco_bkg,last_name_signal_noKs,last_name_signal_Bs_noKs;
+    TString last_name_pdf,last_name_signal,last_name_signal_Bs,last_name_exp_bkg,last_name_partReco_bkg,last_name_signal_noKs,last_name_signal_Bs_noKs;
     vector<RooPlot*> frames;
     frames.push_back(frame);
     frames.push_back(frame_Ks);
@@ -1064,7 +1112,7 @@ void fitSignal2D(){
     simPdf->plotOn(frame,Name("pdf"),ProjWData(run,*data),LineColor(kBlue+1),LineWidth(3));  //,VisualizeError(*result,1,kTRUE)
     frame->Draw();
     leg.Draw();
-    c->Print("plots/signal.eps");
+    c->Print(outDir+"signal.eps");
     
     double chi2 = 0.;
     double covmatr = result->covQual();
@@ -1073,39 +1121,122 @@ void fitSignal2D(){
     frame= DTF_B_M.frame();
     frame->addPlotable(hpull,"P") ;
     frame->Draw();
-    c->Print("plots/signal_pull.eps");
+    //c->Print(outDir+"signal_pull.eps");
 
     simPdf->plotOn(frame_Ks,Name("pdf"),ProjWData(run,*data),LineColor(kBlue+1),LineWidth(3));  //,VisualizeError(*result,1,kTRUE)
     frame_Ks->Draw();
     //leg.Draw();
-    c->Print("plots/Ks.eps");
+    c->Print(outDir+"Ks.eps");
     hpull  = frame_Ks->pullHist("data","pdf");
     frame_Ks= Ks_PV_MM.frame();
     frame_Ks->addPlotable(hpull,"P") ;
     frame_Ks->Draw();
-    c->Print("plots/Ks_pull.eps");
+    //c->Print(outDir+"Ks_pull.eps");
+
+
+    // Plots integrated over Run
+    for(int j=0; j<str_KsCat.size(); j++)for(int k=0; k<frames.size(); k++){
+            if(k==0)frames[k] =DTF_B_M.frame();
+            else frames[k] =Ks_PV_MM.frame();
+
+            data->plotOn(frames[k],Name("data_slice_Ks"),Cut("KsCat==KsCat::" + str_KsCat[j]),MarkerSize(1),Binning(nBins));
+
+            for(int i=0; i<str_run.size(); i++){
+
+                RooAddPdf* pdf_slice = (RooAddPdf*)simPdf->getPdf("{" + str_run[i] + ";" + str_KsCat[j] + "}");
+                RooArgList pdf_slice_comp( pdf_slice->pdfList());
+
+                TString name_pdf("pdf_"+ anythingToString(i)+ "_" + anythingToString(j));
+                TString name_signal("signal_"+ anythingToString(i)+ "_" + anythingToString(j));
+                TString name_signal_Bs("signal_Bs_"+ anythingToString(i)+ "_" + anythingToString(j));
+                TString name_exp_bkg("bkg_"+ anythingToString(i)+ "_" + anythingToString(j));
+                TString name_partReco_bkg("partReco_bkg_"+ anythingToString(i)+ "_" + anythingToString(j));
+                TString name_signal_noKs("signal_noKs_"+ anythingToString(i)+ "_" + anythingToString(j));
+                TString name_signal_Bs_noKs("signal_Bs_noKs"+ anythingToString(i)+ "_" + anythingToString(j));
+                
+                if(i==0){
+                    pdf_slice->plotOn(frames[k],Name(name_signal),Components(RooArgSet(pdf_slice_comp[0])),ProjWData(run,*data),Normalization(1.,RooAbsReal::RelativeExpected),Invisible());
+                    
+                    pdf_slice->plotOn(frames[k],Name(name_signal_Bs),Components(RooArgSet(pdf_slice_comp[1])),ProjWData(run,*data),Normalization(1.,RooAbsReal::RelativeExpected),Invisible());
+                    
+                    pdf_slice->plotOn(frames[k],Name(name_exp_bkg),Components(RooArgSet(pdf_slice_comp[2])),ProjWData(run,*data),Normalization(1.,RooAbsReal::RelativeExpected),Invisible());
+                    
+                    pdf_slice->plotOn(frames[k],Name(name_partReco_bkg),Components(RooArgSet(pdf_slice_comp[3])),ProjWData(run,*data),Normalization(1.,RooAbsReal::RelativeExpected),Invisible());
+                    
+                    pdf_slice->plotOn(frames[k],Name(name_signal_noKs),Components(RooArgSet(pdf_slice_comp[4])),ProjWData(run,*data),Normalization(1.,RooAbsReal::RelativeExpected),Invisible());
+                    
+                    pdf_slice->plotOn(frames[k],Name(name_signal_Bs_noKs),Components(RooArgSet(pdf_slice_comp[5])),ProjWData(run,*data),Normalization(1.,RooAbsReal::RelativeExpected),Invisible());
+
+                    pdf_slice->plotOn(frames[k],Name(name_pdf),LineColor(kBlue+1),LineWidth(3),Normalization(1.,RooAbsReal::RelativeExpected),Invisible());
+
+                    last_name_pdf = name_pdf;
+                    last_name_signal = name_signal;
+                    last_name_signal_Bs = name_signal_Bs;
+                    last_name_exp_bkg = name_exp_bkg;
+                    last_name_partReco_bkg = name_partReco_bkg;
+                    last_name_signal_noKs = name_signal_noKs;
+                    last_name_signal_Bs_noKs = name_signal_Bs_noKs;
+                }
+                else{            
+                    pdf_slice->plotOn(frames[k],Name(name_partReco_bkg),Components(RooArgSet(pdf_slice_comp[3])),ProjWData(run,*data),FillColor(kGray+3),LineWidth(3),Normalization(1.,RooAbsReal::RelativeExpected),AddTo(last_name_partReco_bkg),DrawOption("F"),FillStyle(1001),LineColor(kGray+3));            
+                    pdf_slice->plotOn(frames[k],Components(RooArgSet(pdf_slice_comp[3])),ProjWData(run,*data),LineColor(kGray+3),LineWidth(3),Normalization(1.,RooAbsReal::RelativeExpected),AddTo(last_name_partReco_bkg));
+                    
+                    pdf_slice->plotOn(frames[k],Name(name_signal),Components(RooArgSet(pdf_slice_comp[0])),ProjWData(run,*data),FillColor(kRed+1),LineWidth(3),Normalization(1.,RooAbsReal::RelativeExpected),AddTo(last_name_signal),DrawOption("F"),FillStyle(3353),LineColor(kRed+1));
+                    pdf_slice->plotOn(frames[k],Components(RooArgSet(pdf_slice_comp[0])),ProjWData(run,*data),LineColor(kRed+1),LineWidth(3),Normalization(1.,RooAbsReal::RelativeExpected),AddTo(last_name_signal));
+                    
+                    pdf_slice->plotOn(frames[k],Name(name_signal_Bs),Components(RooArgSet(pdf_slice_comp[1])),ProjWData(run,*data),FillColor(kGreen+3),LineWidth(3),Normalization(1.,RooAbsReal::RelativeExpected),AddTo(last_name_signal_Bs),DrawOption("F"),FillStyle(3335),LineColor(kGreen+1));
+                    pdf_slice->plotOn(frames[k],Components(RooArgSet(pdf_slice_comp[1])),ProjWData(run,*data),LineColor(kGreen+1),LineWidth(3),Normalization(1.,RooAbsReal::RelativeExpected),AddTo(last_name_signal_Bs));
+                    
+                    pdf_slice->plotOn(frames[k],Name(name_exp_bkg),Components(RooArgSet(pdf_slice_comp[2])),ProjWData(run,*data),LineColor(kBlack),LineWidth(3),Normalization(1.,RooAbsReal::RelativeExpected),AddTo(last_name_exp_bkg),LineStyle(kDashed));
+                    
+                    pdf_slice->plotOn(frames[k],Name(name_signal_noKs),Components(RooArgSet(pdf_slice_comp[4])),ProjWData(run,*data),LineColor(kRed+3),LineWidth(3),Normalization(1.,RooAbsReal::RelativeExpected),AddTo(last_name_signal_noKs),LineStyle(kDashed));
+
+                    pdf_slice->plotOn(frames[k],Name(name_signal_Bs_noKs),Components(RooArgSet(pdf_slice_comp[5])),ProjWData(run,*data),LineColor(kGreen+3),LineWidth(3),Normalization(1.,RooAbsReal::RelativeExpected),AddTo(last_name_signal_Bs_noKs),LineStyle(kDashed));
+                    
+                    pdf_slice->plotOn(frames[k],Name(name_pdf),LineColor(kBlue+1),LineWidth(3),Normalization(1.,RooAbsReal::RelativeExpected),AddTo(last_name_pdf));
+                }
+            }
+            frames[k]->Draw();
+            if(k==0)leg.Draw();
+            c->Print(outDir+"signal_" + anythingToString(k) + "_" + str_KsCat[j] + ".eps");
+    }
+    
+
+
+
+
+
+
+
     
     /// Output file
     TFile *output;
     TTree* out_tree;
     double sw,sw_Bs,sw_noKs,sw_Bs_noKs;
     TBranch *b_sw, *b_sw_Bs,*b_sw_noKs, *b_sw_Bs_noKs;
+    double sw2,sw2_Bs,sw2_noKs,sw2_Bs_noKs;
+    TBranch *b_sw2, *b_sw2_Bs,*b_sw2_noKs, *b_sw2_Bs_noKs;
+
     Int_t t_run, t_KsCat, t_TriggerCat;
     TBranch *b_run, *b_KsCat, *b_TriggerCat;
     
-    if(sWeight){
-        //SPlot sPlot("sPlot","sPlot",*data,pdf,RooArgList(n_sig,n_sig_Bs, n_bkg, n_partReco_bkg)); 
+    if(sWeight || sWeightNew){
         output = new TFile(((string)outFileName).c_str(),"RECREATE");
         tree->SetBranchStatus("*",1);
         tree->SetBranchStatus("weight",0);
         tree->SetBranchStatus("N_B_sw",0);
         
-        out_tree = tree->CopyTree(("Ks_PV_MM >= 475 && Ks_PV_MM <= 525 && B_DTF_MM >= " + anythingToString((double)min_MM) + " && B_DTF_MM <= " + anythingToString((double)max_MM) + " && " + (string)cut_BDT).c_str());
+        out_tree = tree->CopyTree("Ks_PV_MM >= 475 && Ks_PV_MM <= 525 && B_DTF_MM >= " + anythingToString((double)min_MM) + " && B_DTF_MM <= " + anythingToString((double)max_MM) + " && " + (string)cut_BDT + " && " + cutPhsp);
         b_sw = out_tree->Branch("N_B_sw", &sw, "N_B_sw/D");
         b_sw_Bs = out_tree->Branch("N_Bs_sw", &sw_Bs, "N_Bs_sw/D");
-        b_sw_noKs = out_tree->Branch("N_B_sw_noKs", &sw_noKs, "N_B_noKs_sw/D");
-        b_sw_Bs_noKs = out_tree->Branch("N_Bs_sw_noKs", &sw_Bs_noKs, "N_Bs_noKs_sw/D");
-        
+        b_sw_noKs = out_tree->Branch("N_B_noKs_sw", &sw_noKs, "N_B_noKs_sw/D");
+        b_sw_Bs_noKs = out_tree->Branch("N_Bs_noKs_sw", &sw_Bs_noKs, "N_Bs_noKs_sw/D");
+
+        b_sw2 = out_tree->Branch("N_B_sw2", &sw2, "N_B_sw2/D");
+        b_sw2_Bs = out_tree->Branch("N_Bs_sw2", &sw2_Bs, "N_Bs_sw2/D");
+        b_sw2_noKs = out_tree->Branch("N_B_noKs_sw2", &sw2_noKs, "N_B_noKs_sw2/D");
+        b_sw2_Bs_noKs = out_tree->Branch("N_Bs_noKs_sw2", &sw2_Bs_noKs, "N_Bs_noKs_sw2/D");
+
         out_tree->SetBranchAddress("run", &t_run, &b_run);
         out_tree->SetBranchAddress("KsCat", &t_KsCat, &b_KsCat);
         out_tree->SetBranchAddress("TriggerCat", &t_TriggerCat, &b_TriggerCat);
@@ -1122,13 +1253,23 @@ void fitSignal2D(){
     double weights_Bs[(int)data->numEntries()];    
     double weights_noKs[(int)data->numEntries()];
     double weights_Bs_noKs[(int)data->numEntries()];    
+
+    double weights2[(int)data->numEntries()];
+    double weights2_Bs[(int)data->numEntries()];    
+    double weights2_noKs[(int)data->numEntries()];
+    double weights2_Bs_noKs[(int)data->numEntries()];    
+
     /// Calculate total signal yield
     double signal_yield = 0.;
     double comb_bkg_yield = 0.;
     int n_sig_perFit = 0.;
     int n_sig_perFit_err = 0.;
-    DTF_B_M.setRange("signal_range",mean.getVal()-45.,mean.getVal()+45.);
-    
+    DTF_B_M.setRange("signal_range",mean.getVal()-45,mean.getVal()+45);
+    DTF_B_M.setRange("signal_rangeLL",(double)signalRange_B_min_MM,(double)signalRange_B_max_MM);
+    Ks_PV_MM.setRange("signal_rangeLL",(double)signalRange_Ks_min_MM,(double)signalRange_Ks_max_MM);
+    DTF_B_M.setRange("signal_rangeDD",(double)signalRange_B_min_MM,(double)signalRange_B_max_MM);
+    Ks_PV_MM.setRange("signal_rangeDD ",Ks_PV_MM.getMin() ,Ks_PV_MM.getMax());
+
     /// Loop over pdf slices
     for(int i=0; i<str_run.size(); i++)for(int j=0; j<str_KsCat.size(); j++){
         
@@ -1185,12 +1326,12 @@ void fitSignal2D(){
         //else lhcbtext->DrawLatex(0.6,0.68,"L0-TIS");
         lhcbtext->DrawLatex(0.6,0.68, name_n_signal);
         
-        c->Print("plots/signal_" + str_run[i] + "_" + str_KsCat[j] + ".eps");
+        c->Print(outDir+"signal_" + str_run[i] + "_" + str_KsCat[j] + ".eps");
         hpull = frame->pullHist("data_slice2","pdf_slice2") ;
         frame= DTF_B_M.frame();
         frame->addPlotable(hpull,"P") ;
         frame->Draw();
-        c->Print("plots/signal_pull_" + str_run[i] + "_" + str_KsCat[j]  + ".eps");
+        //c->Print(outDir+"signal_pull_" + str_run[i] + "_" + str_KsCat[j]  + ".eps");
         
         /// Ks frame
         frame=Ks_PV_MM.frame();
@@ -1215,12 +1356,12 @@ void fitSignal2D(){
         
         cout << endl << "chi2/nbin (Ks) = " << frame->chiSquare("pdf_slice2","data_slice2") << endl << endl;    
                 
-        c->Print("plots/Ks_" + str_run[i] + "_" + str_KsCat[j] + ".eps");
+        c->Print(outDir+"Ks_" + str_run[i] + "_" + str_KsCat[j] + ".eps");
         hpull = frame->pullHist("data_slice2","pdf_slice2") ;
         frame= Ks_PV_MM.frame();
         frame->addPlotable(hpull,"P") ;
         frame->Draw();
-        c->Print("plots/Ks_pull_" + str_run[i] + "_" + str_KsCat[j]  + ".eps");
+        //c->Print(outDir+"Ks_pull_" + str_run[i] + "_" + str_KsCat[j]  + ".eps");
         
         /// Get signal yield
         signal_yield += ((RooRealVar*) fitParams->find("n_sig_{" + str_run[i] + ";" + str_KsCat[j] + "}"))->getVal();
@@ -1262,19 +1403,149 @@ void fitSignal2D(){
                 }
             }    
         }
+
+        if(sWeightNew){
+            RooAbsReal::defaultIntegratorConfig()->setEpsAbs(1e-10);
+            RooAbsReal::defaultIntegratorConfig()->setEpsRel(1e-10);
+            RooAbsReal::defaultIntegratorConfig()->getConfigSection("RooIntegrator1D").setCatLabel("extrapolation","WynnEpsilon");
+            RooAbsReal::defaultIntegratorConfig()->getConfigSection("RooIntegrator1D").setCatLabel("maxSteps","1000");
+            RooAbsReal::defaultIntegratorConfig()->getConfigSection("RooIntegrator1D").setCatLabel("minSteps","0");
+            RooAbsReal::defaultIntegratorConfig()->getConfigSection("RooAdaptiveGaussKronrodIntegrator1D").setCatLabel("method","21Points");
+            RooAbsReal::defaultIntegratorConfig()->getConfigSection("RooAdaptiveGaussKronrodIntegrator1D").setRealValue("maxSeg", 1000);
+            
+            const int dim = pdf_slice_comp.getSize();
+            TMatrixD W_kl(dim,dim);
+            W_kl.Zero();
+            RooArgList yield_list( pdf_slice->coefList());
+            cout << "calculating sWeights " << endl;
+            pdf_slice->Print();
+            yield_list.Print();
+                
+            RooArgSet* pdfObs = pdf_slice->getObservables(data);
+            pdfObs->Print();
+
+            string range = "signal_rangeLL";
+            if(j==1)range = "signal_rangeDD";
+            vector<double> f_k;
+            for(int k = 0 ; k< dim; k++) f_k.push_back(((RooAbsPdf*)pdf_slice_comp.at(k))->createIntegral(RooArgSet(DTF_B_M,Ks_PV_MM),NormSet(RooArgSet(DTF_B_M,Ks_PV_MM)),Range(range.c_str()))->getVal());
+
+            for(int n = 0; n < out_tree->GetEntries(); n++){
+                b_run->GetEntry(n);
+                b_KsCat->GetEntry(n);
+                b_TriggerCat->GetEntry(n);
+                if(t_run == i+1 && t_KsCat == j){
+                    *pdfObs = *data->get(n);
+                    double m_B = ((RooRealVar*)((RooArgList*)pdfObs)->at(0))->getVal();
+                    double m_Ks = ((RooRealVar*)((RooArgList*)pdfObs)->at(1))->getVal();
+                    if(j==0)if( m_B < (double)signalRange_B_min_MM || m_B > (double)signalRange_B_max_MM  || m_Ks < (double)signalRange_Ks_min_MM || m_Ks > (double)signalRange_Ks_max_MM  ) continue;
+                    if(j==1)if( m_B < (double)signalRange_B_min_MM || m_B > (double)signalRange_B_max_MM  || m_Ks < Ks_PV_MM.getMin() || m_Ks > Ks_PV_MM.getMax() ) continue;
+
+                    double denom = 0.;
+                    for(int k = 0 ; k< dim; k++){ 
+                        double pdf_k = ((RooAbsPdf*)pdf_slice_comp.at(k))->getVal(pdfObs);
+                        double yield_k = ((RooAbsReal*)yield_list.at(k))->getVal();
+                        yield_k *=  f_k[k];
+                        denom += yield_k * pdf_k;
+                    }
+                    
+                    for(int k = 0 ; k< dim; k++)for(int l = 0 ; l< dim; l++){ 
+                        double pdf_k = ((RooAbsPdf*)pdf_slice_comp.at(k))->getVal(pdfObs);
+                        double pdf_l = ((RooAbsPdf*)pdf_slice_comp.at(l))->getVal(pdfObs);
+                        W_kl[k][l] += pdf_k * pdf_l / (denom*denom);
+                    }
+                }
+            }
+            W_kl.Print();
+            W_kl.Invert();
+            W_kl.Print();
+            
+            TMatrixD alpha(1,dim);
+            alpha.Zero();
+            alpha[0][0] = 1.;
+            alpha *= W_kl;
+            alpha.Print();
+
+            TMatrixD alpha_Bs(1,dim);
+            alpha_Bs.Zero();
+            alpha_Bs[0][1] = 1.;
+            alpha_Bs *= W_kl;
+
+            TMatrixD alpha_noKs(1,dim);
+            alpha_noKs.Zero();
+            alpha_noKs[0][2] = 1.;
+            alpha_noKs *= W_kl;
+
+            TMatrixD alpha_Bs_noKs(1,dim);
+            alpha_Bs_noKs.Zero();
+            alpha_Bs_noKs[0][3] = 1.;
+            alpha_Bs_noKs *= W_kl;
+
+            double sum_sw = 0;
+            double sum_sw2 = 0;
+            
+            for(int n = 0; n < out_tree->GetEntries(); n++){
+                b_run->GetEntry(n);
+                b_KsCat->GetEntry(n);
+                b_TriggerCat->GetEntry(n);
+                if(t_run == i+1 && t_KsCat == j){
+                    *pdfObs = *data->get(n);
+                    double m_B = ((RooRealVar*)((RooArgList*)pdfObs)->at(0))->getVal();
+                    double m_Ks = ((RooRealVar*)((RooArgList*)pdfObs)->at(1))->getVal();
+                    if( m_B < (double)signalRange_B_min_MM || m_B > (double)signalRange_B_max_MM  || m_Ks < (double)signalRange_Ks_min_MM || m_Ks > (double)signalRange_Ks_max_MM  ){
+                        weights2[n] = 0;
+                        weights2_Bs[n] = 0;
+                        weights2_noKs[n] = 0;
+                        weights2_Bs_noKs[n] = 0;
+                        continue;
+                    } 
+
+                    double num = 0.;
+                    double num_Bs = 0.;
+                    double num_noKs = 0.;
+                    double num_Bs_noKs = 0.;
+                    double den = 0.;
+                    for(int k = 0 ; k< dim; k++){
+                        double pdf_k = ((RooAbsPdf*)pdf_slice_comp.at(k))->getVal(pdfObs);
+                        double yield_k = ((RooAbsReal*)yield_list.at(k))->getVal();
+                        yield_k *=  f_k[k];
+                        num += alpha[0][k] * pdf_k;
+                        num_Bs += alpha_Bs[0][k] * pdf_k;
+                        num_noKs += alpha_noKs[0][k] * pdf_k;
+                        num_Bs_noKs += alpha_Bs_noKs[0][k] * pdf_k;
+                        den += yield_k * pdf_k;
+                    }
+                    weights2[n] = num/den;
+                    sum_sw += weights2[n];                        
+                    sum_sw2 += weights2[n]*weights2[n];        
+                    weights2_Bs[n] = num_Bs/den;
+                    weights2_noKs[n] = num_noKs/den;
+                    weights2_Bs_noKs[n] = num_Bs_noKs/den;
+                }
+            }      
+             cout << "sum_sw = " << sum_sw << endl << endl;        } 
     }
-    
-    if(sWeight){
+
+    if(sWeight || sWeightNew){
         for(int n = 0; n < out_tree->GetEntries(); n++){
             sw = weights[n];
             sw_Bs = weights_Bs[n];
             sw_noKs = weights_noKs[n];
             sw_Bs_noKs = weights_Bs_noKs[n];
+
+            sw2 = weights2[n];
+            sw2_Bs = weights2_Bs[n];
+            sw2_noKs = weights2_noKs[n];
+            sw2_Bs_noKs = weights2_Bs_noKs[n];
     
             b_sw->Fill();
             b_sw_Bs->Fill();
             b_sw_noKs->Fill();
             b_sw_Bs_noKs->Fill();
+
+            b_sw2->Fill();
+            b_sw2_Bs->Fill();
+            b_sw2_noKs->Fill();
+            b_sw2_Bs_noKs->Fill();
         }
         out_tree->Write();
         output->Close();
@@ -1285,7 +1556,6 @@ void fitSignal2D(){
     cout << endl; cout<<"Chi2 data= " << chi2 <<" Cov Matrix: "<<covmatr<<" EDM: "<<edm<<endl<<endl;
     cout << "Total signal yield = " << signal_yield << endl;
 }
-
 
 void plotDalitz(){
     
@@ -1358,6 +1628,207 @@ void plotDalitz(){
     c->Print("plots/m_Dpi_DKs_scatter.eps");
 }
 
+void testSweights(int step = 0){
+       
+    RooAbsReal::defaultIntegratorConfig()->setEpsAbs(1e-9);
+    RooAbsReal::defaultIntegratorConfig()->setEpsRel(1e-9);
+    RooAbsReal::defaultIntegratorConfig()->getConfigSection("RooIntegrator1D").setCatLabel("extrapolation","WynnEpsilon");
+    RooAbsReal::defaultIntegratorConfig()->getConfigSection("RooIntegrator1D").setCatLabel("maxSteps","1000");
+    RooAbsReal::defaultIntegratorConfig()->getConfigSection("RooIntegrator1D").setCatLabel("minSteps","0");
+    RooAbsReal::defaultIntegratorConfig()->getConfigSection("RooAdaptiveGaussKronrodIntegrator1D").setCatLabel("method","21Points");
+    RooAbsReal::defaultIntegratorConfig()->getConfigSection("RooAdaptiveGaussKronrodIntegrator1D").setRealValue("maxSeg", 1000);
+    
+    /// Signal pdf
+    TString channelString = "m(D_{s}K#pi#pi)" ;
+    RooRealVar DTF_Bs_M("Bs_DTF_MM", channelString, 5200, 5700,"MeV/c^{2}");
+    
+    RooRealVar mean("mean", "mean", 5367,5350.,5390.); 
+    RooRealVar sigma("sigma", "sigma", 20.,0.,80.); 
+    RooGaussian* signal = new RooGaussian("signal","signal",DTF_Bs_M, mean,sigma);
+    mean.setConstant();
+    sigma.setConstant();
+    
+    /// Bkg pdf
+    RooRealVar c0("c0", "c0", .0,-10,10); 
+    RooRealVar c1("c1", "c1", .0,-10,10); 
+    RooRealVar c2("c2", "c2", .0,-10,10); 
+    RooChebychev* bkg= new RooChebychev("bkg","bkg",DTF_Bs_M, RooArgList(c0,c1));
+    
+    RooRealVar exp_par("exp_par","exp_par",-1.6508e-03,-10.,10.);
+    RooExponential bkg_exp("bkg_exp","bkg_exp",DTF_Bs_M,exp_par);
+    
+    NamedParameter<double>  f_bkg("readBkgData::f_bkg", 0.);
+    RooRealVar mean_bkg("mean_bkg", "mean_bkg", 5241.,5350.,5390.); 
+    RooRealVar sigma_bkg("sigma_bkg", "sigma_bkg", 37.,0.,80.); 
+    RooGaussian* partReco = new RooGaussian("partReco","partReco",DTF_Bs_M, mean_bkg,sigma_bkg);
+    //     if(f_bkg==0.){
+    mean_bkg.setConstant();
+    sigma_bkg.setConstant();
+    //     }
+    /// Total pdf
+    int N = 10000;
+    RooRealVar n_sig("n_sig", "n_sig", N*0.5, 0., N);
+    RooRealVar n_bkg("n_bkg", "n_bkg", N*0.5, 0., N);
+    RooRealVar n_bkg2("n_bkg2", "n_bkg2", N*0.25, 0., N);
+    
+    RooAddPdf* pdf;
+    if(f_bkg==0.) pdf = new RooAddPdf("pdf", "pdf", RooArgList(*signal, *bkg), RooArgList(n_sig, n_bkg));
+    else pdf = new RooAddPdf("pdf", "pdf", RooArgList(*signal, bkg_exp, *partReco), RooArgList(n_sig, n_bkg,n_bkg2));
+    
+    // generate toys
+    RooRealVar t("t","t", 0,10,"");
+    RooRealVar tau_sig("tau_sig","tau_sig",-1.);
+    RooRealVar tau_bkg("tau_bkg","tau_bkg",0);
+
+    RooExponential signal_t("signal_t","signal_t",t,tau_sig);
+    RooProdPdf signal2D("signal2D","signal2D",*signal,signal_t);
+
+    RooExponential bkg_t("bkg_t","bkg_t",t,tau_bkg);
+    RooProdPdf bkg2D("bkg2D","bkg2D",*bkg,bkg_t);
+    
+    RooAddPdf* pdf2D = new RooAddPdf("pdf2D", "pdf2D", RooArgList(signal2D, bkg2D), RooArgList(n_sig, n_bkg));
+    RooDataSet* data = pdf2D->generate(RooArgList(DTF_Bs_M,t),N);
+    
+    /// Fit
+    RooFitResult* result = pdf->fitTo(*data,Save(kTRUE),NumCPU(6),Extended(kTRUE));
+    result->Print();
+    
+    /// Calculate sweights
+    TH2D *h_sw = new TH2D("h_sw","h_sw",100,5200,5700,100,-5,5);
+    TH2D *h_sw2 = new TH2D("h_sw2","h_sw2",100,5200,5700,100,-5,5);
+    TH1D *h_t = new TH1D("h_t","h_t",100,0,10);
+    TH1D *h_t_sw = new TH1D("h_t_sw","h_t_sw",100,0,10);
+    TH1D *h_t_sw2 = new TH1D("h_t_sw2","h_t_sw2",100,0,10);
+
+    SPlot *sPlot;
+    if(f_bkg==0.)sPlot= new SPlot("sPlot","sPlot",*data,pdf,RooArgList(n_sig,n_bkg)); 
+    else sPlot= new SPlot("sPlot","sPlot",*data,pdf,RooArgList(n_sig,n_bkg,n_bkg2));    
+        
+    RooArgList pdf_slice_comp(pdf->pdfList());
+    const int dim = pdf_slice_comp.getSize();
+    TMatrixD W_kl(dim,dim);
+    W_kl.Zero();
+    RooArgList yield_list( pdf->coefList());
+    cout << "calculating sWeights " << endl;
+    pdf->Print();
+    yield_list.Print();
+        
+    RooArgSet* pdfObs = pdf2D->getObservables(data) ;
+    DTF_Bs_M.setRange("signal",5350,5400);
+    vector<double> f_k;
+    for(int k = 0 ; k< dim; k++) f_k.push_back(((RooAbsPdf*)pdf_slice_comp.at(k))->createIntegral(DTF_Bs_M,NormSet(DTF_Bs_M),Range("signal_range"))->getVal());
+    for(int n = 0; n < N; n++){
+            *pdfObs = *data->get(n);
+            if(((RooRealVar*)((RooArgList*)pdfObs)->at(0))->getVal() < 5350) continue;
+            if(((RooRealVar*)((RooArgList*)pdfObs)->at(0))->getVal() > 5400) continue;         
+            
+            double denom = 0.;
+            for(int k = 0 ; k< dim; k++){ 
+                double pdf_k = ((RooAbsPdf*)pdf_slice_comp.at(k))->getVal(pdfObs);
+                double yield_k = ((RooAbsReal*)yield_list.at(k))->getVal();
+                yield_k *=  f_k[k];
+                denom += yield_k * pdf_k;
+            }
+            
+            for(int k = 0 ; k< dim; k++)for(int l = 0 ; l< dim; l++){ 
+                double pdf_k = ((RooAbsPdf*)pdf_slice_comp.at(k))->getVal(pdfObs);
+                double pdf_l = ((RooAbsPdf*)pdf_slice_comp.at(l))->getVal(pdfObs);
+                W_kl[k][l] += pdf_k * pdf_l / (denom*denom);
+            }
+    }
+    W_kl.Print();
+    W_kl.Invert();
+    W_kl.Print();
+    
+    TMatrixD alpha(1,dim);
+    alpha.Zero();
+    alpha[0][0] = 1.;
+    alpha *= W_kl;
+    alpha.Print();
+
+    vector<double> w(dim);
+    double sum_sw = 0;
+    double sum_sw2 = 0;
+    
+    for(int n = 0; n < N; n++){
+        *pdfObs = *data->get(n);
+
+        double num = 0.;
+        double den = 0.;
+        for(int k = 0 ; k< dim; k++){
+            double pdf_k = ((RooAbsPdf*)pdf_slice_comp.at(k))->getVal(pdfObs);
+            double yield_k = ((RooAbsReal*)yield_list.at(k))->getVal();
+            yield_k *=  f_k[k];
+            num += alpha[0][k] * pdf_k;
+            den += yield_k * pdf_k;
+        }
+
+        sum_sw += sPlot->GetSWeight(n,"n_sig_sw");
+        h_sw->Fill(((RooRealVar*)((RooArgList*)pdfObs)->at(0))->getVal(), sPlot->GetSWeight(n,"n_sig_sw"));        
+        h_t->Fill(((RooRealVar*)((RooArgList*)pdfObs)->at(1))->getVal());
+        h_t_sw->Fill(((RooRealVar*)((RooArgList*)pdfObs)->at(1))->getVal(), sPlot->GetSWeight(n,"n_sig_sw"));
+        
+        if(((RooRealVar*)((RooArgList*)pdfObs)->at(0))->getVal() < 5350) continue;
+        if(((RooRealVar*)((RooArgList*)pdfObs)->at(0))->getVal() > 5400) continue;         
+
+        h_t_sw2->Fill(((RooRealVar*)((RooArgList*)pdfObs)->at(1))->getVal(), num/den);        
+        h_sw2->Fill(((RooRealVar*)((RooArgList*)pdfObs)->at(0))->getVal(), num/den);
+        sum_sw2 += num/den;        
+        
+    }
+    
+    cout << sum_sw << endl;
+    cout << sum_sw2 << endl;
+        
+    /// Plotting
+    TCanvas* c = new TCanvas();
+    
+    RooPlot* frame= DTF_Bs_M.frame();
+    frame->SetTitle("");
+    data->plotOn(frame,Name("data"),Binning(100));
+    pdf->plotOn(frame,Name("pdf"),LineColor(kBlue));
+    pdf->plotOn(frame,Name("pdf"),LineColor(kRed),LineStyle(kDashed),Components("signal"));
+    pdf->plotOn(frame,Name("pdf"),LineColor(kRed),LineStyle(kDashed),Components("bkg_exp"));
+    pdf->plotOn(frame,Name("pdf"),LineColor(kRed),LineStyle(kDashed),Components("bkg"));
+    frame->Draw();
+    c->Print("toyFit.eps");
+    
+    h_sw->Draw("");
+    h_sw2->SetLineColor(kRed);
+    h_sw2->SetMarkerColor(kRed);
+    h_sw2->Draw("same");
+    c->Print("weights.eps");
+
+    h_t->Draw("");
+    h_t_sw->SetLineColor(kBlue);
+    h_t_sw->Draw("histcsame");
+    h_t_sw2->SetLineColor(kRed);
+    h_t_sw2->Draw("histcsame");
+    c->Print("t.eps");
+}
+
+void makeReducedFile(){
+        NamedParameter<string> outFileName("outFileNameSignal",(string)"./signal_data.root");
+        NamedParameter<string> cut("makeReducedFile::Cut",(string)"N_B_sw2 != 0");
+
+        TFile *file= new TFile(((string)outFileName).c_str());
+        TTree* tree = (TTree*) file->Get("DecayTree");    
+
+        TFile *output = new TFile((TString((string)outFileName).ReplaceAll(".root","_reduced.root")),"RECREATE");
+        tree->SetBranchStatus("*",0);
+        tree->SetBranchStatus("*MM*",1);
+        tree->SetBranchStatus("*sw*",1);
+        tree->SetBranchStatus("m_*",1);
+        tree->SetBranchStatus("Full*",1);
+        tree->SetBranchStatus("B_Full*TAU*",1);
+
+        TTree* out_tree = tree->CopyTree(((string)cut).c_str());
+        out_tree->Write();
+        output->Close();
+        cout << endl;
+        cout << "Created file " << TString((string)outFileName).ReplaceAll(".root","_reduced.root")  << endl << endl;
+}
+
 int main(int argc, char** argv){
 
     time_t startTime = time(0);
@@ -1385,7 +1856,9 @@ int main(int argc, char** argv){
     //fitSignalShape("signal");
     //fitPartRecoBkgShape();
     fitSignal2D();
-    plotDalitz();
+    //plotDalitz();
+    NamedParameter<int> reduceFile("makeReducedFile", 0);
+    if(reduceFile)makeReducedFile();
  
     cout << "==============================================" << endl;
     cout << " Done. " << " Total time since start " << (time(0) - startTime)/60.0 << " min." << endl;

@@ -171,17 +171,23 @@ void TMVAClassificationApplication(TString decay = "B2DKspi", TString dataType =
    theTree->SetBranchAddress( "TriggerCat", &TriggerCat );
    theTree->SetBranchAddress( "eventNumber", &eventNumber );
    theTree->SetBranchAddress( "KsCat", &KsCat );
-    
+   
+   Double_t FullBsDTF_status;
    Double_t FullDTF_status;
    Double_t DTF_status;
    Double_t PV_status;
    Double_t B_DTF_MM;
+   Double_t B_DTF_MMERR;
+   Double_t B_DTF_TAUERR;    
    theTree->SetBranchAddress( "FullDTF_status", &FullDTF_status );
+   //theTree->SetBranchAddress( "FullBsDTF_status", &FullBsDTF_status );
    theTree->SetBranchAddress( "DTF_status", &DTF_status );
    theTree->SetBranchAddress( "PV_status", &PV_status );
    theTree->SetBranchAddress( "B_DTF_MM", &B_DTF_MM );
+   theTree->SetBranchAddress( "B_DTF_MMERR", &B_DTF_MMERR );
+   theTree->SetBranchAddress( "B_DTF_TAUERR", &B_DTF_TAUERR );
 
-   //output file---------------------------------------------------------------------------------------------------------------------------------------
+   //output file--------------------------------------------------------------------------------------------------------------------------
    Float_t BDTG_response;
    double BDTG;
    tree->Branch("BDTG_response",&BDTG_response, "BDTG_response/F");
@@ -198,10 +204,14 @@ void TMVAClassificationApplication(TString decay = "B2DKspi", TString dataType =
 
         theTree->GetEntry(ievt);
         if(FullDTF_status > 1)continue;
+        //if(FullBsDTF_status > 1)continue;
         if(DTF_status > 1)continue;
         if(PV_status > 1)continue;
         if(TMath::IsNaN(B_DTF_MM))continue;
-
+        if(B_DTF_MMERR> 30)continue;
+        if(B_DTF_TAUERR>0.15)continue;
+        if(B_DTF_MM < 5000 ) continue;
+       
         r_log_B_FDCHI2_OWNPV = float(log(B_FDCHI2_OWNPV));
         r_log_B_IPCHI2_OWNPV = float(log(B_IPCHI2_OWNPV));
         r_log_B_DIRA_OWNPV = float(log(1.-B_DIRA_OWNPV));

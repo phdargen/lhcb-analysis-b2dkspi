@@ -1,25 +1,31 @@
 * general options
-"nBins"		100
-"min_MM"	5200.
-"max_MM"	5800.
-
-"numCPU"	 1
-
-"sWeightSignal"	 	1
-"sWeightMC"		0
-"outFileNameSignal"	"b2dkspi_sw.root"
-*"outFileNameSignal"	"bs2dkspi_sw.root"
-
-
+"initialState"	"Bd"
+"finalState"	"DKspi"
 "inFileNameSignal"	"/eos/lhcb/user/p/phdargen/B2DKspi/BDT/B2DKspi_data.root"
 "inFileNameMC"		"/eos/lhcb/user/p/phdargen/B2DKspi/BDT/B2DKspi_mc.root"
 "inFileNamePartReco"	"/eos/lhcb/user/p/phdargen/B2DKspi/Preselected/MC_B2DKspi_DD_12_BsDstKspi.root"
 
-"cut_BDT"			"(BDTG > 0. && m_Dpi < 4800 && abs(D_PV_MM-1869.61)<25  && pi_ProbNNk < 0.2)"
-*"cut_BDT"			"(BDTG > 0. && m_Dpi < 4800 && abs(D_PV_MM-1869.61)<25  && pi_ProbNNk < 0.2 && abs(FullDTF_m_Kspi - 1869.61)>25 && abs(FullDTF_m_Kspi - 1968.3)>25)"
-*"cut_BDT"			"(BDTG > 0. && m_Dpi < 4800 && abs(D_PV_MM-1869.61)<25  && pi_ProbNNk < 0.2 && abs(FullBsDTF_m_Kspi - 1869.61)>25 && abs(FullBsDTF_m_Kspi - 1968.3)>25)"
-"cutMC_BDT"			"(BDTG > 0. && abs(Ks_PV_MM-497.611) < 30 && m_Dpi < 4800 && abs(D_PV_MM-1869.61)<25  && pi_ProbNNk < 0.2)"
+"nBins"		100
+"min_MM"	5200.
+"max_MM"	5800.
+"signalRange_B_min_MM"	5200.
+"signalRange_B_max_MM"	5450.
+"signalRange_Ks_min_MM"	485
+"signalRange_Ks_max_MM"	515
 
+"sWeightSignal"	 		1
+"sWeightSignalNew"	 	1
+"sWeightMC"			0
+"outFileNameSignal"	"b2dkspi_sw.root"
+*"outFileNameSignal"	"bs2dkspi_sw.root"
+"makeReducedFile"		1
+"makeReducedFile::Cut"		"N_B_sw2 != 0"
+
+"cut_BDT"			"(BDTG > 0. && m_Dpi < 4900 && abs(D_PV_MM-1869.61)<25  && pi_ProbNNk < 0.2 && abs(FullDTF_m_Kspi - 1869.61)>25 && abs(FullDTF_m_Kspi - 1968.3)>25)"
+*"cut_BDT"			"(BDTG > 0. && m_Dpi < 4900 && abs(D_PV_MM-1869.61)<25  && pi_ProbNNk < 0.2 && abs(FullBsDTF_m_Kspi - 1869.61)>25 && abs(FullBsDTF_m_Kspi - 1968.3)>25)"
+
+"cutMC_BDT"			"(BDTG > 0. && abs(Ks_PV_MM-497.611) < 30 && m_Dpi < 4900 && abs(D_PV_MM-1869.61)<25  && pi_ProbNNk < 0.2)"
 
 "fixSignalShapeFromMC" 		0
 "fixExpBkgFromSidebands"	0
+"numCPU"	 8
