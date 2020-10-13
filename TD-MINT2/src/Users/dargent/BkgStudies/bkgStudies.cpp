@@ -31,7 +31,7 @@ void BkgStudies(){
     
     TChain* tree = 0;
     tree =new TChain("DecayTree");    
-    tree->Add("/eos/lhcb/user/p/phdargen/B2DKspi/BDT/B2DKspi_data.root");
+    tree->Add("/eos/lhcb/user/p/phdargen/B2DKspi/BDT/B2DKspi_data_noVetos.root");
     //tree->Add("../../../../../Selection/Preselected/Data_B2DKspi_LL_16.root");
     //tree->Add("../MassFits/b2dkspi_sw.root");
 
