@@ -109,7 +109,8 @@ public :
     inline  Bool_t LooseCuts(Long64_t entry);
     inline  Bool_t LooseCutsLTU(Long64_t entry);
     inline void set_LorentzVectors();
-    
+    inline Bool_t Veto_Cuts();
+
    TLorentzVector pi,pip_Ks,pim_Ks,pi1_D,pi2_D,K_D,Ks,D;
    TLorentzVector FullDTF_pi,FullDTF_pip_Ks,FullDTF_pim_Ks,FullDTF_pi1_D,FullDTF_pi2_D,FullDTF_K_D,FullDTF_Ks,FullDTF_D;
    TLorentzVector FullBsDTF_pi,FullBsDTF_pip_Ks,FullBsDTF_pim_Ks,FullBsDTF_pi1_D,FullBsDTF_pi2_D,FullBsDTF_K_D,FullBsDTF_Ks,FullBsDTF_D;

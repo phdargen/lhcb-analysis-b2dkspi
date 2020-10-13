@@ -509,6 +509,28 @@ inline Bool_t DecayTree::LooseCuts(Long64_t i){
     return true;
 }
 
+inline Bool_t DecayTree::Veto_Cuts(){
+        
+    //Lambda_c veto
+    if(TMath::Abs( (K_D + pi1_fromD_asP_MissID + pi2_D).M() - massLambda_c )  < 25. && ((pi1_D_ProbNNpi/(pi1_D_ProbNNpi+pi1_D_ProbNNp)) < 0.75) ) return false;
+    if(TMath::Abs( (K_D + pi2_fromD_asP_MissID + pi1_D).M() - massLambda_c )  < 25. && ((pi2_D_ProbNNpi/(pi2_D_ProbNNpi+pi2_D_ProbNNp)) < 0.75) ) return false;
+    
+    //Ds veto
+    if(TMath::Abs((K_D + pi1_fromD_asK_MissID + pi2_D).M()-massDs) < 25. && (pi1_D_ProbNNpi/(pi1_D_ProbNNpi+pi1_D_ProbNNk) < 0.6)  ) return false;
+    if(TMath::Abs((K_D + pi2_fromD_asK_MissID + pi1_D).M()-massDs) < 25. && (pi2_D_ProbNNpi/(pi2_D_ProbNNpi+pi2_D_ProbNNk) < 0.6)  ) return false;
+    
+    // phi veto
+    if(TMath::Abs((K_D+pi1_fromD_asK_MissID).M() - massPhi) < 10) return false;
+    if(TMath::Abs((K_D+pi2_fromD_asK_MissID).M() - massPhi) < 10) return false;
+    
+    // B0 -> D pi
+    if((D+pi).M() > 4900 ) return false;
+
+    // Wrong PV veto
+    if(nPV > 1 && (B_MINIPCHI2NEXTBEST-B_IPCHI2_OWNPV) < 20) return false;
+    
+    return true;
+}
 
 inline void DecayTree::set_LorentzVectors(){
     
@@ -557,13 +579,12 @@ inline void DecayTree::set_LorentzVectors(){
         pi_asP_MissID.SetXYZM(pi_PX,pi_PY,pi_PZ,massProton);        
         pi_asK_MissID.SetXYZM(pi_PX,pi_PY,pi_PZ,massKaon);        
     
-        pi1_fromD_asP_MissID.SetXYZM(pi_PX,pi_PY,pi_PZ,massProton);        
-        pi1_fromD_asK_MissID.SetXYZM(pi_PX,pi_PY,pi_PZ,massKaon);        
+        pi1_fromD_asP_MissID.SetXYZM(pi1_D_PX,pi1_D_PY,pi1_D_PZ,massProton);        
+        pi1_fromD_asK_MissID.SetXYZM(pi1_D_PX,pi1_D_PY,pi1_D_PZ,massKaon);        
     
-        pi2_fromD_asP_MissID.SetXYZM(pi_PX,pi_PY,pi_PZ,massProton);        
-        pi2_fromD_asK_MissID.SetXYZM(pi_PX,pi_PY,pi_PZ,massKaon);        
+        pi2_fromD_asP_MissID.SetXYZM(pi2_D_PX,pi2_D_PY,pi2_D_PZ,massProton);        
+        pi2_fromD_asK_MissID.SetXYZM(pi2_D_PX,pi2_D_PY,pi2_D_PZ,massKaon);        
 }
-    
     
 void DecayTree::Loop()
 {
@@ -840,7 +861,6 @@ void DecayTree::Loop()
         // Read from individual branches rather than whole tree,
         // messy and prone to errors but benefical to performance
         // fChain->GetEntry(i);   
-        
         Long64_t j = LoadTree(i);
         if (j < 0) break;
         
@@ -849,6 +869,7 @@ void DecayTree::Loop()
         
         fChain->GetEntry(i);   
         set_LorentzVectors();
+        if(!Veto_Cuts()) continue;
     
         if(B_L0Global_TIS)TriggerCat = 2;
         else TriggerCat = 3;

@@ -27,1869 +27,348 @@
 using namespace std;
 using namespace MINT;
 
-
-void BkgStudies_norm_Ds2KKpi(){
-
-    	TChain* tree = 0;
-   	tree =new TChain("DecayTree");
-
-    	tree->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/norm_Ds2KKpi_11_noVetoes.root");
-    	tree->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/norm_Ds2KKpi_12_noVetoes.root");
-    	tree->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/norm_Ds2KKpi_15_noVetoes.root");
-    	tree->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/norm_Ds2KKpi_16_noVetoes.root");
-
-   	tree->SetBranchStatus("*",0);
-    	tree->SetBranchStatus("*M",1) ;
-    	tree->SetBranchStatus("*MM",1) ;
-    	tree->SetBranchStatus( "*P", 1 );
-   	tree->SetBranchStatus( "*PX", 1 );
-    	tree->SetBranchStatus( "*PY", 1);
-   	tree->SetBranchStatus( "*PZ", 1);
-    	tree->SetBranchStatus( "*PE", 1);
-    	tree->SetBranchStatus( "*PT", 1 );
-	tree->SetBranchStatus( "*PIDK*", 1);
-	tree->SetBranchStatus( "*PIDp*", 1);
-	tree->SetBranchStatus( "*finalState*", 1);
-
-	//define Lorentz vectors
-	TLorentzVector K_plus_fromDs;
-	TLorentzVector K_minus_fromDs;
-	TLorentzVector pi_minus_fromDs;
-	TLorentzVector K_plus;
-	TLorentzVector pi_plus;
-	TLorentzVector pi_minus;
-
-	//misIDs
-	TLorentzVector Kminus_asPiminus_MisID;
-	TLorentzVector Kminus_asProton_MisID;
-
-	//masses
-	double massKaon = 493.68;
-	double massPion = 139.57;
-	double massProton = 938.27;
-	double massPhi = 1019.46;
-	double massKstar = 895.81;
-	double massDs = 1968.30;
-	double massDminus = 1869.61;
-	double massLambda_c = 2286.46;
-	double massD0 = 1864.83;
-
-	//define observables
-	Double_t Bs_MM;
-	Double_t Ds_MM;
-	Double_t K_plus_PX;
-	Double_t K_plus_PY;
-	Double_t K_plus_PZ;
-	Double_t pi_minus_PX;
-	Double_t pi_minus_PY;
-	Double_t pi_minus_PZ;
-	Double_t pi_plus_PX;
-	Double_t pi_plus_PY;
-	Double_t pi_plus_PZ;
-
-	Double_t K_plus_fromDs_PX;
-	Double_t K_plus_fromDs_PY;
-	Double_t K_plus_fromDs_PZ;
-	Double_t K_minus_fromDs_PX;
-	Double_t K_minus_fromDs_PY;
-	Double_t K_minus_fromDs_PZ;
-	Double_t pi_minus_fromDs_PX;
-	Double_t pi_minus_fromDs_PY;
-	Double_t pi_minus_fromDs_PZ;
-
-	Double_t K_minus_fromDs_PIDK;
-	Double_t K_minus_fromDs_PIDp;
-
-	int Ds_finalState;
-
-	//link to tree
-        tree->SetBranchAddress( "Ds_finalState" , &Ds_finalState );
-        tree->SetBranchAddress( "Bs_MM" , &Bs_MM );
-        tree->SetBranchAddress( "K_plus_fromDs_PX" , &K_plus_fromDs_PX );
-        tree->SetBranchAddress( "K_plus_fromDs_PY" , &K_plus_fromDs_PY );
-        tree->SetBranchAddress( "K_plus_fromDs_PZ" , &K_plus_fromDs_PZ );
-        tree->SetBranchAddress( "K_minus_fromDs_PX" , &K_minus_fromDs_PX );
-        tree->SetBranchAddress( "K_minus_fromDs_PY" , &K_minus_fromDs_PY );
-        tree->SetBranchAddress( "K_minus_fromDs_PZ" , &K_minus_fromDs_PZ );
-        tree->SetBranchAddress( "pi_minus_fromDs_PX" , &pi_minus_fromDs_PX );
-        tree->SetBranchAddress( "pi_minus_fromDs_PY" , &pi_minus_fromDs_PY );
-        tree->SetBranchAddress( "pi_minus_fromDs_PZ" , &pi_minus_fromDs_PZ );
-
-        tree->SetBranchAddress( "K_minus_fromDs_PIDK" , &K_minus_fromDs_PIDK );
-        tree->SetBranchAddress( "K_minus_fromDs_PIDp" , &K_minus_fromDs_PIDp );
-
-
-	//misID histos
-	TH1D* mass_Ds2KKpi_as_D2Kpipi_beforeVeto = new TH1D(" ", ";m(K^{+}K^{-}_{#pi}#pi^{-}) - m_{D} [MeV/c^{2}];Events", 50, -100, 100.);
-	TH1D* mass_Ds2KKpi_as_D2Kpipi_afterVeto = new TH1D("   ", ";m(K^{+}K^{-}_{#pi}#pi^{-}) [MeV/c^{2}];Events", 50, -100, 100);
-
-	TH1D* mass_Ds2KKpi_as_D2Kpipi_beforeVeto_0 = new TH1D(" ", ";m(K^{+}K^{-}_{#pi}#pi^{-}) - m_{D} [MeV/c^{2}];Events", 50, -100, 100.);
-	TH1D* mass_Ds2KKpi_as_D2Kpipi_afterVeto_0 = new TH1D("   ", ";m(K^{+}K^{-}_{#pi}#pi^{-}) [MeV/c^{2}];Events", 50, -100, 100);
-	TH1D* mass_Ds2KKpi_as_D2Kpipi_beforeVeto_1 = new TH1D(" ", ";m(K^{+}K^{-}_{#pi}#pi^{-}) - m_{D} [MeV/c^{2}];Events", 50, -100, 100.);
-	TH1D* mass_Ds2KKpi_as_D2Kpipi_afterVeto_1 = new TH1D("   ", ";m(K^{+}K^{-}_{#pi}#pi^{-}) [MeV/c^{2}];Events", 50, -100, 100);
-	TH1D* mass_Ds2KKpi_as_D2Kpipi_beforeVeto_2 = new TH1D(" ", ";m(K^{+}K^{-}_{#pi}#pi^{-}) - m_{D} [MeV/c^{2}];Events", 50, -100, 100.);
-	TH1D* mass_Ds2KKpi_as_D2Kpipi_afterVeto_2 = new TH1D("   ", ";m(K^{+}K^{-}_{#pi}#pi^{-}) [MeV/c^{2}];Events", 50, -100, 100);
-
-	TH1D* mass_Ds2KKpi_as_Lc2KPpi_beforeVeto = new TH1D(" ", ";m(K^{+} K^{-}_{p} #pi^{-}) - m_{#Lambda_{c}} [MeV/c^{2}];Events", 50, -100, 100);
-	TH1D* mass_Ds2KKpi_as_Lc2KPpi_afterVeto = new TH1D("   ", ";m(K^{+} K^{-}_{p} #pi^{-}) [MeV/c^{2}];Events", 50, -100, 100);
-
-	TH1D* mass_Ds2KKpi_as_Lc2KPpi_beforeVeto_0 = new TH1D(" ", ";m(K^{+} K^{-}_{p} #pi^{-}) - m_{#Lambda_{c}} [MeV/c^{2}];Events", 50, -100, 100);
-	TH1D* mass_Ds2KKpi_as_Lc2KPpi_afterVeto_0 = new TH1D("   ", ";m(K^{+} K^{-}_{p} #pi^{-}) [MeV/c^{2}];Events", 50, -100, 100);
-	TH1D* mass_Ds2KKpi_as_Lc2KPpi_beforeVeto_1 = new TH1D(" ", ";m(K^{+} K^{-}_{p} #pi^{-}) - m_{#Lambda_{c}} [MeV/c^{2}];Events", 50, -100, 100);
-	TH1D* mass_Ds2KKpi_as_Lc2KPpi_afterVeto_1 = new TH1D("   ", ";m(K^{+} K^{-}_{p} #pi^{-}) [MeV/c^{2}];Events", 50, -100, 100);
-	TH1D* mass_Ds2KKpi_as_Lc2KPpi_beforeVeto_2 = new TH1D(" ", ";m(K^{+} K^{-}_{p} #pi^{-}) - m_{#Lambda_{c}} [MeV/c^{2}];Events", 50, -100, 100);
-	TH1D* mass_Ds2KKpi_as_Lc2KPpi_afterVeto_2 = new TH1D("   ", ";m(K^{+} K^{-}_{p} #pi^{-}) [MeV/c^{2}];Events", 50, -100, 100);
-
-
-	TH1D* mass_Ds2KKpi_as_D02KK_beforeVeto = new TH1D(" ", ";m(K^{+} K^{-}) [MeV/c^{2}];Events", 50, 1700, 1880);
-	TH1D* mass_Ds2KKpi_as_D02KK_afterVeto = new TH1D("   ", ";m(K^{+} K^{-}) [MeV/c^{2}];Events", 50, 1700,1880);
-
-	TH1D* mass_Ds2KKpi_as_D02KK_beforeVeto2 = new TH1D(" ", ";m(K^{+} K^{-} #pi^{-}) - m(K^{+} K^{-}) [MeV/c^{2}];Events", 50, 130, 200);
-	TH1D* mass_Ds2KKpi_as_D02KK_afterVeto2 = new TH1D("   ", ";m(K^{+} K^{-} #pi^{-}) - m(K^{+} K^{-}) [MeV/c^{2}];Events", 50, 130,200);
-
-
-	//loop over events
-	int numEvents = tree->GetEntries();
-	for(int i=0; i< numEvents; i++)
-        	{
-        	if (0ul == (i % 10000ul)) std::cout << "Read event " << i << "/" << numEvents << std::endl;
-        	tree->GetEntry(i);
-		if(Bs_MM < 5200 || Bs_MM > 5700) continue;
-
-        	//fill the Lorentz vectors
-        	pi_minus_fromDs.SetXYZM(pi_minus_fromDs_PX,pi_minus_fromDs_PY,pi_minus_fromDs_PZ,massPion);
-		K_plus_fromDs.SetXYZM(K_plus_fromDs_PX,K_plus_fromDs_PY,K_plus_fromDs_PZ,massKaon);
-		K_minus_fromDs.SetXYZM(K_minus_fromDs_PX,K_minus_fromDs_PY,K_minus_fromDs_PZ,massKaon);
-
-
-		//misID Lorentz vectors
-		Kminus_asPiminus_MisID.SetXYZM(K_minus_fromDs_PX,K_minus_fromDs_PY,K_minus_fromDs_PZ,massPion);
- 		Kminus_asProton_MisID.SetXYZM(K_minus_fromDs_PX,K_minus_fromDs_PY,K_minus_fromDs_PZ, massProton);
-
-		//fill histos without veto cuts
-		mass_Ds2KKpi_as_D2Kpipi_beforeVeto->Fill((K_plus_fromDs + pi_minus_fromDs + Kminus_asPiminus_MisID).M()-massD0);
-		mass_Ds2KKpi_as_Lc2KPpi_beforeVeto->Fill((K_plus_fromDs + pi_minus_fromDs + Kminus_asProton_MisID).M()-massLambda_c);
-		mass_Ds2KKpi_as_D02KK_beforeVeto->Fill((K_plus_fromDs + K_minus_fromDs).M());
-		mass_Ds2KKpi_as_D02KK_beforeVeto2->Fill((K_plus_fromDs + K_minus_fromDs + pi_minus_fromDs).M() - (K_plus_fromDs + K_minus_fromDs).M());
-
-		if(Ds_finalState==0){
-			mass_Ds2KKpi_as_D2Kpipi_beforeVeto_0->Fill((K_plus_fromDs + pi_minus_fromDs + Kminus_asPiminus_MisID).M()-massD0);
-			mass_Ds2KKpi_as_Lc2KPpi_beforeVeto_0->Fill((K_plus_fromDs + pi_minus_fromDs + Kminus_asProton_MisID).M()-massLambda_c);
-
-			if( TMath::Abs((K_plus_fromDs + Kminus_asPiminus_MisID + pi_minus_fromDs).M() - massDminus) > 40. || K_minus_fromDs_PIDK > 5 ){
-				mass_Ds2KKpi_as_D2Kpipi_afterVeto->Fill((K_plus_fromDs + pi_minus_fromDs + Kminus_asPiminus_MisID).M()-massD0);
-				mass_Ds2KKpi_as_D2Kpipi_afterVeto_0->Fill((K_plus_fromDs + pi_minus_fromDs + Kminus_asPiminus_MisID).M()-massD0);
-			}
-			if( TMath::Abs((K_plus_fromDs + Kminus_asProton_MisID + pi_minus_fromDs).M() - massLambda_c) > 40. || ((K_minus_fromDs_PIDK - K_minus_fromDs_PIDp) > 2) ){
-				mass_Ds2KKpi_as_Lc2KPpi_afterVeto->Fill((K_plus_fromDs + pi_minus_fromDs + Kminus_asProton_MisID).M()-massLambda_c);
-				mass_Ds2KKpi_as_Lc2KPpi_afterVeto_0->Fill((K_plus_fromDs + pi_minus_fromDs + Kminus_asProton_MisID).M()-massLambda_c);
-			}
-		}
-
-		if(Ds_finalState==1){
-			mass_Ds2KKpi_as_D2Kpipi_beforeVeto_1->Fill((K_plus_fromDs + pi_minus_fromDs + Kminus_asPiminus_MisID).M()-massD0);
-			mass_Ds2KKpi_as_Lc2KPpi_beforeVeto_1->Fill((K_plus_fromDs + pi_minus_fromDs + Kminus_asProton_MisID).M()-massLambda_c);
-			if( TMath::Abs((K_plus_fromDs + Kminus_asPiminus_MisID + pi_minus_fromDs).M() - massDminus) > 40. || K_minus_fromDs_PIDK > 15 ){
-				mass_Ds2KKpi_as_D2Kpipi_afterVeto->Fill((K_plus_fromDs + pi_minus_fromDs + Kminus_asPiminus_MisID).M()-massD0);
-				mass_Ds2KKpi_as_D2Kpipi_afterVeto_1->Fill((K_plus_fromDs + pi_minus_fromDs + Kminus_asPiminus_MisID).M()-massD0);
-			}
-			if( TMath::Abs((K_plus_fromDs + Kminus_asProton_MisID + pi_minus_fromDs).M() - massLambda_c) > 40. || ((K_minus_fromDs_PIDK - K_minus_fromDs_PIDp) > 5) ){
-				mass_Ds2KKpi_as_Lc2KPpi_afterVeto->Fill((K_plus_fromDs + pi_minus_fromDs + Kminus_asProton_MisID).M()-massLambda_c);
-				mass_Ds2KKpi_as_Lc2KPpi_afterVeto_1->Fill((K_plus_fromDs + pi_minus_fromDs + Kminus_asProton_MisID).M()-massLambda_c);
-			}
-		}
-		if(Ds_finalState==2){
-			mass_Ds2KKpi_as_D2Kpipi_beforeVeto_2->Fill((K_plus_fromDs + pi_minus_fromDs + Kminus_asPiminus_MisID).M()-massD0);
-			mass_Ds2KKpi_as_Lc2KPpi_beforeVeto_2->Fill((K_plus_fromDs + pi_minus_fromDs + Kminus_asProton_MisID).M()-massLambda_c);
-			if( TMath::Abs((K_plus_fromDs + Kminus_asPiminus_MisID + pi_minus_fromDs).M() - massDminus) > 40. || K_minus_fromDs_PIDK > 15 ){
-				mass_Ds2KKpi_as_D2Kpipi_afterVeto->Fill((K_plus_fromDs + pi_minus_fromDs + Kminus_asPiminus_MisID).M()-massD0);
-				mass_Ds2KKpi_as_D2Kpipi_afterVeto_2->Fill((K_plus_fromDs + pi_minus_fromDs + Kminus_asPiminus_MisID).M()-massD0);
-			}
-			if( TMath::Abs((K_plus_fromDs + Kminus_asProton_MisID + pi_minus_fromDs).M() - massLambda_c) > 40. || ((K_minus_fromDs_PIDK - K_minus_fromDs_PIDp) > 5) ){
-				mass_Ds2KKpi_as_Lc2KPpi_afterVeto->Fill((K_plus_fromDs + pi_minus_fromDs + Kminus_asProton_MisID).M()-massLambda_c);
-				mass_Ds2KKpi_as_Lc2KPpi_afterVeto_2->Fill((K_plus_fromDs + pi_minus_fromDs + Kminus_asProton_MisID).M()-massLambda_c);
-			}
-		}
- 
-// 		if((K_plus_fromDs + K_minus_fromDs).M() < 1840.){
-		if((K_plus_fromDs + K_minus_fromDs + pi_minus_fromDs).M() - (K_plus_fromDs + K_minus_fromDs).M() > 155){
-			mass_Ds2KKpi_as_D02KK_afterVeto->Fill((K_plus_fromDs + K_minus_fromDs).M());
-			mass_Ds2KKpi_as_D02KK_afterVeto2->Fill((K_plus_fromDs + K_minus_fromDs + pi_minus_fromDs).M() - (K_plus_fromDs + K_minus_fromDs).M());
-		}
-
-	}
-
-	TCanvas* c = new TCanvas();
-
-	//plots
-	mass_Ds2KKpi_as_D2Kpipi_beforeVeto->Draw("E1"); c->Print("eps/Ds2KKpi/norm_Ds2KKpi_as_D2Kpipi_beforeVeto.eps");
-	mass_Ds2KKpi_as_D2Kpipi_afterVeto->Draw("E1"); c->Print("eps/Ds2KKpi/norm_Ds2KKpi_as_D2Kpipi_afterVeto.eps");
-
-    	mass_Ds2KKpi_as_D2Kpipi_beforeVeto->SetLineColor(kBlack);
-    	mass_Ds2KKpi_as_D2Kpipi_beforeVeto->SetMarkerColor(kBlack);
-   	mass_Ds2KKpi_as_D2Kpipi_beforeVeto->Draw("");
-    	mass_Ds2KKpi_as_D2Kpipi_afterVeto->SetLineColor(kBlue);
-    	mass_Ds2KKpi_as_D2Kpipi_afterVeto->SetMarkerColor(kBlue);
-    	mass_Ds2KKpi_as_D2Kpipi_afterVeto->Draw("histsame");
-
-    	TLegend *leg = new TLegend(0.2,0.7,0.45,0.85);
-    	leg->SetHeader(" ");
-    	leg->AddEntry(mass_Ds2KKpi_as_D2Kpipi_beforeVeto,"Data without veto","LEP");
-    	leg->AddEntry(mass_Ds2KKpi_as_D2Kpipi_afterVeto,"Data with veto","LEP");
-    	leg->SetLineColor(kWhite);
-    	leg->SetFillColor(kWhite);
-    	leg->SetTextSize(0.05);
-    	//leg->Draw();
-	c->Print("eps/Ds2KKpi/norm_Ds2KKpi_as_D2Kpipi_compareVeto.eps");
-	c->Print("../../../../../TD-AnaNote/latex/figs/BkgStudies/norm_Ds2KKpi_as_D2Kpipi_compareVeto.pdf");
-
-    	mass_Ds2KKpi_as_D2Kpipi_beforeVeto_0->SetLineColor(kBlack);
-    	mass_Ds2KKpi_as_D2Kpipi_beforeVeto_0->SetMarkerColor(kBlack);
-   	mass_Ds2KKpi_as_D2Kpipi_beforeVeto_0->Draw("");
-    	mass_Ds2KKpi_as_D2Kpipi_afterVeto_0->SetLineColor(kBlue);
-    	mass_Ds2KKpi_as_D2Kpipi_afterVeto_0->SetMarkerColor(kBlue);
-    	mass_Ds2KKpi_as_D2Kpipi_afterVeto_0->Draw("histsame");
-	c->Print("eps/Ds2KKpi/norm_Ds2KKpi_as_D2Kpipi_compareVeto_0.eps");
-	c->Print("../../../../../TD-AnaNote/latex/figs/BkgStudies/norm_Ds2KKpi_as_D2Kpipi_compareVeto_0.pdf");
-
-    	mass_Ds2KKpi_as_D2Kpipi_beforeVeto_1->SetLineColor(kBlack);
-    	mass_Ds2KKpi_as_D2Kpipi_beforeVeto_1->SetMarkerColor(kBlack);
-   	mass_Ds2KKpi_as_D2Kpipi_beforeVeto_1->Draw("");
-    	mass_Ds2KKpi_as_D2Kpipi_afterVeto_1->SetLineColor(kBlue);
-    	mass_Ds2KKpi_as_D2Kpipi_afterVeto_1->SetMarkerColor(kBlue);
-    	mass_Ds2KKpi_as_D2Kpipi_afterVeto_1->Draw("histsame");
-	c->Print("eps/Ds2KKpi/norm_Ds2KKpi_as_D2Kpipi_compareVeto_1.eps");
-	c->Print("../../../../../TD-AnaNote/latex/figs/BkgStudies/norm_Ds2KKpi_as_D2Kpipi_compareVeto_1.pdf");
-
-    	mass_Ds2KKpi_as_D2Kpipi_beforeVeto_2->SetLineColor(kBlack);
-    	mass_Ds2KKpi_as_D2Kpipi_beforeVeto_2->SetMarkerColor(kBlack);
-   	mass_Ds2KKpi_as_D2Kpipi_beforeVeto_2->Draw("");
-    	mass_Ds2KKpi_as_D2Kpipi_afterVeto_2->SetLineColor(kBlue);
-    	mass_Ds2KKpi_as_D2Kpipi_afterVeto_2->SetMarkerColor(kBlue);
-    	mass_Ds2KKpi_as_D2Kpipi_afterVeto_2->Draw("histsame");
-	c->Print("eps/Ds2KKpi/norm_Ds2KKpi_as_D2Kpipi_compareVeto_2.eps");
-	c->Print("../../../../../TD-AnaNote/latex/figs/BkgStudies/norm_Ds2KKpi_as_D2Kpipi_compareVeto_2.pdf");
-
-	mass_Ds2KKpi_as_Lc2KPpi_beforeVeto->Draw("E1"); c->Print("eps/Ds2KKpi/norm_Ds2KKpi_as_Lc2KPpi_beforeVeto.eps");
-	mass_Ds2KKpi_as_Lc2KPpi_afterVeto->Draw("E1"); c->Print("eps/Ds2KKpi/norm_Ds2KKpi_as_Lc2KPpi_afterVeto.eps");
-
-    	mass_Ds2KKpi_as_Lc2KPpi_beforeVeto->SetLineColor(kBlack);
-    	mass_Ds2KKpi_as_Lc2KPpi_beforeVeto->SetMarkerColor(kBlack);
-   	mass_Ds2KKpi_as_Lc2KPpi_beforeVeto->Draw("");
-    	mass_Ds2KKpi_as_Lc2KPpi_afterVeto->SetLineColor(kBlue);
-    	mass_Ds2KKpi_as_Lc2KPpi_afterVeto->SetMarkerColor(kBlue);
-    	mass_Ds2KKpi_as_Lc2KPpi_afterVeto->Draw("histsame");
-
-    	TLegend *leg_2 = new TLegend(0.6,0.7,0.85,0.85);
-    	leg_2->SetHeader(" ");
-    	leg_2->AddEntry(mass_Ds2KKpi_as_Lc2KPpi_beforeVeto,"Data without veto","LEP");
-    	leg_2->AddEntry(mass_Ds2KKpi_as_Lc2KPpi_afterVeto,"Data with veto","LEP");
-    	leg_2->SetLineColor(kWhite);
-    	leg_2->SetFillColor(kWhite);
-    	leg_2->SetTextSize(0.05);
-    	//leg_2->Draw();
-	c->Print("eps/Ds2KKpi/norm_Ds2KKpi_as_Lc2KPpi_compareVeto.eps");
-	c->Print("../../../../../TD-AnaNote/latex/figs/BkgStudies/norm_Ds2KKpi_as_Lc2KPpi_compareVeto.pdf");
-
-
-    	mass_Ds2KKpi_as_Lc2KPpi_beforeVeto_0->SetLineColor(kBlack);
-    	mass_Ds2KKpi_as_Lc2KPpi_beforeVeto_0->SetMarkerColor(kBlack);
-   	mass_Ds2KKpi_as_Lc2KPpi_beforeVeto_0->Draw("");
-    	mass_Ds2KKpi_as_Lc2KPpi_afterVeto_0->SetLineColor(kBlue);
-    	mass_Ds2KKpi_as_Lc2KPpi_afterVeto_0->SetMarkerColor(kBlue);
-    	mass_Ds2KKpi_as_Lc2KPpi_afterVeto_0->Draw("histsame");
-	c->Print("eps/Ds2KKpi/norm_Ds2KKpi_as_Lc2KPpi_compareVeto_0.eps");
-	c->Print("../../../../../TD-AnaNote/latex/figs/BkgStudies/norm_Ds2KKpi_as_Lc2KPpi_compareVeto_0.pdf");
-
-    	mass_Ds2KKpi_as_Lc2KPpi_beforeVeto_1->SetLineColor(kBlack);
-    	mass_Ds2KKpi_as_Lc2KPpi_beforeVeto_1->SetMarkerColor(kBlack);
-   	mass_Ds2KKpi_as_Lc2KPpi_beforeVeto_1->Draw("");
-    	mass_Ds2KKpi_as_Lc2KPpi_afterVeto_1->SetLineColor(kBlue);
-    	mass_Ds2KKpi_as_Lc2KPpi_afterVeto_1->SetMarkerColor(kBlue);
-    	mass_Ds2KKpi_as_Lc2KPpi_afterVeto_1->Draw("histsame");
-	c->Print("eps/Ds2KKpi/norm_Ds2KKpi_as_Lc2KPpi_compareVeto_1.eps");
-	c->Print("../../../../../TD-AnaNote/latex/figs/BkgStudies/norm_Ds2KKpi_as_Lc2KPpi_compareVeto_1.pdf");
-
-    	mass_Ds2KKpi_as_Lc2KPpi_beforeVeto_2->SetLineColor(kBlack);
-    	mass_Ds2KKpi_as_Lc2KPpi_beforeVeto_2->SetMarkerColor(kBlack);
-   	mass_Ds2KKpi_as_Lc2KPpi_beforeVeto_2->Draw("");
-    	mass_Ds2KKpi_as_Lc2KPpi_afterVeto_2->SetLineColor(kBlue);
-    	mass_Ds2KKpi_as_Lc2KPpi_afterVeto_2->SetMarkerColor(kBlue);
-    	mass_Ds2KKpi_as_Lc2KPpi_afterVeto_2->Draw("histsame");
-	c->Print("eps/Ds2KKpi/norm_Ds2KKpi_as_Lc2KPpi_compareVeto_2.eps");
-	c->Print("../../../../../TD-AnaNote/latex/figs/BkgStudies/norm_Ds2KKpi_as_Lc2KPpi_compareVeto_2.pdf");
-
-
-
-	mass_Ds2KKpi_as_D02KK_beforeVeto->Draw("E1"); c->Print("eps/Ds2KKpi/norm_Ds2KKpi_as_D02KK_beforeVeto.eps");
-	mass_Ds2KKpi_as_D02KK_afterVeto->Draw("E1"); c->Print("eps/Ds2KKpi/norm_Ds2KKpi_as_D02KK_afterVeto.eps");
-
-    	mass_Ds2KKpi_as_D02KK_beforeVeto->SetLineColor(kBlack);
-    	mass_Ds2KKpi_as_D02KK_beforeVeto->SetMarkerColor(kBlack);
-   	mass_Ds2KKpi_as_D02KK_beforeVeto->Draw("");
-    	mass_Ds2KKpi_as_D02KK_afterVeto->SetLineColor(kBlue);
-    	mass_Ds2KKpi_as_D02KK_afterVeto->SetMarkerColor(kBlue);
-    	mass_Ds2KKpi_as_D02KK_afterVeto->Draw("histsame");
-
-    	TLegend *leg_3 = new TLegend(0.2,0.2,0.45,0.35);
-    	leg_3->SetHeader(" ");
-    	leg_3->AddEntry(mass_Ds2KKpi_as_D02KK_beforeVeto,"Data without veto","LEP");
-    	leg_3->AddEntry(mass_Ds2KKpi_as_D02KK_afterVeto,"Data with veto","LEP");
-    	leg_3->SetLineColor(kWhite);
-    	leg_3->SetFillColor(kWhite);
-    	leg_3->SetTextSize(0.05);
-    	//leg_3->Draw();
-	c->Print("eps/Ds2KKpi/norm_Ds2KKpi_as_D02KK_compareVeto.eps");
-	c->Print("../../../../../TD-AnaNote/latex/figs/BkgStudies/norm_Ds2KKpi_as_D02KK_compareVeto.pdf");
-
-
-    	mass_Ds2KKpi_as_D02KK_beforeVeto2->SetLineColor(kBlack);
-    	mass_Ds2KKpi_as_D02KK_beforeVeto2->SetMarkerColor(kBlack);
-   	mass_Ds2KKpi_as_D02KK_beforeVeto2->Draw("");
-    	mass_Ds2KKpi_as_D02KK_afterVeto2->SetLineColor(kBlue);
-    	mass_Ds2KKpi_as_D02KK_afterVeto2->SetMarkerColor(kBlue);
-    	mass_Ds2KKpi_as_D02KK_afterVeto2->Draw("histsame");
-
-	c->Print("eps/Ds2KKpi/norm_Ds2KKpi_as_D02KK_compareVeto_2.eps");
-	c->Print("../../../../../TD-AnaNote/latex/figs/BkgStudies/norm_Ds2KKpi_as_D02KK_compareVeto_2.pdf");
-}
-
-void BkgStudies_signal_Ds2KKpi(){
-
-    	TChain* tree = 0;
-   	tree =new TChain("DecayTree");
-
-    	tree->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/signal_Ds2KKpi_11_noVetoes.root");
-    	tree->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/signal_Ds2KKpi_12_noVetoes.root");
-    	tree->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/signal_Ds2KKpi_15_noVetoes.root");
-    	tree->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/signal_Ds2KKpi_16_noVetoes.root");
-
-   	tree->SetBranchStatus("*",0);
-    	tree->SetBranchStatus("*M",1) ;
-    	tree->SetBranchStatus("*MM",1) ;
-    	tree->SetBranchStatus( "*P", 1 );
-   	tree->SetBranchStatus( "*PX", 1 );
-    	tree->SetBranchStatus( "*PY", 1);
-   	tree->SetBranchStatus( "*PZ", 1);
-    	tree->SetBranchStatus( "*PE", 1);
-    	tree->SetBranchStatus( "*PT", 1 );
-	tree->SetBranchStatus( "*PIDK*", 1);
-	tree->SetBranchStatus( "*PIDp*", 1);
-
-	//define Lorentz vectors
-	TLorentzVector K_plus_fromDs;
-	TLorentzVector K_minus_fromDs;
-	TLorentzVector pi_minus_fromDs;
-	TLorentzVector K_plus;
-	TLorentzVector pi_plus;
-	TLorentzVector pi_minus;
-
-	//misIDs
-	TLorentzVector Kminus_asPiminus_MisID;
-	TLorentzVector Kminus_asProton_MisID;
-
-	//masses
-	double massKaon = 493.68;
-	double massPion = 139.57;
-	double massProton = 938.27;
-	double massPhi = 1019.46;
-	double massKstar = 895.81;
-	double massDs = 1968.30;
-	double massDminus = 1869.61;
-	double massLambda_c = 2286.46;
-	double massD0 = 1864.83;
-
-	//define observables
-	Double_t K_plus_fromDs_PX;
-	Double_t K_plus_fromDs_PY;
-	Double_t K_plus_fromDs_PZ;
-	Double_t K_minus_fromDs_PX;
-	Double_t K_minus_fromDs_PY;
-	Double_t K_minus_fromDs_PZ;
-	Double_t pi_minus_fromDs_PX;
-	Double_t pi_minus_fromDs_PY;
-	Double_t pi_minus_fromDs_PZ;
-
-	Double_t K_minus_fromDs_PIDK;
-	Double_t K_minus_fromDs_PIDp;
-
-	//link to tree
-        tree->SetBranchAddress( "K_plus_fromDs_PX" , &K_plus_fromDs_PX );
-        tree->SetBranchAddress( "K_plus_fromDs_PY" , &K_plus_fromDs_PY );
-        tree->SetBranchAddress( "K_plus_fromDs_PZ" , &K_plus_fromDs_PZ );
-        tree->SetBranchAddress( "K_minus_fromDs_PX" , &K_minus_fromDs_PX );
-        tree->SetBranchAddress( "K_minus_fromDs_PY" , &K_minus_fromDs_PY );
-        tree->SetBranchAddress( "K_minus_fromDs_PZ" , &K_minus_fromDs_PZ );
-        tree->SetBranchAddress( "pi_minus_fromDs_PX" , &pi_minus_fromDs_PX );
-        tree->SetBranchAddress( "pi_minus_fromDs_PY" , &pi_minus_fromDs_PY );
-        tree->SetBranchAddress( "pi_minus_fromDs_PZ" , &pi_minus_fromDs_PZ );
-
-        tree->SetBranchAddress( "K_minus_fromDs_PIDK" , &K_minus_fromDs_PIDK );
-        tree->SetBranchAddress( "K_minus_fromDs_PIDp" , &K_minus_fromDs_PIDp );
-
-
-	//misID histos
-	TH1D* mass_Ds2KKpi_as_D2Kpipi_beforeVeto = new TH1D(" ", ";m(K^{+}K^{-}_{#pi}#pi^{-}) [MeV/c^{2}];Events", 50, 1700., 1950.);
-	TH1D* mass_Ds2KKpi_as_D2Kpipi_afterVeto = new TH1D("   ", ";m(K^{+}K^{-}_{#pi}#pi^{-}) [MeV/c^{2}];Events", 50, 1700., 1950.);
-
-	TH1D* mass_Ds2KKpi_as_Lc2KPpi_beforeVeto = new TH1D(" ", ";m(K^{+} K^{-}_{p} #pi^{-}) [MeV/c^{2}];Events", 50, 2100., 2600.);
-	TH1D* mass_Ds2KKpi_as_Lc2KPpi_afterVeto = new TH1D("   ", ";m(K^{+} K^{-}_{p} #pi^{-}) [MeV/c^{2}];Events", 50, 2100., 2600.);
-
-	TH1D* mass_Ds2KKpi_as_D02KK_beforeVeto = new TH1D(" ", ";m(K^{+} K^{-}) [MeV/c^{2}];Events", 50, 1600., 1900.);
-	TH1D* mass_Ds2KKpi_as_D02KK_afterVeto = new TH1D("   ", ";m(K^{+} K^{-}) [MeV/c^{2}];Events", 50, 1600., 1900.);
-
-	//loop over events
-	int numEvents = tree->GetEntries();
-	for(int i=0; i< numEvents; i++)
-        	{
-        	if (0ul == (i % 10000ul)) std::cout << "Read event " << i << "/" << numEvents << std::endl;
-        	tree->GetEntry(i);
-
-        	//fill the Lorentz vectors
-        	pi_minus_fromDs.SetXYZM(pi_minus_fromDs_PX,pi_minus_fromDs_PY,pi_minus_fromDs_PZ,massPion);
-		K_plus_fromDs.SetXYZM(K_plus_fromDs_PX,K_plus_fromDs_PY,K_plus_fromDs_PZ,massKaon);
-		K_minus_fromDs.SetXYZM(K_minus_fromDs_PX,K_minus_fromDs_PY,K_minus_fromDs_PZ,massKaon);
-
-
-		//misID Lorentz vectors
-		Kminus_asPiminus_MisID.SetXYZM(K_minus_fromDs_PX,K_minus_fromDs_PY,K_minus_fromDs_PZ,massPion);
- 		Kminus_asProton_MisID.SetXYZM(K_minus_fromDs_PX,K_minus_fromDs_PY,K_minus_fromDs_PZ, massProton);
-
-		//fill histos without veto cuts
-		mass_Ds2KKpi_as_D2Kpipi_beforeVeto->Fill((K_plus_fromDs + pi_minus_fromDs + Kminus_asPiminus_MisID).M());
-		mass_Ds2KKpi_as_Lc2KPpi_beforeVeto->Fill((K_plus_fromDs + pi_minus_fromDs + Kminus_asProton_MisID).M());
-		mass_Ds2KKpi_as_D02KK_beforeVeto->Fill((K_plus_fromDs + K_minus_fromDs).M());
-
-
-
-		//fill histos with veto cuts
- 		if( TMath::Abs((K_plus_fromDs + Kminus_asPiminus_MisID + pi_minus_fromDs).M() - massDminus) > 30. || K_minus_fromDs_PIDK > 10 ){
-			mass_Ds2KKpi_as_D2Kpipi_afterVeto->Fill((K_plus_fromDs + pi_minus_fromDs + Kminus_asPiminus_MisID).M());
-		}
-
-		if( TMath::Abs((K_plus_fromDs + Kminus_asProton_MisID + pi_minus_fromDs).M() - massLambda_c) > 30. || ((K_minus_fromDs_PIDK - K_minus_fromDs_PIDp) > 5) ){
-		mass_Ds2KKpi_as_Lc2KPpi_afterVeto->Fill((K_plus_fromDs + pi_minus_fromDs + Kminus_asProton_MisID).M());
-		}
-
-		if((K_plus_fromDs + K_minus_fromDs).M() < 1840.){
-		mass_Ds2KKpi_as_D02KK_afterVeto->Fill((K_plus_fromDs + K_minus_fromDs).M());
-		}
-
-	}
-
-	TCanvas* c = new TCanvas();
-
-	mass_Ds2KKpi_as_D2Kpipi_beforeVeto->Draw("E1"); c->Print("eps/Ds2KKpi/signal_Ds2KKpi_as_D2Kpipi_beforeVeto.eps");
-	mass_Ds2KKpi_as_D2Kpipi_afterVeto->Draw("E1"); c->Print("eps/Ds2KKpi/signal_Ds2KKpi_as_D2Kpipi_afterVeto.eps");
-
-    	mass_Ds2KKpi_as_D2Kpipi_beforeVeto->SetLineColor(kRed);
-    	mass_Ds2KKpi_as_D2Kpipi_beforeVeto->SetMarkerColor(kRed);
-   	mass_Ds2KKpi_as_D2Kpipi_beforeVeto->Draw("");
-    	mass_Ds2KKpi_as_D2Kpipi_afterVeto->SetLineColor(kBlack);
-    	mass_Ds2KKpi_as_D2Kpipi_afterVeto->SetMarkerColor(kBlack);
-    	mass_Ds2KKpi_as_D2Kpipi_afterVeto->Draw("same");
-
-    	TLegend *leg = new TLegend(0.2,0.7,0.45,0.85);
-    	leg->SetHeader(" ");
-    	leg->AddEntry(mass_Ds2KKpi_as_D2Kpipi_beforeVeto,"Data without veto","LEP");
-    	leg->AddEntry(mass_Ds2KKpi_as_D2Kpipi_afterVeto,"Data with veto","LEP");
-    	leg->SetLineColor(kWhite);
-    	leg->SetFillColor(kWhite);
-    	leg->SetTextSize(0.05);
-    	leg->Draw();
-	c->Print("eps/Ds2KKpi/signal_Ds2KKpi_as_D2Kpipi_compareVeto.eps");
-
-	mass_Ds2KKpi_as_Lc2KPpi_beforeVeto->Draw("E1"); c->Print("eps/Ds2KKpi/signal_Ds2KKpi_as_Lc2KPpi_beforeVeto.eps");
-	mass_Ds2KKpi_as_Lc2KPpi_afterVeto->Draw("E1"); c->Print("eps/Ds2KKpi/signal_Ds2KKpi_as_Lc2KPpi_afterVeto.eps");
-
-    	mass_Ds2KKpi_as_Lc2KPpi_beforeVeto->SetLineColor(kRed);
-    	mass_Ds2KKpi_as_Lc2KPpi_beforeVeto->SetMarkerColor(kRed);
-   	mass_Ds2KKpi_as_Lc2KPpi_beforeVeto->Draw("");
-    	mass_Ds2KKpi_as_Lc2KPpi_afterVeto->SetLineColor(kBlack);
-    	mass_Ds2KKpi_as_Lc2KPpi_afterVeto->SetMarkerColor(kBlack);
-    	mass_Ds2KKpi_as_Lc2KPpi_afterVeto->Draw("same");
-
-    	TLegend *leg_2 = new TLegend(0.6,0.7,0.85,0.85);
-    	leg_2->SetHeader(" ");
-    	leg_2->AddEntry(mass_Ds2KKpi_as_Lc2KPpi_beforeVeto,"Data without veto","LEP");
-    	leg_2->AddEntry(mass_Ds2KKpi_as_Lc2KPpi_afterVeto,"Data with veto","LEP");
-    	leg_2->SetLineColor(kWhite);
-    	leg_2->SetFillColor(kWhite);
-    	leg_2->SetTextSize(0.05);
-    	leg_2->Draw();
-	c->Print("eps/Ds2KKpi/signal_Ds2KKpi_as_Lc2KPpi_compareVeto.eps");
-
-	mass_Ds2KKpi_as_D02KK_beforeVeto->Draw("E1"); c->Print("eps/Ds2KKpi/signal_Ds2KKpi_as_D02KK_beforeVeto.eps");
-	mass_Ds2KKpi_as_D02KK_afterVeto->Draw("E1"); c->Print("eps/Ds2KKpi/signal_Ds2KKpi_as_D02KK_afterVeto.eps");
-
-    	mass_Ds2KKpi_as_D02KK_beforeVeto->SetLineColor(kRed);
-    	mass_Ds2KKpi_as_D02KK_beforeVeto->SetMarkerColor(kRed);
-   	mass_Ds2KKpi_as_D02KK_beforeVeto->Draw("");
-    	mass_Ds2KKpi_as_D02KK_afterVeto->SetLineColor(kBlack);
-    	mass_Ds2KKpi_as_D02KK_afterVeto->SetMarkerColor(kBlack);
-    	mass_Ds2KKpi_as_D02KK_afterVeto->Draw("same");
-
-    	TLegend *leg_3 = new TLegend(0.2,0.2,0.45,0.35);
-    	leg_3->SetHeader(" ");
-    	leg_3->AddEntry(mass_Ds2KKpi_as_D02KK_beforeVeto,"Data without veto","LEP");
-    	leg_3->AddEntry(mass_Ds2KKpi_as_D02KK_afterVeto,"Data with veto","LEP");
-    	leg_3->SetLineColor(kWhite);
-    	leg_3->SetFillColor(kWhite);
-    	leg_3->SetTextSize(0.05);
-    	leg_3->Draw();
-	c->Print("eps/Ds2KKpi/signal_Ds2KKpi_as_D02KK_compareVeto.eps");
-}
-
-void BkgStudies_norm_Ds2Kpipi(){
-
-    	TChain* tree = 0;
-   	tree =new TChain("DecayTree");
-
-    	tree->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/norm_Ds2Kpipi_11_noVetoes.root");
-    	tree->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/norm_Ds2Kpipi_12_noVetoes.root");
-    	tree->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/norm_Ds2Kpipi_15_noVetoes.root");
-    	tree->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/norm_Ds2Kpipi_16_noVetoes.root");
-
-   	tree->SetBranchStatus("*",0);
-    	tree->SetBranchStatus("*M",1) ;
-    	tree->SetBranchStatus("*MM",1) ;
-    	tree->SetBranchStatus( "*P", 1 );
-   	tree->SetBranchStatus( "*PX", 1 );
-    	tree->SetBranchStatus( "*PY", 1);
-   	tree->SetBranchStatus( "*PZ", 1);
-    	tree->SetBranchStatus( "*PE", 1);
-    	tree->SetBranchStatus( "*PT", 1 );
-	tree->SetBranchStatus( "*PIDK*", 1);
-	tree->SetBranchStatus( "*PIDp*", 1);
-
-	//define Lorentz vectors
-	TLorentzVector pi_plus_fromDs;
-	TLorentzVector pi_minus_fromDs;
-	TLorentzVector K_minus_fromDs;
-
-	//misIDs
-	TLorentzVector piplus_asKaon_MisID;
-	TLorentzVector Kminus_asProton_MisID;
-	TLorentzVector Kminus_asPion_MisID;
-
-	//masses
-	double massKaon = 493.68;
-	double massPion = 139.57;
-	double massProton = 938.27;
-	double massPhi = 1019.46;
-	double massKstar = 895.81;
-	double massDs = 1968.30;
-	double massDminus = 1869.61;
-	double massLambda_c = 2286.46;
-	double massD0 = 1864.83;
-
-	//define observables
-	Double_t pi_plus_fromDs_PX;
-	Double_t pi_plus_fromDs_PY;
-	Double_t pi_plus_fromDs_PZ;
-	Double_t pi_minus_fromDs_PX;
-	Double_t pi_minus_fromDs_PY;
-	Double_t pi_minus_fromDs_PZ;
-	Double_t K_minus_fromDs_PX;
-	Double_t K_minus_fromDs_PY;
-	Double_t K_minus_fromDs_PZ;
-
-	Double_t pi_minus_fromDs_PIDp;
-	Double_t K_minus_fromDs_PIDK;
-	Double_t K_minus_fromDs_PIDp;
-	Double_t Bs_MM;
-
-	//link to tree
-        tree->SetBranchAddress( "pi_plus_fromDs_PX" , &pi_plus_fromDs_PX );
-        tree->SetBranchAddress( "pi_plus_fromDs_PY" , &pi_plus_fromDs_PY );
-        tree->SetBranchAddress( "pi_plus_fromDs_PZ" , &pi_plus_fromDs_PZ );
-        tree->SetBranchAddress( "pi_minus_fromDs_PX" , &pi_minus_fromDs_PX );
-        tree->SetBranchAddress( "pi_minus_fromDs_PY" , &pi_minus_fromDs_PY );
-        tree->SetBranchAddress( "pi_minus_fromDs_PZ" , &pi_minus_fromDs_PZ );
-        tree->SetBranchAddress( "K_minus_fromDs_PX" , &K_minus_fromDs_PX );
-        tree->SetBranchAddress( "K_minus_fromDs_PY" , &K_minus_fromDs_PY );
-        tree->SetBranchAddress( "K_minus_fromDs_PZ" , &K_minus_fromDs_PZ );
-
-        tree->SetBranchAddress( "pi_minus_fromDs_PIDp" , &pi_minus_fromDs_PIDp );
-        tree->SetBranchAddress( "K_minus_fromDs_PIDK" , &K_minus_fromDs_PIDK );
-        tree->SetBranchAddress( "K_minus_fromDs_PIDp" , &K_minus_fromDs_PIDp );
-        tree->SetBranchAddress( "Bs_MM" , &Bs_MM );
-
-	//misID histos
-	TH1D* mass_Ds2Kpipi_as_D2pipipi_beforeVeto = new TH1D(" ", ";m(K^{-}_{#pi}#pi^{-}#pi^{+}) - m_{D} [MeV/c^{2}];Events", 50, -100,100);
-	TH1D* mass_Ds2Kpipi_as_D2pipipi_afterVeto = new TH1D("  ", ";m(K^{-}_{#pi}#pi^{-}#pi^{+}) [MeV/c^{2}];Events", 50, -100,100);
-
-	TH1D* mass_Ds2Kpipi_as_D2Kpipi_beforeVeto = new TH1D(" ", ";m(K^{-}_{#pi}#pi^{-}#pi^{+}_{K}) - m_{D} [MeV/c^{2}];Events", 50, -100,100);
-	TH1D* mass_Ds2Kpipi_as_D2Kpipi_afterVeto = new TH1D("  ", ";m(K^{-}_{#pi}#pi^{-}#pi^{+}_{K}) [MeV/c^{2}];Events", 50, -100,100);
-
-	TH1D* mass_Ds2Kpipi_as_Lc2KPpi_beforeVeto = new TH1D(" ", ";m(#pi^{+}_{K} K^{-}_{#bar{p}} #pi^{-}) - m_{#Lambda_{c}} [MeV/c^{2}];Events", 50, -100,100);
-	TH1D* mass_Ds2Kpipi_as_Lc2KPpi_afterVeto = new TH1D("   ", ";m(#pi^{+}_{K} K^{-}_{#bar{p}} #pi^{-}) [MeV/c^{2}];Events", 50, -100,100);
-
-	TH1D* mass_Ds2Kpipi_as_Lc2piPpi_beforeVeto = new TH1D(" ", ";m(#pi^{+} K^{-}_{#bar{p}} #pi^{-}) - m_{#Lambda_{c}} [MeV/c^{2}];Events", 50, -100,100);
-	TH1D* mass_Ds2Kpipi_as_Lc2piPpi_afterVeto = new TH1D("   ", ";m(#pi^{+} K^{-}_{#bar{p}} #pi^{-}) [MeV/c^{2}];Events", 50, -100,100);
-
-	TH1D* mass_Ds2Kpipi_as_D02Kpi_beforeVeto = new TH1D(" ", ";m(K^{-} #pi^{+}) [MeV/c^{2}];Events", 50, 1600., 1900.);
-	TH1D* mass_Ds2Kpipi_as_D02Kpi_afterVeto = new TH1D("   ", ";m(K^{-} #pi^{+}) [MeV/c^{2}];Events", 50, 1600., 1900.);
-
-	TH1D* mass_Ds2Kpipi_as_D02Kpi_beforeVeto2 = new TH1D(" ", ";m(K^{-} #pi^{-} #pi^{+}) - m(K^{-} #pi^{+}) [MeV/c^{2}];Events", 50, 130., 200.);
-	TH1D* mass_Ds2Kpipi_as_D02Kpi_afterVeto2 = new TH1D("   ", ";m(K^{-} #pi^{-} #pi^{+}) - m(K^{-} #pi^{+}) [MeV/c^{2}];Events", 50, 130., 200.);
-
-	//loop over events
-	int numEvents = tree->GetEntries();
-	for(int i=0; i< numEvents; i++)
-        	{
-        	if (0ul == (i % 10000ul)) std::cout << "Read event " << i << "/" << numEvents << std::endl;
-        	tree->GetEntry(i);
-		if(Bs_MM < 5200 || Bs_MM > 5700) continue;
-
-        	//fill the Lorentz vectors
-        	pi_minus_fromDs.SetXYZM(pi_minus_fromDs_PX,pi_minus_fromDs_PY,pi_minus_fromDs_PZ,massPion);
-		pi_plus_fromDs.SetXYZM(pi_plus_fromDs_PX,pi_plus_fromDs_PY,pi_plus_fromDs_PZ,massPion);
-		K_minus_fromDs.SetXYZM(K_minus_fromDs_PX,K_minus_fromDs_PY,K_minus_fromDs_PZ,massKaon);
-
-
-		//misID Lorentz vectors
-		piplus_asKaon_MisID.SetXYZM(pi_plus_fromDs_PX,pi_plus_fromDs_PY,pi_plus_fromDs_PZ,massKaon);
-		Kminus_asProton_MisID.SetXYZM(K_minus_fromDs_PX,K_minus_fromDs_PY,K_minus_fromDs_PZ,massProton);
-		Kminus_asPion_MisID.SetXYZM(K_minus_fromDs_PX,K_minus_fromDs_PY,K_minus_fromDs_PZ,massPion);
-
-
-		//fill histos without veto cuts
-		mass_Ds2Kpipi_as_D2pipipi_beforeVeto->Fill((Kminus_asPion_MisID + pi_minus_fromDs + pi_plus_fromDs).M()-massD0);
-		mass_Ds2Kpipi_as_D2Kpipi_beforeVeto->Fill((Kminus_asPion_MisID + piplus_asKaon_MisID +  pi_minus_fromDs).M()-massD0);
-		mass_Ds2Kpipi_as_Lc2KPpi_beforeVeto->Fill((Kminus_asProton_MisID + piplus_asKaon_MisID + pi_minus_fromDs).M()-massLambda_c);
-		mass_Ds2Kpipi_as_Lc2piPpi_beforeVeto->Fill((Kminus_asProton_MisID + pi_minus_fromDs + pi_plus_fromDs).M()-massLambda_c);
-		mass_Ds2Kpipi_as_D02Kpi_beforeVeto->Fill((K_minus_fromDs + pi_plus_fromDs).M());
-		mass_Ds2Kpipi_as_D02Kpi_beforeVeto2->Fill((K_minus_fromDs + pi_plus_fromDs + pi_minus_fromDs).M() - (K_minus_fromDs + pi_plus_fromDs).M());
-
-
-		//fill histos with veto cuts
-		if(TMath::Abs((Kminus_asPion_MisID + pi_minus_fromDs + pi_plus_fromDs).M() - massDminus ) > 40. || K_minus_fromDs_PIDK > 20.){
-			mass_Ds2Kpipi_as_D2pipipi_afterVeto->Fill((Kminus_asPion_MisID + pi_minus_fromDs + pi_plus_fromDs).M()-massD0);
-		}
-		if(TMath::Abs((pi_plus_fromDs + Kminus_asProton_MisID + pi_minus_fromDs).M() - massLambda_c) > 40. || (K_minus_fromDs_PIDK - K_minus_fromDs_PIDp) > 5.){
-			mass_Ds2Kpipi_as_Lc2piPpi_afterVeto->Fill((pi_plus_fromDs + Kminus_asProton_MisID + pi_minus_fromDs).M()-massLambda_c);
-		}
-// 		if((pi_plus_fromDs + K_minus_fromDs).M() < 1750.){
-		if((K_minus_fromDs + pi_plus_fromDs + pi_minus_fromDs).M() - (K_minus_fromDs + pi_plus_fromDs).M() > 155){
-			mass_Ds2Kpipi_as_D02Kpi_afterVeto->Fill((K_minus_fromDs + pi_plus_fromDs).M());
-			mass_Ds2Kpipi_as_D02Kpi_afterVeto2->Fill((K_minus_fromDs + pi_plus_fromDs + pi_minus_fromDs).M() - (K_minus_fromDs + pi_plus_fromDs).M());
-		}
-
-	}
-
-	TCanvas* c = new TCanvas();
-
-	mass_Ds2Kpipi_as_D2pipipi_beforeVeto->Draw("E1"); c->Print("eps/Ds2Kpipi/norm_Ds2Kpipi_as_D2pipipi_beforeVeto.eps");
-	mass_Ds2Kpipi_as_D2pipipi_afterVeto->Draw("E1"); c->Print("eps/Ds2Kpipi/norm_Ds2Kpipi_as_D2pipipi_afterVeto.eps");
-
-	mass_Ds2Kpipi_as_D2pipipi_beforeVeto->SetMinimum(0);
-    	mass_Ds2Kpipi_as_D2pipipi_beforeVeto->SetLineColor(kBlack);
-    	mass_Ds2Kpipi_as_D2pipipi_beforeVeto->SetMarkerColor(kBlack);
-   	mass_Ds2Kpipi_as_D2pipipi_beforeVeto->Draw("");
-    	mass_Ds2Kpipi_as_D2pipipi_afterVeto->SetLineColor(kBlue);
-    	mass_Ds2Kpipi_as_D2pipipi_afterVeto->SetMarkerColor(kBlue);
-    	mass_Ds2Kpipi_as_D2pipipi_afterVeto->Draw("histsame");
-
-    	TLegend *leg = new TLegend(0.6,0.7,0.85,0.85);
-    	leg->SetHeader(" ");
-    	leg->AddEntry(mass_Ds2Kpipi_as_D2pipipi_beforeVeto,"Data without veto","LEP");
-    	leg->AddEntry(mass_Ds2Kpipi_as_D2pipipi_afterVeto,"Data with veto","LEP");
-    	leg->SetLineColor(kWhite);
-    	leg->SetFillColor(kWhite);
-    	leg->SetTextSize(0.05);
-    	//leg->Draw();
-	c->Print("eps/Ds2Kpipi/norm_Ds2Kpipi_as_D2pipipi_compareVeto.eps");
-	c->Print("../../../../../TD-AnaNote/latex/figs/BkgStudies/norm_Ds2Kpipi_as_D2pipipi_compareVeto.pdf");
-
-
-	mass_Ds2Kpipi_as_D2Kpipi_beforeVeto->Draw("E1"); c->Print("eps/Ds2Kpipi/norm_Ds2Kpipi_as_D2Kpipi_beforeVeto.eps");
-	mass_Ds2Kpipi_as_Lc2KPpi_beforeVeto->Draw("E1"); c->Print("eps/Ds2Kpipi/norm_Ds2Kpipi_as_Lc2KPpi_beforeVeto.eps");
-
-	mass_Ds2Kpipi_as_Lc2piPpi_beforeVeto->Draw("E1"); c->Print("eps/Ds2Kpipi/norm_Ds2Kpipi_as_Lc2piPpi_beforeVeto.eps");
-	mass_Ds2Kpipi_as_Lc2piPpi_afterVeto->Draw("E1"); c->Print("eps/Ds2Kpipi/norm_Ds2Kpipi_as_Lc2piPpi_afterVeto.eps");
-
-	mass_Ds2Kpipi_as_Lc2piPpi_beforeVeto->SetMinimum(0);
-    	mass_Ds2Kpipi_as_Lc2piPpi_beforeVeto->SetLineColor(kBlack);
-    	mass_Ds2Kpipi_as_Lc2piPpi_beforeVeto->SetMarkerColor(kBlack);
-   	mass_Ds2Kpipi_as_Lc2piPpi_beforeVeto->Draw("");
-    	mass_Ds2Kpipi_as_Lc2piPpi_afterVeto->SetLineColor(kBlue);
-    	mass_Ds2Kpipi_as_Lc2piPpi_afterVeto->SetMarkerColor(kBlue);
-    	mass_Ds2Kpipi_as_Lc2piPpi_afterVeto->Draw("histsame");
-
-    	TLegend *leg_2 = new TLegend(0.6,0.7,0.85,0.85);
-    	leg_2->SetHeader(" ");
-    	leg_2->AddEntry(mass_Ds2Kpipi_as_Lc2piPpi_beforeVeto,"Data without veto","LEP");
-    	leg_2->AddEntry(mass_Ds2Kpipi_as_Lc2piPpi_afterVeto,"Data with veto","LEP");
-    	leg_2->SetLineColor(kWhite);
-    	leg_2->SetFillColor(kWhite);
-    	leg_2->SetTextSize(0.05);
-    	//leg_2->Draw();
-	c->Print("eps/Ds2Kpipi/norm_Ds2Kpipi_as_Lc2piPpi_compareVeto.eps");
-	c->Print("../../../../../TD-AnaNote/latex/figs/BkgStudies/norm_Ds2Kpipi_as_Lc2piPpi_compareVeto.pdf");
-
-
-	mass_Ds2Kpipi_as_D02Kpi_beforeVeto->Draw("E1"); c->Print("eps/Ds2Kpipi/norm_Ds2Kpipi_as_D02Kpi_beforeVeto.eps");
-	mass_Ds2Kpipi_as_D02Kpi_afterVeto->Draw("E1"); c->Print("eps/Ds2Kpipi/norm_Ds2Kpipi_as_D02Kpi_afterVeto.eps");
-
-	mass_Ds2Kpipi_as_D02Kpi_beforeVeto->SetMinimum(0);
-    	mass_Ds2Kpipi_as_D02Kpi_beforeVeto->SetLineColor(kBlack);
-    	mass_Ds2Kpipi_as_D02Kpi_beforeVeto->SetMarkerColor(kBlack);
-   	mass_Ds2Kpipi_as_D02Kpi_beforeVeto->Draw("");
-    	mass_Ds2Kpipi_as_D02Kpi_afterVeto->SetLineColor(kBlue);
-    	mass_Ds2Kpipi_as_D02Kpi_afterVeto->SetMarkerColor(kBlue);
-    	mass_Ds2Kpipi_as_D02Kpi_afterVeto->Draw("histsame");
-
-    	TLegend *leg_3 = new TLegend(0.6,0.7,0.85,0.85);
-    	leg_3->SetHeader(" ");
-    	leg_3->AddEntry(mass_Ds2Kpipi_as_D02Kpi_beforeVeto,"Data without veto","LEP");
-    	leg_3->AddEntry(mass_Ds2Kpipi_as_D02Kpi_afterVeto,"Data with veto","LEP");
-    	leg_3->SetLineColor(kWhite);
-    	leg_3->SetFillColor(kWhite);
-    	leg_3->SetTextSize(0.05);
-    	//leg_3->Draw();
-	c->Print("eps/Ds2Kpipi/norm_Ds2Kpipi_as_D02Kpi_compareVeto.eps");
-	c->Print("../../../../../TD-AnaNote/latex/figs/BkgStudies/norm_Ds2Kpipi_as_D02Kpi_compareVeto.pdf");
-
-
-
-	mass_Ds2Kpipi_as_D02Kpi_beforeVeto2->SetMinimum(0);
-    	mass_Ds2Kpipi_as_D02Kpi_beforeVeto2->SetLineColor(kBlack);
-    	mass_Ds2Kpipi_as_D02Kpi_beforeVeto2->SetMarkerColor(kBlack);
-   	mass_Ds2Kpipi_as_D02Kpi_beforeVeto2->Draw("");
-    	mass_Ds2Kpipi_as_D02Kpi_afterVeto2->SetLineColor(kBlue);
-    	mass_Ds2Kpipi_as_D02Kpi_afterVeto2->SetMarkerColor(kBlue);
-    	mass_Ds2Kpipi_as_D02Kpi_afterVeto2->Draw("histsame");
-
-	c->Print("eps/Ds2Kpipi/norm_Ds2Kpipi_as_D02Kpi_compareVeto_2.eps");
-	c->Print("../../../../../TD-AnaNote/latex/figs/BkgStudies/norm_Ds2Kpipi_as_D02Kpi_compareVeto_2.pdf");
-
-
-}
-
-void BkgStudies_signal_Ds2Kpipi(){
-
-    	TChain* tree = 0;
-   	tree =new TChain("DecayTree");
-
-    	tree->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/signal_Ds2Kpipi_11_noVetoes.root");
-    	tree->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/signal_Ds2Kpipi_12_noVetoes.root");
-    	tree->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/signal_Ds2Kpipi_15_noVetoes.root");
-    	tree->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/signal_Ds2Kpipi_16_noVetoes.root");
-
-   	tree->SetBranchStatus("*",0);
-    	tree->SetBranchStatus("*M",1) ;
-    	tree->SetBranchStatus("*MM",1) ;
-    	tree->SetBranchStatus( "*P", 1 );
-   	tree->SetBranchStatus( "*PX", 1 );
-    	tree->SetBranchStatus( "*PY", 1);
-   	tree->SetBranchStatus( "*PZ", 1);
-    	tree->SetBranchStatus( "*PE", 1);
-    	tree->SetBranchStatus( "*PT", 1 );
-	tree->SetBranchStatus( "*PIDK*", 1);
-	tree->SetBranchStatus( "*PIDp*", 1);
-
-	//define Lorentz vectors
-	TLorentzVector pi_plus_fromDs;
-	TLorentzVector pi_minus_fromDs;
-	TLorentzVector K_minus_fromDs;
-
-	//misIDs
-	TLorentzVector piplus_asKaon_MisID;
-	TLorentzVector Kminus_asProton_MisID;
-	TLorentzVector Kminus_asPion_MisID;
-
-	//masses
-	double massKaon = 493.68;
-	double massPion = 139.57;
-	double massProton = 938.27;
-	double massPhi = 1019.46;
-	double massKstar = 895.81;
-	double massDs = 1968.30;
-	double massDminus = 1869.61;
-	double massLambda_c = 2286.46;
-	double massD0 = 1864.83;
-
-	//define observables
-	Double_t pi_plus_fromDs_PX;
-	Double_t pi_plus_fromDs_PY;
-	Double_t pi_plus_fromDs_PZ;
-	Double_t pi_minus_fromDs_PX;
-	Double_t pi_minus_fromDs_PY;
-	Double_t pi_minus_fromDs_PZ;
-	Double_t K_minus_fromDs_PX;
-	Double_t K_minus_fromDs_PY;
-	Double_t K_minus_fromDs_PZ;
-
-	Double_t pi_minus_fromDs_PIDp;
-	Double_t K_minus_fromDs_PIDK;
-	Double_t K_minus_fromDs_PIDp;
-
-	//link to tree
-        tree->SetBranchAddress( "pi_plus_fromDs_PX" , &pi_plus_fromDs_PX );
-        tree->SetBranchAddress( "pi_plus_fromDs_PY" , &pi_plus_fromDs_PY );
-        tree->SetBranchAddress( "pi_plus_fromDs_PZ" , &pi_plus_fromDs_PZ );
-        tree->SetBranchAddress( "pi_minus_fromDs_PX" , &pi_minus_fromDs_PX );
-        tree->SetBranchAddress( "pi_minus_fromDs_PY" , &pi_minus_fromDs_PY );
-        tree->SetBranchAddress( "pi_minus_fromDs_PZ" , &pi_minus_fromDs_PZ );
-        tree->SetBranchAddress( "K_minus_fromDs_PX" , &K_minus_fromDs_PX );
-        tree->SetBranchAddress( "K_minus_fromDs_PY" , &K_minus_fromDs_PY );
-        tree->SetBranchAddress( "K_minus_fromDs_PZ" , &K_minus_fromDs_PZ );
-
-        tree->SetBranchAddress( "pi_minus_fromDs_PIDp" , &pi_minus_fromDs_PIDp );
-        tree->SetBranchAddress( "K_minus_fromDs_PIDK" , &K_minus_fromDs_PIDK );
-        tree->SetBranchAddress( "K_minus_fromDs_PIDp" , &K_minus_fromDs_PIDp );
-
-	//misID histos
-	TH1D* mass_Ds2Kpipi_as_D2pipipi_beforeVeto = new TH1D(" ", ";m(K^{-}_{#pi}#pi^{-}#pi^{+}) [MeV/c^{2}];Events", 50, 1600., 2200.);
-	TH1D* mass_Ds2Kpipi_as_D2pipipi_afterVeto = new TH1D("  ", ";m(K^{-}_{#pi}#pi^{-}#pi^{+}) [MeV/c^{2}];Events", 50, 1600., 2200.);
-
-	TH1D* mass_Ds2Kpipi_as_D2Kpipi_beforeVeto = new TH1D(" ", ";m(K^{-}_{#pi}#pi^{-}#pi^{+}_{K}) [MeV/c^{2}];Events", 50, 1600., 2200.);
-	TH1D* mass_Ds2Kpipi_as_D2Kpipi_afterVeto = new TH1D("  ", ";m(K^{-}_{#pi}#pi^{-}#pi^{+}_{K}) [MeV/c^{2}];Events", 50, 1600., 2200.);
-
-	TH1D* mass_Ds2Kpipi_as_Lc2KPpi_beforeVeto = new TH1D(" ", ";m(#pi^{+}_{K} K^{-}_{#bar{p}} #pi^{-}) [MeV/c^{2}];Events", 50, 2000., 3000.);
-	TH1D* mass_Ds2Kpipi_as_Lc2KPpi_afterVeto = new TH1D("   ", ";m(#pi^{+}_{K} K^{-}_{#bar{p}} #pi^{-}) [MeV/c^{2}];Events", 50, 2000., 3000.);
-
-	TH1D* mass_Ds2Kpipi_as_Lc2piPpi_beforeVeto = new TH1D(" ", ";m(#pi^{+} K^{-}_{#bar{p}} #pi^{-}) [MeV/c^{2}];Events", 50, 2000., 2800.);
-	TH1D* mass_Ds2Kpipi_as_Lc2piPpi_afterVeto = new TH1D("   ", ";m(#pi^{+} K^{-}_{#bar{p}} #pi^{-}) [MeV/c^{2}];Events", 50, 2000., 2800.);
-
-	TH1D* mass_Ds2Kpipi_as_D02Kpi_beforeVeto = new TH1D(" ", ";m(K^{-} #pi^{+}) [MeV/c^{2}];Events", 50, 1600., 1900.);
-	TH1D* mass_Ds2Kpipi_as_D02Kpi_afterVeto = new TH1D("   ", ";m(K^{-} #pi^{+}) [MeV/c^{2}];Events", 50, 1600., 1900.);
-
-
-
-	//loop over events
-	int numEvents = tree->GetEntries();
-	for(int i=0; i< numEvents; i++)
-        	{
-        	if (0ul == (i % 10000ul)) std::cout << "Read event " << i << "/" << numEvents << std::endl;
-        	tree->GetEntry(i);
-
-        	//fill the Lorentz vectors
-        	pi_minus_fromDs.SetXYZM(pi_minus_fromDs_PX,pi_minus_fromDs_PY,pi_minus_fromDs_PZ,massPion);
-		pi_plus_fromDs.SetXYZM(pi_plus_fromDs_PX,pi_plus_fromDs_PY,pi_plus_fromDs_PZ,massPion);
-		K_minus_fromDs.SetXYZM(K_minus_fromDs_PX,K_minus_fromDs_PY,K_minus_fromDs_PZ,massKaon);
-
-
-		//misID Lorentz vectors
-		piplus_asKaon_MisID.SetXYZM(pi_plus_fromDs_PX,pi_plus_fromDs_PY,pi_plus_fromDs_PZ,massKaon);
-		Kminus_asProton_MisID.SetXYZM(K_minus_fromDs_PX,K_minus_fromDs_PY,K_minus_fromDs_PZ,massProton);
-		Kminus_asPion_MisID.SetXYZM(K_minus_fromDs_PX,K_minus_fromDs_PY,K_minus_fromDs_PZ,massPion);
-
-
-		//fill histos without veto cuts
-		mass_Ds2Kpipi_as_D2pipipi_beforeVeto->Fill((Kminus_asPion_MisID + pi_minus_fromDs + pi_plus_fromDs).M());
-		mass_Ds2Kpipi_as_D2Kpipi_beforeVeto->Fill((Kminus_asPion_MisID + piplus_asKaon_MisID +  pi_minus_fromDs).M());
-		mass_Ds2Kpipi_as_Lc2KPpi_beforeVeto->Fill((Kminus_asProton_MisID + piplus_asKaon_MisID + pi_minus_fromDs).M());
-		mass_Ds2Kpipi_as_Lc2piPpi_beforeVeto->Fill((Kminus_asProton_MisID + pi_minus_fromDs + pi_plus_fromDs).M());
-		mass_Ds2Kpipi_as_D02Kpi_beforeVeto->Fill((K_minus_fromDs + pi_plus_fromDs).M());
-
-		//fill histos with veto cuts
-		if(TMath::Abs((Kminus_asPion_MisID + pi_minus_fromDs + pi_plus_fromDs).M() - massDminus ) > 30. || K_minus_fromDs_PIDK > 20.){
-		mass_Ds2Kpipi_as_D2pipipi_afterVeto->Fill((Kminus_asPion_MisID + pi_minus_fromDs + pi_plus_fromDs).M());
-		}
-		if(TMath::Abs((pi_plus_fromDs + Kminus_asProton_MisID + pi_minus_fromDs).M() - massLambda_c) > 30. || (K_minus_fromDs_PIDK - K_minus_fromDs_PIDp) > 5.){
-		mass_Ds2Kpipi_as_Lc2piPpi_afterVeto->Fill((pi_plus_fromDs + Kminus_asProton_MisID + pi_minus_fromDs).M());
-		}
-		if((pi_plus_fromDs + K_minus_fromDs).M() < 1750.){
-		mass_Ds2Kpipi_as_D02Kpi_afterVeto->Fill((K_minus_fromDs + pi_plus_fromDs).M());
-		}
-
-	}
-
-	TCanvas* c = new TCanvas();
-
-	mass_Ds2Kpipi_as_D2pipipi_beforeVeto->Draw("E1"); c->Print("eps/Ds2Kpipi/signal_Ds2Kpipi_as_D2pipipi_beforeVeto.eps");
-	mass_Ds2Kpipi_as_D2pipipi_afterVeto->Draw("E1"); c->Print("eps/Ds2Kpipi/signal_Ds2Kpipi_as_D2pipipi_afterVeto.eps");
-
-    	mass_Ds2Kpipi_as_D2pipipi_beforeVeto->SetLineColor(kRed);
-    	mass_Ds2Kpipi_as_D2pipipi_beforeVeto->SetMarkerColor(kRed);
-   	mass_Ds2Kpipi_as_D2pipipi_beforeVeto->Draw("");
-    	mass_Ds2Kpipi_as_D2pipipi_afterVeto->SetLineColor(kBlack);
-    	mass_Ds2Kpipi_as_D2pipipi_afterVeto->SetMarkerColor(kBlack);
-    	mass_Ds2Kpipi_as_D2pipipi_afterVeto->Draw("same");
-
-    	TLegend *leg = new TLegend(0.6,0.7,0.85,0.85);
-    	leg->SetHeader(" ");
-    	leg->AddEntry(mass_Ds2Kpipi_as_D2pipipi_beforeVeto,"Data without veto","LEP");
-    	leg->AddEntry(mass_Ds2Kpipi_as_D2pipipi_afterVeto,"Data with veto","LEP");
-    	leg->SetLineColor(kWhite);
-    	leg->SetFillColor(kWhite);
-    	leg->SetTextSize(0.05);
-    	leg->Draw();
-	c->Print("eps/Ds2Kpipi/signal_Ds2Kpipi_as_D2pipipi_compareVeto.eps");
-
-
-
-	mass_Ds2Kpipi_as_D2Kpipi_beforeVeto->Draw("E1"); c->Print("eps/Ds2Kpipi/signal_Ds2Kpipi_as_D2Kpipi_beforeVeto.eps");
-
-	mass_Ds2Kpipi_as_Lc2KPpi_beforeVeto->Draw("E1"); c->Print("eps/Ds2Kpipi/signal_Ds2Kpipi_as_Lc2KPpi_beforeVeto.eps");
-
-
-
-	mass_Ds2Kpipi_as_Lc2piPpi_beforeVeto->Draw("E1"); c->Print("eps/Ds2Kpipi/signal_Ds2Kpipi_as_Lc2piPpi_beforeVeto.eps");
-	mass_Ds2Kpipi_as_Lc2piPpi_afterVeto->Draw("E1"); c->Print("eps/Ds2Kpipi/signal_Ds2Kpipi_as_Lc2piPpi_afterVeto.eps");
-
-    	mass_Ds2Kpipi_as_Lc2piPpi_beforeVeto->SetLineColor(kRed);
-    	mass_Ds2Kpipi_as_Lc2piPpi_beforeVeto->SetMarkerColor(kRed);
-   	mass_Ds2Kpipi_as_Lc2piPpi_beforeVeto->Draw("");
-    	mass_Ds2Kpipi_as_Lc2piPpi_afterVeto->SetLineColor(kBlack);
-    	mass_Ds2Kpipi_as_Lc2piPpi_afterVeto->SetMarkerColor(kBlack);
-    	mass_Ds2Kpipi_as_Lc2piPpi_afterVeto->Draw("same");
-
-    	TLegend *leg_2 = new TLegend(0.6,0.7,0.85,0.85);
-    	leg_2->SetHeader(" ");
-    	leg_2->AddEntry(mass_Ds2Kpipi_as_Lc2piPpi_beforeVeto,"Data without veto","LEP");
-    	leg_2->AddEntry(mass_Ds2Kpipi_as_Lc2piPpi_afterVeto,"Data with veto","LEP");
-    	leg_2->SetLineColor(kWhite);
-    	leg_2->SetFillColor(kWhite);
-    	leg_2->SetTextSize(0.05);
-    	leg_2->Draw();
-	c->Print("eps/Ds2Kpipi/signal_Ds2Kpipi_as_Lc2piPpi_compareVeto.eps");
-
-
-
-	mass_Ds2Kpipi_as_D02Kpi_beforeVeto->Draw("E1"); c->Print("eps/Ds2Kpipi/signal_Ds2Kpipi_as_D02Kpi_beforeVeto.eps");
-	mass_Ds2Kpipi_as_D02Kpi_afterVeto->Draw("E1"); c->Print("eps/Ds2Kpipi/signal_Ds2Kpipi_as_D02Kpi_afterVeto.eps");
-
-    	mass_Ds2Kpipi_as_D02Kpi_beforeVeto->SetLineColor(kRed);
-    	mass_Ds2Kpipi_as_D02Kpi_beforeVeto->SetMarkerColor(kRed);
-   	mass_Ds2Kpipi_as_D02Kpi_beforeVeto->Draw("");
-    	mass_Ds2Kpipi_as_D02Kpi_afterVeto->SetLineColor(kBlack);
-    	mass_Ds2Kpipi_as_D02Kpi_afterVeto->SetMarkerColor(kBlack);
-    	mass_Ds2Kpipi_as_D02Kpi_afterVeto->Draw("same");
-
-    	TLegend *leg_3 = new TLegend(0.6,0.7,0.85,0.85);
-    	leg_3->SetHeader(" ");
-    	leg_3->AddEntry(mass_Ds2Kpipi_as_D02Kpi_beforeVeto,"Data without veto","LEP");
-    	leg_3->AddEntry(mass_Ds2Kpipi_as_D02Kpi_afterVeto,"Data with veto","LEP");
-    	leg_3->SetLineColor(kWhite);
-    	leg_3->SetFillColor(kWhite);
-    	leg_3->SetTextSize(0.05);
-    	leg_3->Draw();
-	c->Print("eps/Ds2Kpipi/signal_Ds2Kpipi_as_D02Kpi_compareVeto.eps");
-
-}
-
-void BkgStudies_norm_Ds2pipipi(){
-
-    	TChain* tree = 0;
-   	tree =new TChain("DecayTree");
-
-    	tree->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/norm_Ds2pipipi_11_noVetoes.root");
-    	tree->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/norm_Ds2pipipi_12_noVetoes.root");
-    	tree->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/norm_Ds2pipipi_15_noVetoes.root");
-    	tree->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/norm_Ds2pipipi_16_noVetoes.root");
-
-   	tree->SetBranchStatus("*",0);
-    	tree->SetBranchStatus("*M",1) ;
-    	tree->SetBranchStatus("*MM",1) ;
-    	tree->SetBranchStatus( "*P", 1 );
-   	tree->SetBranchStatus( "*PX", 1 );
-    	tree->SetBranchStatus( "*PY", 1);
-   	tree->SetBranchStatus( "*PZ", 1);
-    	tree->SetBranchStatus( "*PE", 1);
-    	tree->SetBranchStatus( "*PT", 1 );
-	tree->SetBranchStatus( "*PIDK*", 1);
-	tree->SetBranchStatus( "*PIDp*", 1);
-
-	//define Lorentz vectors
-	TLorentzVector pi_plus_fromDs;
-	TLorentzVector pi_minus_fromDs;
-	TLorentzVector pi_minus2_fromDs;
-
-	//misIDs
-	TLorentzVector piplus_asKaon_MisID;
-	TLorentzVector piminus_asProton_MisID;
-	TLorentzVector piminus2_asProton_MisID;
-
-	//masses
-	double massKaon = 493.68;
-	double massPion = 139.57;
-	double massProton = 938.27;
-	double massPhi = 1019.46;
-	double massKstar = 895.81;
-	double massDs = 1968.30;
-	double massDminus = 1869.61;
-	double massLambda_c = 2286.46;
-	double massD0 = 1864.83;
-
-	//define observables
-	Double_t pi_plus_fromDs_PX;
-	Double_t pi_plus_fromDs_PY;
-	Double_t pi_plus_fromDs_PZ;
-	Double_t pi_minus_fromDs_PX;
-	Double_t pi_minus_fromDs_PY;
-	Double_t pi_minus_fromDs_PZ;
-	Double_t pi_minus2_fromDs_PX;
-	Double_t pi_minus2_fromDs_PY;
-	Double_t pi_minus2_fromDs_PZ;
-
-	Double_t pi_minus_fromDs_PIDp;
-	Double_t pi_minus2_fromDs_PIDp;
-	Double_t Bs_MM;
-
-	//link to tree
-        tree->SetBranchAddress( "pi_plus_fromDs_PX" , &pi_plus_fromDs_PX );
-        tree->SetBranchAddress( "pi_plus_fromDs_PY" , &pi_plus_fromDs_PY );
-        tree->SetBranchAddress( "pi_plus_fromDs_PZ" , &pi_plus_fromDs_PZ );
-        tree->SetBranchAddress( "pi_minus_fromDs_PX" , &pi_minus_fromDs_PX );
-        tree->SetBranchAddress( "pi_minus_fromDs_PY" , &pi_minus_fromDs_PY );
-        tree->SetBranchAddress( "pi_minus_fromDs_PZ" , &pi_minus_fromDs_PZ );
-        tree->SetBranchAddress( "pi_minus2_fromDs_PX" , &pi_minus2_fromDs_PX );
-        tree->SetBranchAddress( "pi_minus2_fromDs_PY" , &pi_minus2_fromDs_PY );
-        tree->SetBranchAddress( "pi_minus2_fromDs_PZ" , &pi_minus2_fromDs_PZ );
-
-        tree->SetBranchAddress( "pi_minus_fromDs_PIDp" , &pi_minus_fromDs_PIDp );
-        tree->SetBranchAddress( "pi_minus2_fromDs_PIDp" , &pi_minus2_fromDs_PIDp );
-        tree->SetBranchAddress( "Bs_MM" , &Bs_MM );
-
-
-	//misID histos
-	TH1D* mass_Ds2pipipi_as_D2Kpipi_beforeVeto = new TH1D(" ", ";m(#pi^{+}_{K}#pi^{-}#pi^{-}) [MeV/c^{2}];Events", 50, 1900., 3000.);
-
-	TH1D* mass_Ds2pipipi_as_D02pipi_beforeVeto = new TH1D(" ", ";m(#pi^{+} #pi^{-}) [MeV/c^{2}];Events", 50, 1600., 1900.);
-	TH1D* mass_Ds2pipipi_as_D02pipi_afterVeto = new TH1D("   ", ";m(#pi^{+} #pi^{-}) [MeV/c^{2}];Events", 50, 1600., 1900.);
-	TH1D* mass_Ds2pipipi_as_D02pipi_beforeVeto_2 = new TH1D("     ", ";m(#pi^{+} #pi^{-} #pi^{-}) - m(#pi^{+} #pi^{-}) [MeV/c^{2}];Events", 50, 130 , 200);
-	TH1D* mass_Ds2pipipi_as_D02pipi_afterVeto_2 = new TH1D("        ", ";m(#pi^{+} #pi^{-} #pi^{-}) - m(#pi^{+} #pi^{-}) [MeV/c^{2}];Events", 50, 130., 200);
-
-	TH1D* mass_Ds2pipipi_as_D02Kpi_beforeVeto = new TH1D("     ", ";m(#pi^{+} #pi^{-}) [MeV/c^{2}];Events", 100, 130 , 200);
-	TH1D* mass_Ds2pipipi_as_D02Kpi_afterVeto = new TH1D("        ", ";m(#pi^{+} #pi^{-}) [MeV/c^{2}];Events", 100, 130., 200);
-
-	TH1D* mass_Ds2pipipi_as_Lc2piPpi_beforeVeto = new TH1D(" ", ";m(#pi^{+} #pi^{-}_{#bar{p}} #pi^{-}) - m_{#Lambda_{c}} [MeV/c^{2}];Events", 50, -100,100);
-	TH1D* mass_Ds2pipipi_as_Lc2piPpi_afterVeto = new TH1D("   ", ";m(#pi^{+} #pi^{-}_{#bar{p}} #pi^{-}) [MeV/c^{2}];Events", 50, -100,100);
-	TH1D* mass_Ds2pipipi_as_Lc2piPpi_beforeVeto_2 = new TH1D("     ", ";m(#pi^{+}  #pi^{-} #pi^{-}_{#bar{p}}) [MeV/c^{2}];Events", 50, -100,100);
-	TH1D* mass_Ds2pipipi_as_Lc2piPpi_afterVeto_2 = new TH1D("       ", ";m(#pi^{+} #pi^{-} #pi^{-}_{#bar{p}}) [MeV/c^{2}];Events", 50, -100,100);
-
-	TH1D* mass_Ds2pipipi_as_Lc2KPpi_beforeVeto = new TH1D(" ", ";m(#pi^{+}_{K} #pi^{-}_{#bar{p}} #pi^{-}) [MeV/c^{2}];Events", 50, 2400., 2800.);
-	TH1D* mass_Ds2pipipi_as_Lc2KPpi_afterVeto = new TH1D("   ", ";m(#pi^{+}_{K} #pi^{-}_{#bar{p}} #pi^{-}) [MeV/c^{2}];Events", 50, 2100., 2600.);
-	TH1D* mass_Ds2pipipi_as_Lc2KPpi_beforeVeto_2 = new TH1D("    ", ";m(#pi^{+}_{K} #pi^{-}#pi^{-}_{#bar{p}} ) [MeV/c^{2}];Events", 50, 2400., 2800.);
-	TH1D* mass_Ds2pipipi_as_Lc2KPpi_afterVeto_2 = new TH1D("    ", ";m(#pi^{+}_{K} #pi^{-} #pi^{-}_{#bar{p}}) [MeV/c^{2}];Events", 50, 2100., 2600.);
-
-	//loop over events
-	int numEvents = tree->GetEntries();
-	for(int i=0; i< numEvents; i++)
-        	{
-        	if (0ul == (i % 10000ul)) std::cout << "Read event " << i << "/" << numEvents << std::endl;
-        	tree->GetEntry(i);
-		if(Bs_MM < 5200 || Bs_MM > 5700) continue;
-
-        	//fill the Lorentz vectors
-        	pi_minus_fromDs.SetXYZM(pi_minus_fromDs_PX,pi_minus_fromDs_PY,pi_minus_fromDs_PZ,massPion);
-		pi_plus_fromDs.SetXYZM(pi_plus_fromDs_PX,pi_plus_fromDs_PY,pi_plus_fromDs_PZ,massPion);
-		pi_minus2_fromDs.SetXYZM(pi_minus2_fromDs_PX,pi_minus2_fromDs_PY,pi_minus2_fromDs_PZ,massPion);
-
-
-		//misID Lorentz vectors
-		piplus_asKaon_MisID.SetXYZM(pi_plus_fromDs_PX,pi_plus_fromDs_PY,pi_plus_fromDs_PZ,massKaon);
-		piminus_asProton_MisID.SetXYZM(pi_minus_fromDs_PX,pi_minus_fromDs_PY,pi_minus_fromDs_PZ,massProton);
-		piminus2_asProton_MisID.SetXYZM(pi_minus2_fromDs_PX,pi_minus2_fromDs_PY,pi_minus2_fromDs_PZ,massProton);
-
-
-		//fill histos without veto cuts
-		mass_Ds2pipipi_as_D2Kpipi_beforeVeto->Fill((piplus_asKaon_MisID + pi_minus_fromDs + pi_minus2_fromDs).M());
-
-		mass_Ds2pipipi_as_D02pipi_beforeVeto->Fill((pi_plus_fromDs + pi_minus_fromDs).M());
-		mass_Ds2pipipi_as_D02pipi_beforeVeto->Fill((pi_plus_fromDs + pi_minus2_fromDs).M());
-
-		mass_Ds2pipipi_as_D02pipi_beforeVeto_2->Fill((pi_plus_fromDs + pi_minus_fromDs + pi_minus2_fromDs).M() - (pi_plus_fromDs + pi_minus_fromDs).M());
-		mass_Ds2pipipi_as_D02pipi_beforeVeto_2->Fill((pi_plus_fromDs + pi_minus_fromDs + pi_minus2_fromDs).M() - (pi_plus_fromDs + pi_minus2_fromDs).M());
-
-		mass_Ds2pipipi_as_D02Kpi_beforeVeto->Fill((piplus_asKaon_MisID + pi_minus_fromDs + pi_minus2_fromDs).M() - (piplus_asKaon_MisID + pi_minus_fromDs).M());
-		mass_Ds2pipipi_as_D02Kpi_beforeVeto->Fill((piplus_asKaon_MisID + pi_minus_fromDs + pi_minus2_fromDs).M() - (piplus_asKaon_MisID + pi_minus2_fromDs).M());
-
-		mass_Ds2pipipi_as_Lc2piPpi_beforeVeto->Fill((pi_plus_fromDs + piminus_asProton_MisID + pi_minus2_fromDs).M()-massLambda_c);
-		mass_Ds2pipipi_as_Lc2piPpi_beforeVeto->Fill((pi_plus_fromDs + pi_minus_fromDs + piminus2_asProton_MisID).M()-massLambda_c);
-
-		mass_Ds2pipipi_as_Lc2KPpi_beforeVeto->Fill((piplus_asKaon_MisID + piminus_asProton_MisID + pi_minus2_fromDs).M());
-		mass_Ds2pipipi_as_Lc2KPpi_beforeVeto_2->Fill((piplus_asKaon_MisID + pi_minus_fromDs + piminus2_asProton_MisID).M());
-
-
-		//fill histos with veto cuts
-// 		if((pi_plus_fromDs + pi_minus_fromDs).M() < 1700.){
-		if((pi_plus_fromDs + pi_minus_fromDs + pi_minus2_fromDs).M() - (pi_plus_fromDs + pi_minus_fromDs).M() > 155 && (pi_plus_fromDs + pi_minus_fromDs + pi_minus2_fromDs).M() - (pi_plus_fromDs + pi_minus2_fromDs).M() > 155 ){
-			mass_Ds2pipipi_as_D02pipi_afterVeto->Fill((pi_plus_fromDs + pi_minus_fromDs).M());
-			mass_Ds2pipipi_as_D02pipi_afterVeto_2->Fill((pi_plus_fromDs + pi_minus_fromDs + pi_minus2_fromDs).M() - (pi_plus_fromDs + pi_minus_fromDs).M());
-			mass_Ds2pipipi_as_D02Kpi_afterVeto->Fill((piplus_asKaon_MisID + pi_minus_fromDs + pi_minus2_fromDs).M() - (piplus_asKaon_MisID + pi_minus_fromDs).M());
-// 		}
-// 		if((pi_plus_fromDs + pi_minus2_fromDs).M() < 1700.){
-// 		if((pi_plus_fromDs + pi_minus_fromDs + pi_minus2_fromDs).M() - (pi_plus_fromDs + pi_minus2_fromDs).M() > 150 && (piplus_asKaon_MisID + pi_minus_fromDs + pi_minus2_fromDs).M() - (piplus_asKaon_MisID + pi_minus2_fromDs).M() > 150){
-			mass_Ds2pipipi_as_D02pipi_afterVeto->Fill((pi_plus_fromDs + pi_minus2_fromDs).M());
-			mass_Ds2pipipi_as_D02pipi_afterVeto_2->Fill((pi_plus_fromDs + pi_minus_fromDs + pi_minus2_fromDs).M() - (pi_plus_fromDs + pi_minus2_fromDs).M());
-			mass_Ds2pipipi_as_D02Kpi_afterVeto->Fill((piplus_asKaon_MisID + pi_minus_fromDs + pi_minus2_fromDs).M() - (piplus_asKaon_MisID + pi_minus2_fromDs).M());
-		}
-		if(TMath::Abs((pi_plus_fromDs + piminus_asProton_MisID + pi_minus2_fromDs).M() - massLambda_c) > 40. || pi_minus_fromDs_PIDp < 5.){
-			mass_Ds2pipipi_as_Lc2piPpi_afterVeto->Fill((pi_plus_fromDs + piminus_asProton_MisID + pi_minus2_fromDs).M()-massLambda_c);
-		}
-		if(TMath::Abs((pi_plus_fromDs + pi_minus_fromDs + piminus2_asProton_MisID).M() - massLambda_c) > 40. || pi_minus2_fromDs_PIDp < 5.){
-			mass_Ds2pipipi_as_Lc2piPpi_afterVeto->Fill((pi_plus_fromDs + pi_minus_fromDs + piminus2_asProton_MisID).M()-massLambda_c);
-		}
-
-	}
-
-	TCanvas* c = new TCanvas();
-
-	mass_Ds2pipipi_as_D2Kpipi_beforeVeto->Draw("E1"); c->Print("eps/Ds2pipipi/norm_Ds2pipipi_as_D2Kpipi_beforeVeto.eps");
-
-	mass_Ds2pipipi_as_D02pipi_beforeVeto->Draw("E1"); c->Print("eps/Ds2pipipi/norm_Ds2pipipi_as_D02pipi_beforeVeto.eps");
-	mass_Ds2pipipi_as_D02pipi_afterVeto->Draw("E1"); c->Print("eps/Ds2pipipi/norm_Ds2pipipi_as_D02pipi_afterVeto.eps");
-
-    	mass_Ds2pipipi_as_D02pipi_beforeVeto->SetLineColor(kBlack);
-    	mass_Ds2pipipi_as_D02pipi_beforeVeto->SetMarkerColor(kBlack);
-   	mass_Ds2pipipi_as_D02pipi_beforeVeto->Draw("");
-    	mass_Ds2pipipi_as_D02pipi_afterVeto->SetLineColor(kBlue);
-    	mass_Ds2pipipi_as_D02pipi_afterVeto->SetMarkerColor(kBlue);
-    	mass_Ds2pipipi_as_D02pipi_afterVeto->Draw("histsame");
-
-    	TLegend *leg = new TLegend(0.2,0.7,0.45,0.85);
-    	leg->SetHeader(" ");
-    	leg->AddEntry(mass_Ds2pipipi_as_D02pipi_beforeVeto,"Data without veto","LEP");
-    	leg->AddEntry(mass_Ds2pipipi_as_D02pipi_afterVeto,"Data with veto","LEP");
-    	leg->SetLineColor(kWhite);
-    	leg->SetFillColor(kWhite);
-    	leg->SetTextSize(0.05);
-    	//leg->Draw();
-	c->Print("eps/Ds2pipipi/norm_Ds2pipipi_as_D02pipi_compareVeto.eps");
-	c->Print("../../../../../TD-AnaNote/latex/figs/BkgStudies/norm_Ds2pipipi_as_D02pipi_compareVeto.pdf");
-
-    	mass_Ds2pipipi_as_D02Kpi_beforeVeto->SetLineColor(kBlack);
-    	mass_Ds2pipipi_as_D02Kpi_beforeVeto->SetMarkerColor(kBlack);
-   	mass_Ds2pipipi_as_D02Kpi_beforeVeto->Draw("");
-    	mass_Ds2pipipi_as_D02Kpi_afterVeto->SetLineColor(kBlue);
-    	mass_Ds2pipipi_as_D02Kpi_afterVeto->SetMarkerColor(kBlue);
-    	mass_Ds2pipipi_as_D02Kpi_afterVeto->Draw("histsame");
-
-	c->Print("eps/Ds2pipipi/norm_Ds2pipipi_as_D02Kpi_compareVeto.eps");
-	c->Print("../../../../../TD-AnaNote/latex/figs/BkgStudies/norm_Ds2pipipi_as_D02Kpi_compareVeto.pdf");
-
-
-	mass_Ds2pipipi_as_D02pipi_beforeVeto_2->Draw("E1"); c->Print("eps/Ds2pipipi/norm_Ds2pipipi_as_D02pipi_beforeVeto_2.eps");
-	mass_Ds2pipipi_as_D02pipi_afterVeto_2->Draw("E1"); c->Print("eps/Ds2pipipi/norm_Ds2pipipi_as_D02pipi_afterVeto_2.eps");
-
-    	mass_Ds2pipipi_as_D02pipi_beforeVeto_2->SetLineColor(kBlack);
-    	mass_Ds2pipipi_as_D02pipi_beforeVeto_2->SetMarkerColor(kBlack);
-   	mass_Ds2pipipi_as_D02pipi_beforeVeto_2->Draw("");
-    	mass_Ds2pipipi_as_D02pipi_afterVeto_2->SetLineColor(kBlue);
-    	mass_Ds2pipipi_as_D02pipi_afterVeto_2->SetMarkerColor(kBlue);
-    	mass_Ds2pipipi_as_D02pipi_afterVeto_2->Draw("histsame");
-
-    	TLegend *leg_2 = new TLegend(0.2,0.7,0.45,0.85);
-    	leg_2->SetHeader(" ");
-    	leg_2->AddEntry(mass_Ds2pipipi_as_D02pipi_beforeVeto_2,"Data without veto","LEP");
-    	leg_2->AddEntry(mass_Ds2pipipi_as_D02pipi_afterVeto_2,"Data with veto","LEP");
-    	leg_2->SetLineColor(kWhite);
-    	leg_2->SetFillColor(kWhite);
-    	leg_2->SetTextSize(0.05);
-//     	leg_2->Draw();
-	c->Print("eps/Ds2pipipi/norm_Ds2pipipi_as_D02pipi_compareVeto_2.eps");
-	c->Print("../../../../../TD-AnaNote/latex/figs/BkgStudies/norm_Ds2pipipi_as_D02pipi_compareVeto_2.pdf");
-
-
-
-	mass_Ds2pipipi_as_Lc2piPpi_beforeVeto->Draw("E1"); c->Print("eps/Ds2pipipi/norm_Ds2pipipi_as_Lc2piPpi_beforeVeto.eps");
-	mass_Ds2pipipi_as_Lc2piPpi_afterVeto->Draw("E1"); c->Print("eps/Ds2pipipi/norm_Ds2pipipi_as_Lc2piPpi_afterVeto.eps");
-
-    	mass_Ds2pipipi_as_Lc2piPpi_beforeVeto->SetLineColor(kBlack);
-    	mass_Ds2pipipi_as_Lc2piPpi_beforeVeto->SetMarkerColor(kBlack);
-   	mass_Ds2pipipi_as_Lc2piPpi_beforeVeto->Draw("");
-    	mass_Ds2pipipi_as_Lc2piPpi_afterVeto->SetLineColor(kBlue);
-    	mass_Ds2pipipi_as_Lc2piPpi_afterVeto->SetMarkerColor(kBlue);
-    	mass_Ds2pipipi_as_Lc2piPpi_afterVeto->Draw("histsame");
-
-    	TLegend *leg_3 = new TLegend(0.6,0.7,0.85,0.85);
-    	leg_3->SetHeader(" ");
-    	leg_3->AddEntry(mass_Ds2pipipi_as_Lc2piPpi_beforeVeto,"Data without veto","LEP");
-    	leg_3->AddEntry(mass_Ds2pipipi_as_Lc2piPpi_afterVeto,"Data with veto","LEP");
-    	leg_3->SetLineColor(kWhite);
-    	leg_3->SetFillColor(kWhite);
-    	leg_3->SetTextSize(0.05);
-    	//leg_3->Draw();
-	c->Print("eps/Ds2pipipi/norm_Ds2pipipi_as_Lc2piPpi_compareVeto.eps");
-	c->Print("../../../../../TD-AnaNote/latex/figs/BkgStudies/norm_Ds2pipipi_as_Lc2piPpi_compareVeto.pdf");
-
-
-
-	mass_Ds2pipipi_as_Lc2piPpi_beforeVeto_2->Draw("E1"); c->Print("eps/Ds2pipipi/norm_Ds2pipipi_as_Lc2piPpi_beforeVeto_2.eps");
-	mass_Ds2pipipi_as_Lc2piPpi_afterVeto_2->Draw("E1"); c->Print("eps/Ds2pipipi/norm_Ds2pipipi_as_Lc2piPpi_afterVeto_2.eps");
-
-    	mass_Ds2pipipi_as_Lc2piPpi_beforeVeto_2->SetLineColor(kBlack);
-    	mass_Ds2pipipi_as_Lc2piPpi_beforeVeto_2->SetMarkerColor(kBlack);
-   	mass_Ds2pipipi_as_Lc2piPpi_beforeVeto_2->Draw("");
-    	mass_Ds2pipipi_as_Lc2piPpi_afterVeto_2->SetLineColor(kBlue);
-    	mass_Ds2pipipi_as_Lc2piPpi_afterVeto_2->SetMarkerColor(kBlue);
-    	mass_Ds2pipipi_as_Lc2piPpi_afterVeto_2->Draw("histsame");
-
-    	TLegend *leg_4 = new TLegend(0.6,0.7,0.85,0.85);
-    	leg_4->SetHeader(" ");
-    	leg_4->AddEntry(mass_Ds2pipipi_as_Lc2piPpi_beforeVeto_2,"Data without veto","LEP");
-    	leg_4->AddEntry(mass_Ds2pipipi_as_Lc2piPpi_afterVeto_2,"Data with veto","LEP");
-    	leg_4->SetLineColor(kWhite);
-    	leg_4->SetFillColor(kWhite);
-    	leg_4->SetTextSize(0.05);
-    	//leg_4->Draw();
-	c->Print("eps/Ds2pipipi/norm_Ds2pipipi_as_Lc2piPpi_compareVeto_2.eps");
-
-
-
-	mass_Ds2pipipi_as_Lc2KPpi_beforeVeto->Draw("E1"); c->Print("eps/Ds2pipipi/norm_Ds2pipipi_as_Lc2KPpi_beforeVeto.eps");
-	mass_Ds2pipipi_as_Lc2KPpi_beforeVeto_2->Draw("E1"); c->Print("eps/Ds2pipipi/norm_Ds2pipipi_as_Lc2KPpi_beforeVeto_2.eps");
-}
-
-void BkgStudies_signal_Ds2pipipi(){
-
-    	TChain* tree = 0;
-   	tree =new TChain("DecayTree");
-
-    	tree->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/signal_Ds2pipipi_11_noVetoes.root");
-    	tree->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/signal_Ds2pipipi_12_noVetoes.root");
-    	tree->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/signal_Ds2pipipi_15_noVetoes.root");
-    	tree->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/signal_Ds2pipipi_16_noVetoes.root");
-
-   	tree->SetBranchStatus("*",0);
-    	tree->SetBranchStatus("*M",1) ;
-    	tree->SetBranchStatus("*MM",1) ;
-    	tree->SetBranchStatus( "*P", 1 );
-   	tree->SetBranchStatus( "*PX", 1 );
-    	tree->SetBranchStatus( "*PY", 1);
-   	tree->SetBranchStatus( "*PZ", 1);
-    	tree->SetBranchStatus( "*PE", 1);
-    	tree->SetBranchStatus( "*PT", 1 );
-	tree->SetBranchStatus( "*PIDK*", 1);
-	tree->SetBranchStatus( "*PIDp*", 1);
-
-	//define Lorentz vectors
-	TLorentzVector pi_plus_fromDs;
-	TLorentzVector pi_minus_fromDs;
-	TLorentzVector pi_minus2_fromDs;
-
-	//misIDs
-	TLorentzVector piplus_asKaon_MisID;
-	TLorentzVector piminus_asProton_MisID;
-	TLorentzVector piminus2_asProton_MisID;
-
-	//masses
-	double massKaon = 493.68;
-	double massPion = 139.57;
-	double massProton = 938.27;
-	double massPhi = 1019.46;
-	double massKstar = 895.81;
-	double massDs = 1968.30;
-	double massDminus = 1869.61;
-	double massLambda_c = 2286.46;
-	double massD0 = 1864.83;
-
-	//define observables
-	Double_t pi_plus_fromDs_PX;
-	Double_t pi_plus_fromDs_PY;
-	Double_t pi_plus_fromDs_PZ;
-	Double_t pi_minus_fromDs_PX;
-	Double_t pi_minus_fromDs_PY;
-	Double_t pi_minus_fromDs_PZ;
-	Double_t pi_minus2_fromDs_PX;
-	Double_t pi_minus2_fromDs_PY;
-	Double_t pi_minus2_fromDs_PZ;
-
-	Double_t pi_minus_fromDs_PIDK;
-	Double_t pi_minus_fromDs_PIDp;
-	Double_t pi_minus2_fromDs_PIDp;
-
-	//link to tree
-        tree->SetBranchAddress( "pi_plus_fromDs_PX" , &pi_plus_fromDs_PX );
-        tree->SetBranchAddress( "pi_plus_fromDs_PY" , &pi_plus_fromDs_PY );
-        tree->SetBranchAddress( "pi_plus_fromDs_PZ" , &pi_plus_fromDs_PZ );
-        tree->SetBranchAddress( "pi_minus_fromDs_PX" , &pi_minus_fromDs_PX );
-        tree->SetBranchAddress( "pi_minus_fromDs_PY" , &pi_minus_fromDs_PY );
-        tree->SetBranchAddress( "pi_minus_fromDs_PZ" , &pi_minus_fromDs_PZ );
-        tree->SetBranchAddress( "pi_minus2_fromDs_PX" , &pi_minus2_fromDs_PX );
-        tree->SetBranchAddress( "pi_minus2_fromDs_PY" , &pi_minus2_fromDs_PY );
-        tree->SetBranchAddress( "pi_minus2_fromDs_PZ" , &pi_minus2_fromDs_PZ );
-
-        tree->SetBranchAddress( "pi_minus_fromDs_PIDK" , &pi_minus_fromDs_PIDK );
-        tree->SetBranchAddress( "pi_minus_fromDs_PIDp" , &pi_minus_fromDs_PIDp );
-        tree->SetBranchAddress( "pi_minus2_fromDs_PIDp" , &pi_minus2_fromDs_PIDp );
-
-
-	//misID histos
-	TH1D* mass_Ds2pipipi_as_D2Kpipi_beforeVeto = new TH1D(" ", ";m(#pi^{+}_{K}#pi^{-}#pi^{-}) [MeV/c^{2}];Events", 50, 1900., 3000.);
-
-	TH1D* mass_Ds2pipipi_as_D02pipi_beforeVeto = new TH1D(" ", ";m(#pi^{+} #pi^{-}) [MeV/c^{2}];Events", 50, 1600., 1900.);
-	TH1D* mass_Ds2pipipi_as_D02pipi_afterVeto = new TH1D("   ", ";m(#pi^{+} #pi^{-}) [MeV/c^{2}];Events", 50, 1600., 1900.);
-	TH1D* mass_Ds2pipipi_as_D02pipi_beforeVeto_2 = new TH1D("     ", ";m(#pi^{+} #pi^{-}) [MeV/c^{2}];Events", 50, 1600., 1900.);
-	TH1D* mass_Ds2pipipi_as_D02pipi_afterVeto_2 = new TH1D("        ", ";m(#pi^{+} #pi^{-}) [MeV/c^{2}];Events", 50, 1600., 1900.);
-
-	TH1D* mass_Ds2pipipi_as_Lc2piPpi_beforeVeto = new TH1D(" ", ";m(#pi^{+} #pi^{-}_{#bar{p}} #pi^{-}) [MeV/c^{2}];Events", 50, 2150., 2600.);
-	TH1D* mass_Ds2pipipi_as_Lc2piPpi_afterVeto = new TH1D("   ", ";m(#pi^{+} #pi^{-}_{#bar{p}} #pi^{-}) [MeV/c^{2}];Events", 50, 2150., 2600.);
-	TH1D* mass_Ds2pipipi_as_Lc2piPpi_beforeVeto_2 = new TH1D("     ", ";m(#pi^{+}  #pi^{-} #pi^{-}_{#bar{p}}) [MeV/c^{2}];Events", 50, 2150., 2600.);
-	TH1D* mass_Ds2pipipi_as_Lc2piPpi_afterVeto_2 = new TH1D("       ", ";m(#pi^{+} #pi^{-} #pi^{-}_{#bar{p}}) [MeV/c^{2}];Events", 50, 2150., 2600.);
-
-	TH1D* mass_Ds2pipipi_as_Lc2KPpi_beforeVeto = new TH1D(" ", ";m(#pi^{+}_{K} #pi^{-}_{#bar{p}} #pi^{-}) [MeV/c^{2}];Events", 50, 2400., 2800.);
-	TH1D* mass_Ds2pipipi_as_Lc2KPpi_afterVeto = new TH1D("   ", ";m(#pi^{+}_{K} #pi^{-}_{#bar{p}} #pi^{-}) [MeV/c^{2}];Events", 50, 2100., 2600.);
-	TH1D* mass_Ds2pipipi_as_Lc2KPpi_beforeVeto_2 = new TH1D("    ", ";m(#pi^{+}_{K} #pi^{-}#pi^{-}_{#bar{p}} ) [MeV/c^{2}];Events", 50, 2400., 2800.);
-	TH1D* mass_Ds2pipipi_as_Lc2KPpi_afterVeto_2 = new TH1D("    ", ";m(#pi^{+}_{K} #pi^{-} #pi^{-}_{#bar{p}}) [MeV/c^{2}];Events", 50, 2100., 2600.);
-
-
-	//loop over events
-	int numEvents = tree->GetEntries();
-	for(int i=0; i< numEvents; i++)
-        	{
-        	if (0ul == (i % 10000ul)) std::cout << "Read event " << i << "/" << numEvents << std::endl;
-        	tree->GetEntry(i);
-
-        	//fill the Lorentz vectors
-        	pi_minus_fromDs.SetXYZM(pi_minus_fromDs_PX,pi_minus_fromDs_PY,pi_minus_fromDs_PZ,massPion);
-		pi_plus_fromDs.SetXYZM(pi_plus_fromDs_PX,pi_plus_fromDs_PY,pi_plus_fromDs_PZ,massPion);
-		pi_minus2_fromDs.SetXYZM(pi_minus2_fromDs_PX,pi_minus2_fromDs_PY,pi_minus2_fromDs_PZ,massPion);
-
-
-		//misID Lorentz vectors
-		piplus_asKaon_MisID.SetXYZM(pi_plus_fromDs_PX,pi_plus_fromDs_PY,pi_plus_fromDs_PZ,massKaon);
-		piminus_asProton_MisID.SetXYZM(pi_minus_fromDs_PX,pi_minus_fromDs_PY,pi_minus_fromDs_PZ,massProton);
-		piminus2_asProton_MisID.SetXYZM(pi_minus2_fromDs_PX,pi_minus2_fromDs_PY,pi_minus2_fromDs_PZ,massProton);
-
-		//fill histos without veto cuts
-		mass_Ds2pipipi_as_D2Kpipi_beforeVeto->Fill((piplus_asKaon_MisID + pi_minus_fromDs + pi_minus2_fromDs).M());
-		mass_Ds2pipipi_as_D02pipi_beforeVeto->Fill((pi_plus_fromDs + pi_minus_fromDs).M());
-		mass_Ds2pipipi_as_D02pipi_beforeVeto_2->Fill((pi_plus_fromDs + pi_minus2_fromDs).M());
-
-		mass_Ds2pipipi_as_Lc2piPpi_beforeVeto->Fill((pi_plus_fromDs + piminus_asProton_MisID + pi_minus2_fromDs).M());
-		mass_Ds2pipipi_as_Lc2piPpi_beforeVeto_2->Fill((pi_plus_fromDs + pi_minus_fromDs + piminus2_asProton_MisID).M());
-
-		mass_Ds2pipipi_as_Lc2KPpi_beforeVeto->Fill((piplus_asKaon_MisID + piminus_asProton_MisID + pi_minus2_fromDs).M());
-		mass_Ds2pipipi_as_Lc2KPpi_beforeVeto_2->Fill((piplus_asKaon_MisID + pi_minus_fromDs + piminus2_asProton_MisID).M());
-
-
-		//fill histos with veto cuts
-		if((pi_plus_fromDs + pi_minus_fromDs).M() < 1700.){
-		mass_Ds2pipipi_as_D02pipi_afterVeto->Fill((pi_plus_fromDs + pi_minus_fromDs).M());
-		}
-		if((pi_plus_fromDs + pi_minus2_fromDs).M() < 1700.){
-		mass_Ds2pipipi_as_D02pipi_afterVeto_2->Fill((pi_plus_fromDs + pi_minus2_fromDs).M());
-		}
-		if(TMath::Abs((pi_plus_fromDs + piminus_asProton_MisID + pi_minus2_fromDs).M() - massLambda_c) > 30. || pi_minus_fromDs_PIDp < 0.){
-		mass_Ds2pipipi_as_Lc2piPpi_afterVeto->Fill((pi_plus_fromDs + piminus_asProton_MisID + pi_minus2_fromDs).M());
-		}
-		if(TMath::Abs((pi_plus_fromDs + pi_minus_fromDs + piminus2_asProton_MisID).M() - massLambda_c) > 30. || pi_minus2_fromDs_PIDp < 0.){
-		mass_Ds2pipipi_as_Lc2piPpi_afterVeto_2->Fill((pi_plus_fromDs + pi_minus_fromDs + piminus2_asProton_MisID).M());
-		}
-	}
-
-	TCanvas* c = new TCanvas();
-
-	mass_Ds2pipipi_as_D2Kpipi_beforeVeto->Draw("E1"); c->Print("eps/Ds2pipipi/signal_Ds2pipipi_as_D2Kpipi_beforeVeto.eps");
-
-	mass_Ds2pipipi_as_D02pipi_beforeVeto->Draw("E1"); c->Print("eps/Ds2pipipi/signal_Ds2pipipi_as_D02pipi_beforeVeto.eps");
-	mass_Ds2pipipi_as_D02pipi_afterVeto->Draw("E1"); c->Print("eps/Ds2pipipi/signal_Ds2pipipi_as_D02pipi_afterVeto.eps");
-
-    	mass_Ds2pipipi_as_D02pipi_beforeVeto->SetLineColor(kRed);
-    	mass_Ds2pipipi_as_D02pipi_beforeVeto->SetMarkerColor(kRed);
-   	mass_Ds2pipipi_as_D02pipi_beforeVeto->Draw("");
-    	mass_Ds2pipipi_as_D02pipi_afterVeto->SetLineColor(kBlack);
-    	mass_Ds2pipipi_as_D02pipi_afterVeto->SetMarkerColor(kBlack);
-    	mass_Ds2pipipi_as_D02pipi_afterVeto->Draw("same");
-
-    	TLegend *leg = new TLegend(0.2,0.3,0.45,0.45);
-    	leg->SetHeader(" ");
-    	leg->AddEntry(mass_Ds2pipipi_as_D02pipi_beforeVeto,"Data without veto","LEP");
-    	leg->AddEntry(mass_Ds2pipipi_as_D02pipi_afterVeto,"Data with veto","LEP");
-    	leg->SetLineColor(kWhite);
-    	leg->SetFillColor(kWhite);
-    	leg->SetTextSize(0.05);
-    	leg->Draw();
-	c->Print("eps/Ds2pipipi/signal_Ds2pipipi_as_D02pipi_compareVeto.eps");
-
-
-
-	mass_Ds2pipipi_as_D02pipi_beforeVeto_2->Draw("E1"); c->Print("eps/Ds2pipipi/signal_Ds2pipipi_as_D02pipi_beforeVeto_2.eps");
-	mass_Ds2pipipi_as_D02pipi_afterVeto_2->Draw("E1"); c->Print("eps/Ds2pipipi/signal_Ds2pipipi_as_D02pipi_afterVeto_2.eps");
-
-    	mass_Ds2pipipi_as_D02pipi_beforeVeto_2->SetLineColor(kRed);
-    	mass_Ds2pipipi_as_D02pipi_beforeVeto_2->SetMarkerColor(kRed);
-   	mass_Ds2pipipi_as_D02pipi_beforeVeto_2->Draw("");
-    	mass_Ds2pipipi_as_D02pipi_afterVeto_2->SetLineColor(kBlack);
-    	mass_Ds2pipipi_as_D02pipi_afterVeto_2->SetMarkerColor(kBlack);
-    	mass_Ds2pipipi_as_D02pipi_afterVeto_2->Draw("same");
-
-    	TLegend *leg_2 = new TLegend(0.2,0.3,0.45,0.45);
-    	leg_2->SetHeader(" ");
-    	leg_2->AddEntry(mass_Ds2pipipi_as_D02pipi_beforeVeto_2,"Data without veto","LEP");
-    	leg_2->AddEntry(mass_Ds2pipipi_as_D02pipi_afterVeto_2,"Data with veto","LEP");
-    	leg_2->SetLineColor(kWhite);
-    	leg_2->SetFillColor(kWhite);
-    	leg_2->SetTextSize(0.05);
-    	leg_2->Draw();
-	c->Print("eps/Ds2pipipi/signal_Ds2pipipi_as_D02pipi_compareVeto_2.eps");
-
-
-
-	mass_Ds2pipipi_as_Lc2piPpi_beforeVeto->Draw("E1"); c->Print("eps/Ds2pipipi/signal_Ds2pipipi_as_Lc2piPpi_beforeVeto.eps");
-	mass_Ds2pipipi_as_Lc2piPpi_afterVeto->Draw("E1"); c->Print("eps/Ds2pipipi/signal_Ds2pipipi_as_Lc2piPpi_afterVeto.eps");
-
-    	mass_Ds2pipipi_as_Lc2piPpi_beforeVeto->SetLineColor(kRed);
-    	mass_Ds2pipipi_as_Lc2piPpi_beforeVeto->SetMarkerColor(kRed);
-   	mass_Ds2pipipi_as_Lc2piPpi_beforeVeto->Draw("");
-    	mass_Ds2pipipi_as_Lc2piPpi_afterVeto->SetLineColor(kBlack);
-    	mass_Ds2pipipi_as_Lc2piPpi_afterVeto->SetMarkerColor(kBlack);
-    	mass_Ds2pipipi_as_Lc2piPpi_afterVeto->Draw("same");
-
-    	TLegend *leg_3 = new TLegend(0.6,0.7,0.85,0.85);
-    	leg_3->SetHeader(" ");
-    	leg_3->AddEntry(mass_Ds2pipipi_as_Lc2piPpi_beforeVeto,"Data without veto","LEP");
-    	leg_3->AddEntry(mass_Ds2pipipi_as_Lc2piPpi_afterVeto,"Data with veto","LEP");
-    	leg_3->SetLineColor(kWhite);
-    	leg_3->SetFillColor(kWhite);
-    	leg_3->SetTextSize(0.05);
-    	leg_3->Draw();
-	c->Print("eps/Ds2pipipi/signal_Ds2pipipi_as_Lc2piPpi_compareVeto.eps");
-
-
-
-	mass_Ds2pipipi_as_Lc2piPpi_beforeVeto_2->Draw("E1"); c->Print("eps/Ds2pipipi/signal_Ds2pipipi_as_Lc2piPpi_beforeVeto_2.eps");
-	mass_Ds2pipipi_as_Lc2piPpi_afterVeto_2->Draw("E1"); c->Print("eps/Ds2pipipi/signal_Ds2pipipi_as_Lc2piPpi_afterVeto_2.eps");
-
-    	mass_Ds2pipipi_as_Lc2piPpi_beforeVeto_2->SetLineColor(kRed);
-    	mass_Ds2pipipi_as_Lc2piPpi_beforeVeto_2->SetMarkerColor(kRed);
-   	mass_Ds2pipipi_as_Lc2piPpi_beforeVeto_2->Draw("");
-    	mass_Ds2pipipi_as_Lc2piPpi_afterVeto_2->SetLineColor(kBlack);
-    	mass_Ds2pipipi_as_Lc2piPpi_afterVeto_2->SetMarkerColor(kBlack);
-    	mass_Ds2pipipi_as_Lc2piPpi_afterVeto_2->Draw("same");
-
-    	TLegend *leg_4 = new TLegend(0.6,0.7,0.85,0.85);
-    	leg_4->SetHeader(" ");
-    	leg_4->AddEntry(mass_Ds2pipipi_as_Lc2piPpi_beforeVeto_2,"Data without veto","LEP");
-    	leg_4->AddEntry(mass_Ds2pipipi_as_Lc2piPpi_afterVeto_2,"Data with veto","LEP");
-    	leg_4->SetLineColor(kWhite);
-    	leg_4->SetFillColor(kWhite);
-    	leg_4->SetTextSize(0.05);
-    	leg_4->Draw();
-	c->Print("eps/Ds2pipipi/signal_Ds2pipipi_as_Lc2piPpi_compareVeto_2.eps");
-
-
-	mass_Ds2pipipi_as_Lc2KPpi_beforeVeto->Draw("E1"); c->Print("eps/Ds2pipipi/signal_Ds2pipipi_as_Lc2KPpi_beforeVeto.eps");
-	mass_Ds2pipipi_as_Lc2KPpi_beforeVeto_2->Draw("E1"); c->Print("eps/Ds2pipipi/signal_Ds2pipipi_as_Lc2KPpi_beforeVeto_2.eps");
-
-}
-
-void BkgStudies_Xd(){
-
-    	TChain* tree = 0;
-   	tree =new TChain("DecayTree");
-
-    	tree->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/norm_Ds2KKpi_11_noVetoes.root");
-    	tree->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/norm_Ds2KKpi_12_noVetoes.root");
-    	tree->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/norm_Ds2KKpi_15_noVetoes.root");
-    	tree->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/norm_Ds2KKpi_16_noVetoes.root");
-
-    	tree->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/norm_Ds2pipipi_11_noVetoes.root");
-    	tree->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/norm_Ds2pipipi_12_noVetoes.root");
-    	tree->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/norm_Ds2pipipi_15_noVetoes.root");
-    	tree->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/norm_Ds2pipipi_16_noVetoes.root");
-
-    	tree->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/norm_Ds2Kpipi_11_noVetoes.root");
-    	tree->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/norm_Ds2Kpipi_12_noVetoes.root");
-    	tree->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/norm_Ds2Kpipi_15_noVetoes.root");
-    	tree->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/norm_Ds2Kpipi_16_noVetoes.root");
-
-   	tree->SetBranchStatus("*",0);
-    	tree->SetBranchStatus("*M",1) ;
-    	tree->SetBranchStatus("*MM",1) ;
-    	tree->SetBranchStatus( "*P", 1 );
-   	tree->SetBranchStatus( "*PX", 1 );
-    	tree->SetBranchStatus( "*PY", 1);
-   	tree->SetBranchStatus( "*PZ", 1);
-    	tree->SetBranchStatus( "*PE", 1);
-    	tree->SetBranchStatus( "*PT", 1 );
-	tree->SetBranchStatus( "*PIDK*", 1);
-	tree->SetBranchStatus( "*PIDp*", 1);
-
-	//define Lorentz vectors
-	TLorentzVector Ds;
-	TLorentzVector pi_plus;
-	TLorentzVector pi_plus2;
-	TLorentzVector pi_minus;
-
-	//misIDs
-	TLorentzVector piplus_asKaon_MisID;
-	TLorentzVector piplus2_asKaon_MisID;
-
-	//masses
-	double massKaon = 493.68;
-	double massPion = 139.57;
-	double massProton = 938.27;
-	double massPhi = 1019.46;
-	double massKstar = 895.81;
-	double massDs = 1968.30;
-	double massDminus = 1869.61;
-	double massLambda_c = 2286.46;
-	double massD0 = 1864.83;
-
-
-	//define observables
-	Double_t Ds_PX;
-	Double_t Ds_PY;
-	Double_t Ds_PZ;
-
-	Double_t pi_plus2_PX;
-	Double_t pi_plus2_PY;
-	Double_t pi_plus2_PZ;
-	Double_t pi_minus_PX;
-	Double_t pi_minus_PY;
-	Double_t pi_minus_PZ;
-	Double_t pi_plus1_PX;
-	Double_t pi_plus1_PY;
-	Double_t pi_plus1_PZ;
-
-	Double_t pi_plus1_PIDK;
-	Double_t pi_plus2_PIDK;
-	Double_t Bs_MM;
-
-	//link to tree
-        tree->SetBranchAddress( "Bs_MM" , &Bs_MM );
-        tree->SetBranchAddress( "Ds_PX" , &Ds_PX );
-        tree->SetBranchAddress( "Ds_PY" , &Ds_PY );
-        tree->SetBranchAddress( "Ds_PZ" , &Ds_PZ );
-
-        tree->SetBranchAddress( "pi_plus1_PX" , &pi_plus1_PX );
-        tree->SetBranchAddress( "pi_plus1_PY" , &pi_plus1_PY );
-        tree->SetBranchAddress( "pi_plus1_PZ" , &pi_plus1_PZ );
-        tree->SetBranchAddress( "pi_minus_PX" , &pi_minus_PX );
-        tree->SetBranchAddress( "pi_minus_PY" , &pi_minus_PY );
-        tree->SetBranchAddress( "pi_minus_PZ" , &pi_minus_PZ );
-        tree->SetBranchAddress( "pi_plus2_PX" , &pi_plus2_PX );
-        tree->SetBranchAddress( "pi_plus2_PY" , &pi_plus2_PY );
-        tree->SetBranchAddress( "pi_plus2_PZ" , &pi_plus2_PZ );
-
-        tree->SetBranchAddress( "pi_plus1_PIDK" , &pi_plus1_PIDK );
-        tree->SetBranchAddress( "pi_plus2_PIDK" , &pi_plus2_PIDK );
-
-
-	//misID histos
-	TH1D* mass_Bs2Dspipipi_as_Bs2DsKpipi_beforeVeto = new TH1D(" ", ";m(D_{s}^{-}#pi^{+}_{K}#pi^{-}#pi^{-}) [MeV/c^{2}];Events", 50, 5000., 6000.);
-	TH1D* mass_Bs2Dspipipi_as_Bs2DsKpipi_afterVeto = new TH1D("    ", ";m(D_{s}^{-}#pi^{+}_{K}#pi^{-}#pi^{-}) [MeV/c^{2}];Events", 50, 5000., 6000.);
-	TH1D* mass_Bs2Dspipipi_as_Bs2DsKpipi_beforeVeto_2 = new TH1D("     ", ";m(D_{s}^{-}#pi^{+}_{K}#pi^{-}#pi^{-}) [MeV/c^{2}];Events", 50, 5000., 6000.);
-	TH1D* mass_Bs2Dspipipi_as_Bs2DsKpipi_afterVeto_2 = new TH1D("       ", ";m(D_{s}^{-}#pi^{+}_{K}#pi^{-}#pi^{-}) [MeV/c^{2}];Events", 50, 5000., 6000.);
-
-	TH1D* mass_Bs2Dspipipi_as_Bs2DsDs_beforeVeto = new TH1D(" ", ";m(#pi^{+}_{K}#pi^{-}#pi^{+}) - m_{D_{s}} [MeV/c^{2}];Events", 50, -100, 100.);
-	TH1D* mass_Bs2Dspipipi_as_Bs2DsDs_afterVeto = new TH1D("    ", ";m(B^{0}_{s}#rightarrow D^{-}_{s} (D_{s}^{+}#rightarrow#pi^{+}_{K}#pi^{-}#pi^{+})) [MeV/c^{2}];Events", 50, -100., 100.);
-	TH1D* mass_Bs2Dspipipi_as_Bs2DsDs_beforeVeto_2 = new TH1D(" ", ";m(#pi^{+}_{K}#pi^{-}#pi^{+}) - m_{D_{s}} [MeV/c^{2}];Events", 50, -100., 100.);
-	TH1D* mass_Bs2Dspipipi_as_Bs2DsDs_afterVeto_2 = new TH1D("    ", ";m(B^{0}_{s}#rightarrow D^{-}_{s} (D_{s}^{+}#rightarrow#pi^{+}_{K}#pi^{-}#pi^{+})) [MeV/c^{2}];Events", 50, -100., 100.);
-
-	//loop over events
-	int numEvents = tree->GetEntries();
-	for(int i=0; i< numEvents; i++)
-        	{
-        	if (0ul == (i % 10000ul)) std::cout << "Read event " << i << "/" << numEvents << std::endl;
-        	tree->GetEntry(i);
-		if(Bs_MM < 5200 || Bs_MM > 5700) continue;		
-		//if(pi_plus1_PIDK > 0) continue;
-		//if(pi_plus2_PIDK > 0) continue;
-
-        	//fill the Lorentz vectors
-		Ds.SetXYZM(Ds_PX, Ds_PY, Ds_PZ, massDs);
-
-        	pi_minus.SetXYZM(pi_minus_PX,pi_minus_PY,pi_minus_PZ,massPion);
-		pi_plus.SetXYZM(pi_plus1_PX,pi_plus1_PY,pi_plus1_PZ,massPion);
-		pi_plus2.SetXYZM(pi_plus2_PX,pi_plus2_PY,pi_plus2_PZ,massPion);
-
-
-		//misID Lorentz vectors
-		piplus_asKaon_MisID.SetXYZM(pi_plus1_PX,pi_plus1_PY,pi_plus1_PZ,massKaon);
-		piplus2_asKaon_MisID.SetXYZM(pi_plus2_PX,pi_plus2_PY,pi_plus2_PZ,massKaon);
-
-		//fill histos without veto cuts
-		mass_Bs2Dspipipi_as_Bs2DsKpipi_beforeVeto->Fill((Ds + piplus_asKaon_MisID + pi_minus + pi_plus2).M());
-		mass_Bs2Dspipipi_as_Bs2DsKpipi_beforeVeto_2->Fill((Ds + piplus2_asKaon_MisID + pi_minus + pi_plus).M());
-
-		mass_Bs2Dspipipi_as_Bs2DsDs_beforeVeto->Fill((piplus_asKaon_MisID + pi_minus + pi_plus2).M()-massDs);
-		mass_Bs2Dspipipi_as_Bs2DsDs_beforeVeto->Fill((piplus2_asKaon_MisID + pi_minus + pi_plus).M()-massDs);
-
-
-		//fill histo after cut
-		if(pi_plus1_PIDK < 5.){
-		mass_Bs2Dspipipi_as_Bs2DsKpipi_afterVeto->Fill((Ds + piplus_asKaon_MisID + pi_minus + pi_plus2).M());
-		}
-		if(pi_plus2_PIDK < 5.){
-		mass_Bs2Dspipipi_as_Bs2DsKpipi_afterVeto_2->Fill((Ds + pi_plus + pi_minus + piplus2_asKaon_MisID).M());
-		}
-		if(TMath::Abs((piplus_asKaon_MisID + pi_minus + pi_plus2).M() - massDs) > 20. ||  pi_plus1_PIDK < -5){
-		mass_Bs2Dspipipi_as_Bs2DsDs_afterVeto->Fill((piplus_asKaon_MisID + pi_minus + pi_plus2).M()-massDs);
-		}
-		if(TMath::Abs((pi_plus + pi_minus + piplus2_asKaon_MisID).M() - massDs) > 20. ||  pi_plus2_PIDK < -5){
-		mass_Bs2Dspipipi_as_Bs2DsDs_afterVeto->Fill((piplus2_asKaon_MisID + pi_minus + pi_plus).M()-massDs);
-		}
-	}
-
-	TCanvas* c = new TCanvas();
-
-	mass_Bs2Dspipipi_as_Bs2DsKpipi_beforeVeto->Draw("E1"); c->Print("eps/Xd/norm_Bs2Dspipipi_as_Bs2DsKpipi_beforeVeto.eps");
-	mass_Bs2Dspipipi_as_Bs2DsKpipi_afterVeto->Draw("E1");c->Print("eps/Xd/norm_Bs2Dspipipi_as_Bs2DsKpipi_afterVeto.eps");
-
-    	mass_Bs2Dspipipi_as_Bs2DsKpipi_beforeVeto->SetLineColor(kRed);
-    	mass_Bs2Dspipipi_as_Bs2DsKpipi_beforeVeto->SetMarkerColor(kRed);
-   	mass_Bs2Dspipipi_as_Bs2DsKpipi_beforeVeto->Draw("");
-    	mass_Bs2Dspipipi_as_Bs2DsKpipi_afterVeto->SetLineColor(kBlack);
-    	mass_Bs2Dspipipi_as_Bs2DsKpipi_afterVeto->SetMarkerColor(kBlack);
-    	mass_Bs2Dspipipi_as_Bs2DsKpipi_afterVeto->Draw("same");
-
-    	TLegend *leg = new TLegend(0.6,0.7,0.85,0.85);
-    	leg->SetHeader(" ");
-    	leg->AddEntry(mass_Bs2Dspipipi_as_Bs2DsKpipi_beforeVeto,"Data without veto","LEP");
-    	leg->AddEntry(mass_Bs2Dspipipi_as_Bs2DsKpipi_afterVeto,"Data with veto","LEP");
-    	leg->SetLineColor(kWhite);
-    	leg->SetFillColor(kWhite);
-    	leg->SetTextSize(0.05);
-    	leg->Draw();
-	c->Print("eps/Xd/norm_Bs2Dspipipi_as_Bs2DsKpipi_compareVeto.eps");
-
-
-
-	mass_Bs2Dspipipi_as_Bs2DsKpipi_beforeVeto_2->Draw("E1"); c->Print("eps/Xd/norm_Bs2Dspipipi_as_Bs2DsKpipi_beforeVeto_2.eps");
-	mass_Bs2Dspipipi_as_Bs2DsKpipi_afterVeto_2->Draw("E1");c->Print("eps/Xd/norm_Bs2Dspipipi_as_Bs2DsKpipi_afterVeto_2.eps");
-
-    	mass_Bs2Dspipipi_as_Bs2DsKpipi_beforeVeto_2->SetLineColor(kRed);
-    	mass_Bs2Dspipipi_as_Bs2DsKpipi_beforeVeto_2->SetMarkerColor(kRed);
-   	mass_Bs2Dspipipi_as_Bs2DsKpipi_beforeVeto_2->Draw("");
-    	mass_Bs2Dspipipi_as_Bs2DsKpipi_afterVeto_2->SetLineColor(kBlack);
-    	mass_Bs2Dspipipi_as_Bs2DsKpipi_afterVeto_2->SetMarkerColor(kBlack);
-    	mass_Bs2Dspipipi_as_Bs2DsKpipi_afterVeto_2->Draw("same");
-
-    	TLegend *leg_2 = new TLegend(0.6,0.7,0.85,0.85);
-    	leg_2->SetHeader(" ");
-    	leg_2->AddEntry(mass_Bs2Dspipipi_as_Bs2DsKpipi_beforeVeto_2,"Data without veto","LEP");
-    	leg_2->AddEntry(mass_Bs2Dspipipi_as_Bs2DsKpipi_afterVeto_2,"Data with veto","LEP");
-    	leg_2->SetLineColor(kWhite);
-    	leg_2->SetFillColor(kWhite);
-    	leg_2->SetTextSize(0.05);
-    	leg_2->Draw();
-	c->Print("eps/Xd/norm_Bs2Dspipipi_as_Bs2DsKpipi_compareVeto_2.eps");
-
-	mass_Bs2Dspipipi_as_Bs2DsDs_beforeVeto->SetMinimum(0);
-	mass_Bs2Dspipipi_as_Bs2DsDs_beforeVeto->Draw("E1"); c->Print("eps/Xd/norm_Bs2Dspipipi_as_Bs2DsDs_beforeVeto.eps");
-	mass_Bs2Dspipipi_as_Bs2DsDs_afterVeto->Draw("E1"); c->Print("eps/Xd/norm_Bs2Dspipipi_as_Bs2DsDs_afterVeto.eps");
-
-    	mass_Bs2Dspipipi_as_Bs2DsDs_beforeVeto->SetLineColor(kBlack);
-    	mass_Bs2Dspipipi_as_Bs2DsDs_beforeVeto->SetMarkerColor(kBlack);
-   	mass_Bs2Dspipipi_as_Bs2DsDs_beforeVeto->Draw("");
-    	mass_Bs2Dspipipi_as_Bs2DsDs_afterVeto->SetLineColor(kBlue);
-    	mass_Bs2Dspipipi_as_Bs2DsDs_afterVeto->SetMarkerColor(kBlue);
-    	mass_Bs2Dspipipi_as_Bs2DsDs_afterVeto->Draw("histsame");
-
-    	TLegend *leg_3 = new TLegend(0.6,0.7,0.85,0.85);
-    	leg_3->SetHeader(" ");
-    	leg_3->AddEntry(mass_Bs2Dspipipi_as_Bs2DsDs_beforeVeto,"Data without veto","LEP");
-    	leg_3->AddEntry(mass_Bs2Dspipipi_as_Bs2DsDs_afterVeto,"Data with veto","LEP");
-    	leg_3->SetLineColor(kWhite);
-    	leg_3->SetFillColor(kWhite);
-    	leg_3->SetTextSize(0.05);
-    	//leg_3->Draw();
-	c->Print("eps/Xd/norm_Bs2Dspipipi_as_Bs2DsDs_compareVeto.eps");
-	c->Print("../../../../../TD-AnaNote/latex/figs/BkgStudies/norm_Bs2Dspipipi_as_Bs2DsDs_compareVeto.pdf");
-
-
-	mass_Bs2Dspipipi_as_Bs2DsDs_beforeVeto_2->SetMinimum(0);
-	mass_Bs2Dspipipi_as_Bs2DsDs_beforeVeto_2->Draw("E1"); c->Print("eps/Xd/norm_Bs2Dspipipi_as_Bs2DsDs_beforeVeto_2.eps");
-	mass_Bs2Dspipipi_as_Bs2DsDs_afterVeto_2->Draw("E1"); c->Print("eps/Xd/norm_Bs2Dspipipi_as_Bs2DsDs_afterVeto_2.eps");
-
-    	mass_Bs2Dspipipi_as_Bs2DsDs_beforeVeto_2->SetLineColor(kBlack);
-    	mass_Bs2Dspipipi_as_Bs2DsDs_beforeVeto_2->SetMarkerColor(kBlack);
-   	mass_Bs2Dspipipi_as_Bs2DsDs_beforeVeto_2->Draw("");
-    	mass_Bs2Dspipipi_as_Bs2DsDs_afterVeto_2->SetLineColor(kBlue);
-    	mass_Bs2Dspipipi_as_Bs2DsDs_afterVeto_2->SetMarkerColor(kBlue);
-    	mass_Bs2Dspipipi_as_Bs2DsDs_afterVeto_2->Draw("histsame");
-
-    	TLegend *leg_4 = new TLegend(0.6,0.7,0.85,0.85);
-    	leg_4->SetHeader(" ");
-    	leg_4->AddEntry(mass_Bs2Dspipipi_as_Bs2DsDs_beforeVeto_2,"Data without veto","LEP");
-    	leg_4->AddEntry(mass_Bs2Dspipipi_as_Bs2DsDs_afterVeto_2,"Data with veto","LEP");
-    	leg_4->SetLineColor(kWhite);
-    	leg_4->SetFillColor(kWhite);
-    	leg_4->SetTextSize(0.05);
-    	//leg_4->Draw();
-	c->Print("eps/Xd/norm_Bs2Dspipipi_as_Bs2DsDs_compareVeto_2.eps");
-	//c->Print("../../../../../TD-AnaNote/latex/figs/BkgStudies/norm_Bs2Dspipipi_as_Bs2DsDs_compareVeto_2.pdf");
-
-}
-
-void BkgStudies_Xs(){
-
-    	TChain* tree = 0;
-   	tree =new TChain("DecayTree");
-
-    	tree->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/signal_Ds2KKpi_11_noVetoes.root");
-    	tree->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/signal_Ds2KKpi_12_noVetoes.root");
-    	tree->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/signal_Ds2KKpi_15_noVetoes.root");
-    	tree->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/signal_Ds2KKpi_16_noVetoes.root");
-
-    	tree->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/signal_Ds2pipipi_11_noVetoes.root");
-    	tree->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/signal_Ds2pipipi_12_noVetoes.root");
-    	tree->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/signal_Ds2pipipi_15_noVetoes.root");
-    	tree->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/signal_Ds2pipipi_16_noVetoes.root");
-
-    	tree->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/signal_Ds2Kpipi_11_noVetoes.root");
-    	tree->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/signal_Ds2Kpipi_12_noVetoes.root");
-    	tree->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/signal_Ds2Kpipi_15_noVetoes.root");
-    	tree->Add("/auto/data/dargent/BsDsKpipi/Preselected/Data/signal_Ds2Kpipi_16_noVetoes.root");
-
-   	tree->SetBranchStatus("*",0);
-    	tree->SetBranchStatus("*M",1) ;
-    	tree->SetBranchStatus("*MM",1) ;
-    	tree->SetBranchStatus( "*P", 1 );
-   	tree->SetBranchStatus( "*PX", 1 );
-    	tree->SetBranchStatus( "*PY", 1);
-   	tree->SetBranchStatus( "*PZ", 1);
-    	tree->SetBranchStatus( "*PE", 1);
-    	tree->SetBranchStatus( "*PT", 1 );
-	tree->SetBranchStatus( "*PIDK*", 1);
-	tree->SetBranchStatus( "*PIDp*", 1);
-
-	//define Lorentz vectors
-	TLorentzVector Ds;
-	TLorentzVector pi_plus;
-	TLorentzVector K_plus;
-	TLorentzVector pi_minus;
-
-	//misIDs
-	TLorentzVector Kplus_asPion_MisID;
-	TLorentzVector piminus_asKaon_MisID;
-	//masses
-	double massKaon = 493.68;
-	double massPion = 139.57;
-	double massProton = 938.27;
-	double massPhi = 1019.46;
-	double massKstar = 895.81;
-	double massDs = 1968.30;
-	double massDminus = 1869.61;
-	double massLambda_c = 2286.46;
-	double massD0 = 1864.83;
-
-
-	//define observables
-	Double_t Ds_PX;
-	Double_t Ds_PY;
-	Double_t Ds_PZ;
-
-	Double_t K_plus_PX;
-	Double_t K_plus_PY;
-	Double_t K_plus_PZ;
-	Double_t pi_minus_PX;
-	Double_t pi_minus_PY;
-	Double_t pi_minus_PZ;
-	Double_t pi_plus_PX;
-	Double_t pi_plus_PY;
-	Double_t pi_plus_PZ;
-
-	Double_t K_plus_PIDK;
-	Double_t pi_minus_PIDK;
-	Double_t Bs_MM;
-
-	//link to tree
-        tree->SetBranchAddress( "Bs_MM" , &Bs_MM );
-
-        tree->SetBranchAddress( "Ds_PX" , &Ds_PX );
-        tree->SetBranchAddress( "Ds_PY" , &Ds_PY );
-        tree->SetBranchAddress( "Ds_PZ" , &Ds_PZ );
-
-        tree->SetBranchAddress( "pi_plus_PX" , &pi_plus_PX );
-        tree->SetBranchAddress( "pi_plus_PY" , &pi_plus_PY );
-        tree->SetBranchAddress( "pi_plus_PZ" , &pi_plus_PZ );
-        tree->SetBranchAddress( "pi_minus_PX" , &pi_minus_PX );
-        tree->SetBranchAddress( "pi_minus_PY" , &pi_minus_PY );
-        tree->SetBranchAddress( "pi_minus_PZ" , &pi_minus_PZ );
-        tree->SetBranchAddress( "K_plus_PX" , &K_plus_PX );
-        tree->SetBranchAddress( "K_plus_PY" , &K_plus_PY );
-        tree->SetBranchAddress( "K_plus_PZ" , &K_plus_PZ );
-
-        tree->SetBranchAddress( "K_plus_PIDK" , &K_plus_PIDK );
-        tree->SetBranchAddress( "pi_minus_PIDK" , &pi_minus_PIDK );
-
-
-	//misID histos
-	TH1D* mass_Bs2DsKpipi_as_Bs2Dspipipi_beforeVeto = new TH1D(" ", ";m(D_{s}^{-}K^{+}_{#pi}#pi^{-}#pi^{-}) [MeV/c^{2}];Events", 50, 5000., 6000.);
-	TH1D* mass_Bs2DsKpipi_as_Bs2Dspipipi_afterVeto = new TH1D("   ", ";m(D_{s}^{-}K^{+}_{#pi}#pi^{-}#pi^{-}) [MeV/c^{2}];Events", 50, 5000., 6000.);
-
-	TH1D* mass_Bs2DsKpipi_as_Bs2DsDs_beforeVeto = new TH1D(" ", ";m(K^{+}#pi^{-}_{K}#pi^{+})-m_{D_{s}} [MeV/c^{2}];Events", 40, -100., 100.);
-	TH1D* mass_Bs2DsKpipi_as_Bs2DsDs_afterVeto = new TH1D("   ", ";m(B^{0}_{s}#rightarrow D^{-}_{s}(D_{s}^{+}#rightarrow K^{+}#pi^{-}_{K}#pi^{+})) [MeV/c^{2}];Events", 40, -100, 100.);
-
-	//loop over events
-	int numEvents = tree->GetEntries();
-	for(int i=0; i< numEvents; i++)
-        	{
-        	if (0ul == (i % 10000ul)) std::cout << "Read event " << i << "/" << numEvents << std::endl;
-        	tree->GetEntry(i);
-
-		if(Bs_MM < 5200 || Bs_MM > 5700) continue;		
-		//if(pi_minus_PIDK > 0) continue;
-
-        	//fill the Lorentz vectors
-		Ds.SetXYZM(Ds_PX, Ds_PY, Ds_PZ, massDs);
-
-        	pi_minus.SetXYZM(pi_minus_PX,pi_minus_PY,pi_minus_PZ,massPion);
-		pi_plus.SetXYZM(pi_plus_PX,pi_plus_PY,pi_plus_PZ,massPion);
-		K_plus.SetXYZM(K_plus_PX,K_plus_PY,K_plus_PZ,massKaon);
-
-
-		//misID Lorentz vectors
-		Kplus_asPion_MisID.SetXYZM(K_plus_PX,K_plus_PY,K_plus_PZ,massPion);
-		piminus_asKaon_MisID.SetXYZM(pi_minus_PX,pi_minus_PY,pi_minus_PZ,massKaon);
-
-		//fill histos without veto cuts
-		mass_Bs2DsKpipi_as_Bs2Dspipipi_beforeVeto->Fill((Ds + Kplus_asPion_MisID + pi_minus + pi_plus).M());
-		mass_Bs2DsKpipi_as_Bs2DsDs_beforeVeto->Fill((K_plus + piminus_asKaon_MisID + pi_plus).M()-massDs);
-
-		//fill histos with vetoes applied
-		if(K_plus_PIDK > 10.){
-			mass_Bs2DsKpipi_as_Bs2Dspipipi_afterVeto->Fill((Ds + Kplus_asPion_MisID + pi_minus + pi_plus).M());
-		}
-
-		if(TMath::Abs((K_plus + piminus_asKaon_MisID + pi_plus).M() - massDs) > 20. || pi_minus_PIDK < -5.){
-			mass_Bs2DsKpipi_as_Bs2DsDs_afterVeto->Fill((K_plus + piminus_asKaon_MisID + pi_plus).M()-massDs);
-		}
-
-	}
-
-	TCanvas* c = new TCanvas();
-	mass_Bs2DsKpipi_as_Bs2Dspipipi_beforeVeto->Draw("E1"); c->Print("eps/Xs/signal_Bs2DsKpipi_as_Bs2Dspipipi_beforeVeto.eps");
-	mass_Bs2DsKpipi_as_Bs2Dspipipi_afterVeto->Draw("E1"); c->Print("eps/Xs/signal_Bs2DsKpipi_as_Bs2Dspipipi_afterVeto.eps");
-
-   	mass_Bs2DsKpipi_as_Bs2Dspipipi_beforeVeto->SetLineColor(kBlack);
-   	mass_Bs2DsKpipi_as_Bs2Dspipipi_beforeVeto->SetMarkerColor(kBlack);
-   	mass_Bs2DsKpipi_as_Bs2Dspipipi_beforeVeto->Draw("");
-    	mass_Bs2DsKpipi_as_Bs2Dspipipi_afterVeto->SetLineColor(kBlue);
-    	mass_Bs2DsKpipi_as_Bs2Dspipipi_afterVeto->SetMarkerColor(kBlue);
-    	mass_Bs2DsKpipi_as_Bs2Dspipipi_afterVeto->Draw("same");
-
-    	TLegend *leg = new TLegend(0.6,0.7,0.85,0.85);
-    	leg->SetHeader(" ");
-    	leg->AddEntry(mass_Bs2DsKpipi_as_Bs2Dspipipi_beforeVeto,"Data without veto","LEP");
-    	leg->AddEntry(mass_Bs2DsKpipi_as_Bs2Dspipipi_afterVeto,"Data with veto","LEP");
-    	leg->SetLineColor(kWhite);
-    	leg->SetFillColor(kWhite);
-    	leg->SetTextSize(0.05);
-    	leg->Draw();
-	c->Print("eps/Xs/signal_Bs2DsKpipi_as_Bs2Dspipipi_compareVeto.eps");
-
-
-	mass_Bs2DsKpipi_as_Bs2DsDs_beforeVeto->SetMinimum(0);
-	mass_Bs2DsKpipi_as_Bs2DsDs_beforeVeto->Draw("E1"); c->Print("eps/Xs/signal_Bs2DsKpipi_as_Bs2DsDs_beforeVeto.eps");
-	mass_Bs2DsKpipi_as_Bs2DsDs_afterVeto->Draw("E1"); c->Print("eps/Xs/signal_Bs2DsKpipi_as_Bs2DsDs_afterVeto.eps");
-
-   	mass_Bs2DsKpipi_as_Bs2DsDs_beforeVeto->SetLineColor(kBlack);
-   	mass_Bs2DsKpipi_as_Bs2DsDs_beforeVeto->SetMarkerColor(kBlack);
-   	mass_Bs2DsKpipi_as_Bs2DsDs_beforeVeto->Draw("");
-    	mass_Bs2DsKpipi_as_Bs2DsDs_afterVeto->SetLineColor(kBlue);
-    	mass_Bs2DsKpipi_as_Bs2DsDs_afterVeto->SetMarkerColor(kBlue);
-    	mass_Bs2DsKpipi_as_Bs2DsDs_afterVeto->Draw("histsame");
-
-    	TLegend *leg_2 = new TLegend(0.2,0.3,0.45,0.45);
-    	leg_2->SetHeader(" ");
-    	leg_2->AddEntry(mass_Bs2DsKpipi_as_Bs2DsDs_beforeVeto,"Data without veto","LEP");
-    	leg_2->AddEntry(mass_Bs2DsKpipi_as_Bs2DsDs_afterVeto,"Data with veto","LEP");
-    	leg_2->SetLineColor(kWhite);
-    	leg_2->SetFillColor(kWhite);
-    	leg_2->SetTextSize(0.05);
-    	//leg_2->Draw();
-	c->Print("eps/Xs/signal_Bs2DsKpipi_as_Bs2DsDs_compareVeto.eps");
-	c->Print("../../../../../TD-AnaNote/latex/figs/BkgStudies/signal_Bs2DsKpipi_as_Bs2DsDs_compareVeto.pdf");
-
+void BkgStudies(){
+    
+    TChain* tree = 0;
+    tree =new TChain("DecayTree");    
+    tree->Add("/eos/lhcb/user/p/phdargen/B2DKspi/BDT/B2DKspi_data.root");
+    //tree->Add("../../../../../Selection/Preselected/Data_B2DKspi_LL_16.root");
+    //tree->Add("../MassFits/b2dkspi_sw.root");
+
+    tree->SetBranchStatus("*",0);
+    tree->SetBranchStatus("*M",1) ;
+    tree->SetBranchStatus("*MM",1) ;
+    tree->SetBranchStatus( "*P", 1 );
+    tree->SetBranchStatus( "*PX", 1 );
+    tree->SetBranchStatus( "*PY", 1);
+    tree->SetBranchStatus( "*PZ", 1);
+    tree->SetBranchStatus( "*PE", 1);
+    tree->SetBranchStatus( "*PT", 1 );
+    tree->SetBranchStatus( "*PIDK*", 1);
+    tree->SetBranchStatus( "*PIDp*", 1);
+    tree->SetBranchStatus( "*ProbNN*", 1);
+    
+    //define Lorentz vectors
+    TLorentzVector pi,pip_Ks,pim_Ks,pi1_D,pi2_D,K_D,Ks,D;
+    TLorentzVector FullDTF_pi,FullDTF_pip_Ks,FullDTF_pim_Ks,FullDTF_pi1_D,FullDTF_pi2_D,FullDTF_K_D,FullDTF_Ks,FullDTF_D;
+    TLorentzVector FullBsDTF_pi,FullBsDTF_pip_Ks,FullBsDTF_pim_Ks,FullBsDTF_pi1_D,FullBsDTF_pi2_D,FullBsDTF_K_D,FullBsDTF_Ks,FullBsDTF_D;
+    
+    //misIDs
+    TLorentzVector K_fromD_asP_MissID,K_fromD_asPi_MissID;
+    TLorentzVector pi_asP_MissID,pi_asK_MissID;
+    TLorentzVector pi1_fromD_asP_MissID,pi1_fromD_asK_MissID;
+    TLorentzVector pi2_fromD_asP_MissID,pi2_fromD_asK_MissID;
+
+    //masses
+    double massKaon = 493.68;
+    double massPion = 139.57;
+    double massProton = 938.27;
+    double massPhi = 1019.46;
+    double massKstar = 895.81;
+    double massDs = 1968.30;
+    double massDminus = 1869.61;
+    double massLambda_c = 2286.46;
+    double massD0 = 1864.83;
+    double massKs = 497.611;
+    double massB0 = 5279.65;
+    double massBs = 5366.88;
+    double massBp = 5279.34;
+
+    
+    //define observables
+    Double_t pi_PX;
+    Double_t pi_PY;
+    Double_t pi_PZ;
+    Double_t pip_Ks_PX;
+    Double_t pip_Ks_PY;
+    Double_t pip_Ks_PZ;
+    Double_t pim_Ks_PX;
+    Double_t pim_Ks_PY;
+    Double_t pim_Ks_PZ;
+    
+    Double_t pi1_D_PX;
+    Double_t pi1_D_PY;
+    Double_t pi1_D_PZ;
+    Double_t pi2_D_PX;
+    Double_t pi2_D_PY;
+    Double_t pi2_D_PZ;
+    Double_t K_D_PX;
+    Double_t K_D_PY;
+    Double_t K_D_PZ;
+    
+    Double_t pi_minus_fromDs_PIDp;
+    Double_t K_minus_fromDs_PIDK;
+    Double_t K_minus_fromDs_PIDp;
+    Double_t B_MM;
+    
+    //link to tree
+    tree->SetBranchAddress( "pi_PX" , &pi_PX );
+    tree->SetBranchAddress( "pi_PY" , &pi_PY );
+    tree->SetBranchAddress( "pi_PZ" , &pi_PZ );
+    tree->SetBranchAddress( "pip_Ks_PX" , &pip_Ks_PX );
+    tree->SetBranchAddress( "pip_Ks_PY" , &pip_Ks_PY );
+    tree->SetBranchAddress( "pip_Ks_PZ" , &pip_Ks_PZ );
+    tree->SetBranchAddress( "pim_Ks_PX" , &pim_Ks_PX );
+    tree->SetBranchAddress( "pim_Ks_PY" , &pim_Ks_PY );
+    tree->SetBranchAddress( "pim_Ks_PZ" , &pim_Ks_PZ );   
+    tree->SetBranchAddress( "pi1_D_PX" , &pi1_D_PX );
+    tree->SetBranchAddress( "pi1_D_PY" , &pi1_D_PY );
+    tree->SetBranchAddress( "pi1_D_PZ" , &pi1_D_PZ );    
+    tree->SetBranchAddress( "pi2_D_PX" , &pi2_D_PX );
+    tree->SetBranchAddress( "pi2_D_PZ" , &pi2_D_PZ );
+    tree->SetBranchAddress( "pi2_D_PY" , &pi2_D_PY );
+    tree->SetBranchAddress( "K_D_PX" , &K_D_PX );
+    tree->SetBranchAddress( "K_D_PY" , &K_D_PY );
+    tree->SetBranchAddress( "K_D_PZ" , &K_D_PZ );
+    
+    Double_t pi_ProbNNpi,pi_ProbNNk,pi_ProbNNp;
+    Double_t pi1_D_ProbNNpi,pi1_D_ProbNNk,pi1_D_ProbNNp;
+    Double_t pi2_D_ProbNNpi,pi2_D_ProbNNk,pi2_D_ProbNNp;
+    tree->SetBranchAddress( "pi_ProbNNpi" , &pi_ProbNNpi );
+    tree->SetBranchAddress( "pi_ProbNNk" , &pi_ProbNNk );
+    tree->SetBranchAddress( "pi_ProbNNp" , &pi_ProbNNp );
+    tree->SetBranchAddress( "pi1_D_ProbNNpi" , &pi1_D_ProbNNpi );
+    tree->SetBranchAddress( "pi1_D_ProbNNk" , &pi1_D_ProbNNk );
+    tree->SetBranchAddress( "pi1_D_ProbNNp" , &pi1_D_ProbNNp );
+    tree->SetBranchAddress( "pi2_D_ProbNNpi" , &pi2_D_ProbNNpi );
+    tree->SetBranchAddress( "pi2_D_ProbNNk" , &pi2_D_ProbNNk );
+    tree->SetBranchAddress( "pi2_D_ProbNNp" , &pi2_D_ProbNNp );
+
+    tree->SetBranchAddress( "B_MM" , &B_MM );
+    
+    //misID histos
+    
+    // D-
+    TH1D* mass_D2KKpi_as_D2Kpipi_beforeVeto = new TH1D(" ", ";m(K_{#pi}K^{-}#pi) - m_{D_{s}} [MeV/c^{2}];Events", 50, -100,100);
+    TH1D* mass_D2KKpi_as_D2Kpipi_afterVeto = new TH1D(" ", ";m(K_{#pi}K^{-}#pi) - m_{D} [MeV/c^{2}];Events", 50, -100,100);
+
+    TH1D* mass_D2pipipi_as_D2Kpipi_beforeVeto = new TH1D(" ", ";m(#pi^{-}_{K}#pi^{+}#pi^{+}) - m_{D_{s}} [MeV/c^{2}];Events", 50, -150,150);
+    TH1D* mass_D2pipipi_as_D2Kpipi_afterVeto = new TH1D(" ", ";m(#pi^{-}_{K}#pi^{+}#pi^{+}) - m_{D_{s}} [MeV/c^{2}];Events", 50, -150,150);
+
+    TH1D* mass_Lc2ppipi_as_D2Kpipi_beforeVeto = new TH1D(" ", ";m(p_{K}#pi^{+}#pi^{+}) - m_{#Lambda_{c}} [MeV/c^{2}];Events", 50, -150,150);
+    TH1D* mass_Lc2ppipi_as_D2Kpipi_afterVeto = new TH1D(" ", ";m(p_{K}#pi^{+}#pi^{+}) - m_{#Lambda_{c}} [MeV/c^{2}];Events", 50, -150,150);
+
+    TH1D* mass_Lc2Kppi_as_D2Kpipi_beforeVeto = new TH1D(" ", ";m(p_{#pi}K^{-}#pi^{+}) - m_{#Lambda_{c}} [MeV/c^{2}];Events", 50, -150,150);
+    TH1D* mass_Lc2Kppi_as_D2Kpipi_afterVeto = new TH1D(" ", ";m(p_{#pi}K^{-}#pi^{+}) - m_{#Lambda_{c}} [MeV/c^{2}];Events", 50, -150,150);
+
+    TH1D* mass_D2Kpi_as_D2Kpipi_beforeVeto = new TH1D(" ", ";m(K^{-}#pi^{+}) - m_{D^{0}} [MeV/c^{2}];Events", 50, -100,100);
+    TH1D* mass_D2Kpi_as_D2Kpipi_afterVeto = new TH1D(" ", ";m(K^{-}#pi^{+}) - m_{D^{0}} [MeV/c^{2}];Events", 50, -100,100);
+
+    //
+    TH1D* mass_phi_as_Kpi_beforeVeto = new TH1D(" ", ";m(K^{-}#pi_{K}^{+}) - m_{#phi(1020)} [MeV/c^{2}];Events", 50, -100,100);
+    TH1D* mass_phi_as_Kpi_afterVeto = new TH1D(" ", ";m(K^{-}#pi_{K}^{+}) - m_{#phi(1020)} [MeV/c^{2}];Events", 50, -100,100);
+
+    TH1D* mass_phi_as_Kpi_beforeVeto2 = new TH1D(" ", ";m(K^{-}#pi_{K}^{+}) - m_{#phi(1020)} [MeV/c^{2}];Events", 50, -100,100);
+    TH1D* mass_phi_as_Kpi_afterVeto2 = new TH1D(" ", ";m(K^{-}#pi_{K}^{+}) - m_{#phi(1020)} [MeV/c^{2}];Events", 50, -100,100);
+
+    // B   
+    TH1D* mass_B2DKsK_as_DKspi_beforeVeto = new TH1D(" ", ";m(D K_{s} K_{#pi}) - m_{B_{s}^{0}} [MeV/c^{2}];Events", 50, -100,200);
+    TH1D* mass_B2DKsK_as_DKspi_afterVeto = new TH1D(" ", ";m(D K_{s} K_{#pi}) - m_{B^{0}} [MeV/c^{2}];Events", 50, -100,200);
+
+    TH1D* mass_B2Dpi_as_DKspi_beforeVeto = new TH1D(" ", ";m(D^{-}#pi^{+}) - m_{B^{0}} [MeV/c^{2}];Events", 50, -600,100);
+    TH1D* mass_B2Dpi_as_DKspi_afterVeto = new TH1D(" ", ";m(D^{-}#pi^{+}) - m_{B^{0}} [MeV/c^{2}];Events", 50, -600,100);
+
+    TH1D* mass_B2DK_as_DKspi_beforeVeto = new TH1D(" ", ";m(D^{-}K_{S}) - m_{B^{+}} [MeV/c^{2}];Events", 50, -100,100);
+    TH1D* mass_B2DK_as_DKspi_afterVeto = new TH1D(" ", ";m(D^{-}K_{S}) - m_{B^{+}} [MeV/c^{2}];Events", 50, -100,100);
+
+    TH1D* mass_D2Kspi_as_Kspi_beforeVeto = new TH1D(" ", ";m(K_{S}#pi^{+}) - m_{D^{+}} [MeV/c^{2}];Events", 50, -200,200);
+    TH1D* mass_D2Kspi_as_Kspi_afterVeto = new TH1D(" ", ";m(K_{S}#pi^{+}) - m_{D^{+}} [MeV/c^{2}];Events", 50, -200,200);
+
+    TH1D* mass_Lc2pKs_as_Kspi_beforeVeto = new TH1D(" ", ";m(K_{S}p_{#pi}^{+}) - m_{#Lambda_{c}} [MeV/c^{2}];Events", 50, -100,100);
+    TH1D* mass_Lc2pKs_as_Kspi_afterVeto = new TH1D(" ", ";m(K_{S}p_{#pi}^{+}) - m_{#Lambda_{c}} [MeV/c^{2}];Events", 50, -100,100);
+
+        
+    //loop over events
+    int numEvents = tree->GetEntries();
+    for(int i=0; i< numEvents; i++)
+    {
+        if (0ul == (i % 10000ul)) std::cout << "Read event " << i << "/" << numEvents << std::endl;
+        tree->GetEntry(i);
+        //if(B_MM < 5200 || B_MM > 5700) continue;
+        
+        //fill the Lorentz vectors
+        pi.SetXYZM(pi_PX,pi_PY,pi_PZ,massPion);        
+        pip_Ks.SetXYZM(pip_Ks_PX,pip_Ks_PY,pip_Ks_PZ,massPion);
+        pim_Ks.SetXYZM(pim_Ks_PX,pim_Ks_PY,pim_Ks_PZ,massPion);
+        
+        pi1_D.SetXYZM(pi1_D_PX,pi1_D_PY,pi1_D_PZ,massPion);
+        pi2_D.SetXYZM(pi2_D_PX,pi2_D_PY,pi2_D_PZ,massPion);
+        K_D.SetXYZM(K_D_PX,K_D_PY,K_D_PZ,massKaon);
+        
+        Ks = pip_Ks + pim_Ks;
+        D = pi1_D + pi2_D + K_D;
+         
+        //misID Lorentz vectors
+        K_fromD_asP_MissID.SetXYZM(K_D_PX,K_D_PY,K_D_PZ, massProton);
+        K_fromD_asPi_MissID.SetXYZM(K_D_PX,K_D_PY,K_D_PZ,massPion);
+        
+        pi_asP_MissID.SetXYZM(pi_PX,pi_PY,pi_PZ,massProton);        
+        pi_asK_MissID.SetXYZM(pi_PX,pi_PY,pi_PZ,massKaon);        
+
+        pi1_fromD_asP_MissID.SetXYZM(pi1_D_PX,pi1_D_PY,pi1_D_PZ,massProton);        
+        pi1_fromD_asK_MissID.SetXYZM(pi1_D_PX,pi1_D_PY,pi1_D_PZ,massKaon);        
+        
+        pi2_fromD_asP_MissID.SetXYZM(pi2_D_PX,pi2_D_PY,pi2_D_PZ,massProton);        
+        pi2_fromD_asK_MissID.SetXYZM(pi2_D_PX,pi2_D_PY,pi2_D_PZ,massKaon);        
+        
+        
+        //fill histos without veto cuts
+        mass_D2KKpi_as_D2Kpipi_beforeVeto->Fill((K_D + pi1_fromD_asK_MissID + pi2_D).M()-massDs);
+        mass_D2KKpi_as_D2Kpipi_beforeVeto->Fill((K_D + pi2_fromD_asK_MissID + pi1_D).M()-massDs);         
+        
+        mass_D2pipipi_as_D2Kpipi_beforeVeto->Fill( (K_fromD_asPi_MissID + pi1_D + pi2_D).M() - massDs);
+        
+        mass_Lc2ppipi_as_D2Kpipi_beforeVeto->Fill( (K_fromD_asP_MissID + pi1_D + pi2_D).M() - massLambda_c );
+
+        mass_Lc2Kppi_as_D2Kpipi_beforeVeto->Fill( (K_D + pi1_fromD_asP_MissID + pi2_D).M() - massLambda_c );
+        mass_Lc2Kppi_as_D2Kpipi_beforeVeto->Fill( (K_D + pi2_fromD_asP_MissID + pi1_D).M() - massLambda_c );
+        
+        mass_D2Kpi_as_D2Kpipi_beforeVeto->Fill( (K_D + pi1_D).M() - massD0 );
+        mass_D2Kpi_as_D2Kpipi_beforeVeto->Fill( (K_D + pi2_D).M() - massD0 );
+        
+        
+        mass_phi_as_Kpi_beforeVeto->Fill( (K_D+pi1_fromD_asK_MissID).M() - massPhi );
+        mass_phi_as_Kpi_beforeVeto->Fill( (K_D+pi2_fromD_asK_MissID).M() - massPhi );
+
+        mass_phi_as_Kpi_beforeVeto2->Fill( (K_D+pi_asK_MissID).M() - massPhi );
+
+        
+        mass_B2DKsK_as_DKspi_beforeVeto->Fill( (Ks+D+pi_asK_MissID).M() - massBs );
+        
+        mass_B2Dpi_as_DKspi_beforeVeto->Fill( (D+pi).M() - massB0 );
+        
+        mass_B2DK_as_DKspi_beforeVeto->Fill( (D+Ks).M() - massB0 );
+        
+        mass_D2Kspi_as_Kspi_beforeVeto->Fill( (Ks+pi).M() - massDminus );
+        
+        mass_Lc2pKs_as_Kspi_beforeVeto->Fill( (Ks+pi_asP_MissID).M() - massLambda_c );
+        
+        //fill histos with veto cuts
+        if(pi1_D_ProbNNpi/(pi1_D_ProbNNpi+pi1_D_ProbNNk) > 0.6 || abs((K_D + pi1_fromD_asK_MissID + pi2_D).M()-massDs) > 25 )mass_D2KKpi_as_D2Kpipi_afterVeto->Fill((K_D + pi1_fromD_asK_MissID + pi2_D).M()-massDs);
+        if(pi2_D_ProbNNpi/(pi2_D_ProbNNpi+pi2_D_ProbNNk) > 0.6 || abs((K_D + pi2_fromD_asK_MissID + pi1_D).M()-massDs) > 25 )mass_D2KKpi_as_D2Kpipi_afterVeto->Fill((K_D + pi2_fromD_asK_MissID + pi1_D).M()-massDs);         
+        
+        if( pi1_D_ProbNNpi/(pi1_D_ProbNNpi+pi1_D_ProbNNp) > 0.75 || abs((K_D + pi1_fromD_asP_MissID + pi2_D).M() - massLambda_c) > 25 )mass_Lc2Kppi_as_D2Kpipi_afterVeto->Fill( (K_D + pi1_fromD_asP_MissID + pi2_D).M() - massLambda_c );
+        if( pi2_D_ProbNNpi/(pi2_D_ProbNNpi+pi2_D_ProbNNp) > 0.75 || abs((K_D + pi2_fromD_asP_MissID + pi1_D).M() - massLambda_c) > 25 )mass_Lc2Kppi_as_D2Kpipi_afterVeto->Fill( (K_D + pi2_fromD_asP_MissID + pi1_D).M() - massLambda_c );
+        
+        if(pi_ProbNNpi>0.8)mass_B2DKsK_as_DKspi_afterVeto->Fill( (Ks+D+pi_asK_MissID).M() - massBs );
+        
+        if((D+pi).M() < 4900 )mass_B2Dpi_as_DKspi_afterVeto->Fill( (D+pi).M() - massB0 );
+        
+        if(abs((K_D+pi1_fromD_asK_MissID).M() - massPhi) > 10 )mass_phi_as_Kpi_afterVeto->Fill( (K_D+pi1_fromD_asK_MissID).M() - massPhi );
+        if( abs((K_D+pi2_fromD_asK_MissID).M() - massPhi ) > 10 )mass_phi_as_Kpi_afterVeto->Fill( (K_D+pi2_fromD_asK_MissID).M() - massPhi );
+    }
+    
+    TCanvas* c = new TCanvas();
+    
+    mass_D2KKpi_as_D2Kpipi_beforeVeto->SetMinimum(0);
+    mass_D2KKpi_as_D2Kpipi_beforeVeto->SetLineColor(kBlack);
+    mass_D2KKpi_as_D2Kpipi_beforeVeto->SetMarkerColor(kBlack);
+    mass_D2KKpi_as_D2Kpipi_beforeVeto->Draw("");
+    mass_D2KKpi_as_D2Kpipi_afterVeto->SetLineColor(kBlue);
+    mass_D2KKpi_as_D2Kpipi_afterVeto->SetMarkerColor(kBlue);
+    mass_D2KKpi_as_D2Kpipi_afterVeto->Draw("histsame");
+    c->Print("plots/D2KKpi_as_D2Kpipi.eps");
+    
+    mass_D2pipipi_as_D2Kpipi_beforeVeto->SetMinimum(0);
+    mass_D2pipipi_as_D2Kpipi_beforeVeto->SetLineColor(kBlack);
+    mass_D2pipipi_as_D2Kpipi_beforeVeto->SetMarkerColor(kBlack);
+    mass_D2pipipi_as_D2Kpipi_beforeVeto->Draw("");
+    mass_D2pipipi_as_D2Kpipi_afterVeto->SetLineColor(kBlue);
+    mass_D2pipipi_as_D2Kpipi_afterVeto->SetMarkerColor(kBlue);
+    mass_D2pipipi_as_D2Kpipi_afterVeto->Draw("histsame");
+    c->Print("plots/D2pipipi_as_D2Kpipi.eps");
+
+    mass_Lc2ppipi_as_D2Kpipi_beforeVeto->SetMinimum(0);
+    mass_Lc2ppipi_as_D2Kpipi_beforeVeto->SetLineColor(kBlack);
+    mass_Lc2ppipi_as_D2Kpipi_beforeVeto->SetMarkerColor(kBlack);
+    mass_Lc2ppipi_as_D2Kpipi_beforeVeto->Draw("");
+    mass_Lc2ppipi_as_D2Kpipi_afterVeto->SetLineColor(kBlue);
+    mass_Lc2ppipi_as_D2Kpipi_afterVeto->SetMarkerColor(kBlue);
+    mass_Lc2ppipi_as_D2Kpipi_afterVeto->Draw("histsame");
+    c->Print("plots/Lc2ppipi_as_D2Kpipi_beforeVeto.eps");
+
+    mass_Lc2Kppi_as_D2Kpipi_beforeVeto->SetMinimum(0);
+    mass_Lc2Kppi_as_D2Kpipi_beforeVeto->SetLineColor(kBlack);
+    mass_Lc2Kppi_as_D2Kpipi_beforeVeto->SetMarkerColor(kBlack);
+    mass_Lc2Kppi_as_D2Kpipi_beforeVeto->Draw("");
+    mass_Lc2Kppi_as_D2Kpipi_afterVeto->SetLineColor(kBlue);
+    mass_Lc2Kppi_as_D2Kpipi_afterVeto->SetMarkerColor(kBlue);
+    mass_Lc2Kppi_as_D2Kpipi_afterVeto->Draw("histsame");
+    c->Print("plots/Lc2Kppi_as_D2Kpipi_beforeVeto.eps");
+    
+    mass_D2Kpi_as_D2Kpipi_beforeVeto->SetMinimum(0);
+    mass_D2Kpi_as_D2Kpipi_beforeVeto->SetLineColor(kBlack);
+    mass_D2Kpi_as_D2Kpipi_beforeVeto->SetMarkerColor(kBlack);
+    mass_D2Kpi_as_D2Kpipi_beforeVeto->Draw("");
+    mass_D2Kpi_as_D2Kpipi_afterVeto->SetLineColor(kBlue);
+    mass_D2Kpi_as_D2Kpipi_afterVeto->SetMarkerColor(kBlue);
+    mass_D2Kpi_as_D2Kpipi_afterVeto->Draw("histsame");
+    c->Print("plots/D2Kpi_as_D2Kpipi_beforeVeto.eps");
+    
+
+    mass_phi_as_Kpi_beforeVeto->SetMinimum(0);
+    mass_phi_as_Kpi_beforeVeto->SetLineColor(kBlack);
+    mass_phi_as_Kpi_beforeVeto->SetMarkerColor(kBlack);
+    mass_phi_as_Kpi_beforeVeto->Draw("");
+    mass_phi_as_Kpi_afterVeto->SetLineColor(kBlue);
+    mass_phi_as_Kpi_afterVeto->SetMarkerColor(kBlue);
+    mass_phi_as_Kpi_afterVeto->Draw("histsame");
+    c->Print("plots/phi_as_Kpi_beforeVeto.eps");
+
+    mass_phi_as_Kpi_beforeVeto2->SetMinimum(0);
+    mass_phi_as_Kpi_beforeVeto2->SetLineColor(kBlack);
+    mass_phi_as_Kpi_beforeVeto2->SetMarkerColor(kBlack);
+    mass_phi_as_Kpi_beforeVeto2->Draw("");
+    mass_phi_as_Kpi_afterVeto2->SetLineColor(kBlue);
+    mass_phi_as_Kpi_afterVeto2->SetMarkerColor(kBlue);
+    mass_phi_as_Kpi_afterVeto2->Draw("histsame");
+    c->Print("plots/phi_as_Kpi_beforeVeto2.eps");
+
+
+    mass_B2DKsK_as_DKspi_beforeVeto->SetMinimum(0);
+    mass_B2DKsK_as_DKspi_beforeVeto->SetLineColor(kBlack);
+    mass_B2DKsK_as_DKspi_beforeVeto->SetMarkerColor(kBlack);
+    mass_B2DKsK_as_DKspi_beforeVeto->Draw("");
+    mass_B2DKsK_as_DKspi_afterVeto->SetLineColor(kBlue);
+    mass_B2DKsK_as_DKspi_afterVeto->SetMarkerColor(kBlue);
+    mass_B2DKsK_as_DKspi_afterVeto->Draw("histsame");
+    c->Print("plots/B2DKsK_as_DKspi_beforeVeto.eps");
+
+    mass_B2Dpi_as_DKspi_beforeVeto->SetMinimum(0);
+    mass_B2Dpi_as_DKspi_beforeVeto->SetLineColor(kBlack);
+    mass_B2Dpi_as_DKspi_beforeVeto->SetMarkerColor(kBlack);
+    mass_B2Dpi_as_DKspi_beforeVeto->Draw("");
+    mass_B2Dpi_as_DKspi_afterVeto->SetLineColor(kBlue);
+    mass_B2Dpi_as_DKspi_afterVeto->SetMarkerColor(kBlue);
+    mass_B2Dpi_as_DKspi_afterVeto->Draw("histsame");
+    c->Print("plots/B2Dpi_as_DKspi_beforeVeto.eps");
+
+    mass_B2DK_as_DKspi_beforeVeto->SetMinimum(0);
+    mass_B2DK_as_DKspi_beforeVeto->SetLineColor(kBlack);
+    mass_B2DK_as_DKspi_beforeVeto->SetMarkerColor(kBlack);
+    mass_B2DK_as_DKspi_beforeVeto->Draw("");
+    mass_B2DK_as_DKspi_afterVeto->SetLineColor(kBlue);
+    mass_B2DK_as_DKspi_afterVeto->SetMarkerColor(kBlue);
+    mass_B2DK_as_DKspi_afterVeto->Draw("histsame");
+    c->Print("plots/B2DK_as_DKspi_beforeVeto.eps");
+
+    mass_D2Kspi_as_Kspi_beforeVeto->SetMinimum(0);
+    mass_D2Kspi_as_Kspi_beforeVeto->SetLineColor(kBlack);
+    mass_D2Kspi_as_Kspi_beforeVeto->SetMarkerColor(kBlack);
+    mass_D2Kspi_as_Kspi_beforeVeto->Draw("");
+    mass_D2Kspi_as_Kspi_afterVeto->SetLineColor(kBlue);
+    mass_D2Kspi_as_Kspi_afterVeto->SetMarkerColor(kBlue);
+    mass_D2Kspi_as_Kspi_afterVeto->Draw("histsame");
+    c->Print("plots/D2Kspi_as_Kspi_beforeVeto.eps");
+
+    mass_Lc2pKs_as_Kspi_beforeVeto->SetMinimum(0);
+    mass_Lc2pKs_as_Kspi_beforeVeto->SetLineColor(kBlack);
+    mass_Lc2pKs_as_Kspi_beforeVeto->SetMarkerColor(kBlack);
+    mass_Lc2pKs_as_Kspi_beforeVeto->Draw("");
+    mass_Lc2pKs_as_Kspi_afterVeto->SetLineColor(kBlue);
+    mass_Lc2pKs_as_Kspi_afterVeto->SetMarkerColor(kBlue);
+    mass_Lc2pKs_as_Kspi_afterVeto->Draw("histsame");
+    c->Print("plots/Lc2pKs_as_Kspi_beforeVeto.eps");
 }
 
 
@@ -1900,37 +379,11 @@ int main(int argc, char** argv){
 	TH2::SetDefaultSumw2();
 	gROOT->ProcessLine(".x ../lhcbStyle.C");
 
-	NamedParameter<string> Channel("channel", (std::string) "Norm" , (char*) 0);
-	string channel = Channel;
-	NamedParameter<int>  do_Ds2pipipi("do_Ds2pipipi", 1);
-	NamedParameter<int>  do_Ds2Kpipi("do_Ds2Kpipi", 1);
-	NamedParameter<int>  do_Ds2KKpi("do_Ds2KKpi", 1);
-
-	if(channel == "Norm") {
-// 		BkgStudies_Xd();
-// 		BkgStudies_Xs();
-		if(do_Ds2pipipi == 1) BkgStudies_norm_Ds2pipipi();
-		if(do_Ds2Kpipi == 1) BkgStudies_norm_Ds2Kpipi();
-		if(do_Ds2KKpi == 1) BkgStudies_norm_Ds2KKpi();
-	}
-  	else if(channel == "Signal"){
-		BkgStudies_Xs();
-		if(do_Ds2pipipi == 1) BkgStudies_signal_Ds2pipipi();
-		if(do_Ds2Kpipi == 1) BkgStudies_signal_Ds2Kpipi();
-		if(do_Ds2KKpi == 1) BkgStudies_signal_Ds2KKpi();		
-	}
-
-    	else{
-        	std::cout << "*********************************************************" << std::endl;
-        	std::cout << "please specify 'Signal' or 'Norm' in options file" << std::endl;
-        	std::cout << "*********************************************************" << std::endl;
-    	}
-
+    BkgStudies();
 
 	std::cout << "==============================================" << std::endl;
 	std::cout << " Done. " << " Total time since start " << (time(0) - startTime)/60.0 << " min." << std::endl;
 	std::cout << "==============================================" << std::endl;
 
 	return 0;
-
 }

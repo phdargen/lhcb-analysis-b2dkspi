@@ -1,4 +1,4 @@
-* general options
+ * general options
 "initialState"	"Bd"
 "finalState"	"DKspi"
 "inFileNameSignal"	"/eos/lhcb/user/p/phdargen/B2DKspi/BDT/B2DKspi_data.root"

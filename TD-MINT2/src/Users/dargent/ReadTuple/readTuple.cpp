@@ -160,7 +160,6 @@ int makeMINTtuple(){
     return 0;
 }
 
-
 int plot(){
    	 TH1::SetDefaultSumw2();
 
@@ -269,12 +268,175 @@ return 0;
 }
 
 
-int main(int argc, char** argv){
+Double_t pCalc(Double_t energy, Double_t massSq){
+             Double_t arg = energy*energy - massSq;
+             if (arg < 0.0) {arg = 0.0;}
+             Double_t pCalcVal = TMath::Sqrt(arg);
+             return pCalcVal;
+}
 
+
+Bool_t withinDPLimits(Double_t m13Sq, Double_t m23Sq, Double_t mParentSq_, Double_t m1Sq_, Double_t m2Sq_, Double_t m3Sq_){
+             Bool_t withinDP = kFALSE;
+          
+             // Now for the given value of m13Sq calculate the local min and max of m23Sq
+             Double_t m13 = TMath::Sqrt(m13Sq);
+     
+             Double_t e3Cms13 = (m13Sq - m1Sq_ + m3Sq_)/(2.0*m13);
+             Double_t p3Cms13 = pCalc(e3Cms13, m3Sq_);
+     
+             Double_t e2Cms13 = (mParentSq_ - m13Sq - m2Sq_)/(2.0*m13);
+             Double_t p2Cms13 = pCalc(e2Cms13, m2Sq_);
+     
+             Double_t term = 2.0*e2Cms13*e3Cms13 + m2Sq_ + m3Sq_;
+     
+             Double_t m23SqLocMin = term - 2.0*p2Cms13*p3Cms13;
+             Double_t m23SqLocMax = term + 2.0*p2Cms13*p3Cms13;
+     
+             // Check whether the given value of m23Sq satisfies these bounds
+             if (m23Sq > m23SqLocMin && m23Sq < m23SqLocMax) {    
+                         withinDP = kTRUE;
+                 }
+    
+             return withinDP;
+}
+
+Bool_t withinDPLimits2(Double_t m13Sq, Double_t m23Sq, Double_t mParentSq_, Double_t m1Sq_, Double_t m2Sq_, Double_t m3Sq_){
+             Bool_t withinDP = kFALSE;
+     
+             Double_t m23 = TMath::Sqrt(m23Sq);
+     
+             Double_t e3Cms23 = (m23Sq - m2Sq_ + m3Sq_)/(2.0*m23);
+             Double_t p3Cms23 = pCalc(e3Cms23, m3Sq_);
+     
+             Double_t e1Cms23 = (mParentSq_ - m23Sq - m1Sq_)/(2.0*m23);
+             Double_t p1Cms23 = pCalc(e1Cms23, m1Sq_);
+     
+             Double_t term = 2.0*e3Cms23*e1Cms23 + m1Sq_ + m3Sq_;
+     
+             Double_t m13SqLocMin = term - 2.0*p3Cms23*p1Cms23;
+             Double_t m13SqLocMax = term + 2.0*p3Cms23*p1Cms23;
+     
+             // Check whether the given value of m23Sq satisfies these bounds
+             if (m13Sq > m13SqLocMin && m13Sq < m13SqLocMax) {
+                         withinDP = kTRUE;
+             }
+     
+             return withinDP;
+}
+
+void removeBadEvents(){
+    NamedParameter<double> eps("eps",0.0001);
+    NamedParameter<string> InputFileName("inFileNameSignal",(string)"../../../../../Selection/BDT/signal_data.root");
+    TChain* tree;
+    tree=new TChain("DecayTree");
+    tree->Add(((string)InputFileName).c_str());
+    //tree->SetBranchStatus("*",0);
+    tree->SetBranchStatus("*sw",1);
+    tree->SetBranchStatus("weight",1);
+    tree->SetBranchStatus("FullDTF*",1);
+    tree->SetBranchStatus("KsCat",1);
+    tree->SetBranchStatus("*MM*",1);
+    tree->SetBranchStatus("*MERR",1);
+    tree->SetBranchStatus("*sw*",1);
+    tree->SetBranchStatus("m_*",1);
+    tree->SetBranchStatus("Full*",1);
+    tree->SetBranchStatus("B_Full*TAU*",1);
+    
+    double sw;
+    double Ks[4];
+    double pi[4];
+    double D[4];
+    int KsCat;
+    tree->SetBranchAddress("weight",&sw);
+    tree->SetBranchAddress("KsCat",&KsCat);    
+    tree->SetBranchAddress("FullDTF_Ks_PX",&Ks[0]);
+    tree->SetBranchAddress("FullDTF_Ks_PY",&Ks[1]);
+    tree->SetBranchAddress("FullDTF_Ks_PZ",&Ks[2]);
+    tree->SetBranchAddress("FullDTF_Ks_PE",&Ks[3]);
+    tree->SetBranchAddress("FullDTF_D_PX",&D[0]);
+    tree->SetBranchAddress("FullDTF_D_PY",&D[1]);
+    tree->SetBranchAddress("FullDTF_D_PZ",&D[2]);
+    tree->SetBranchAddress("FullDTF_D_PE",&D[3]);
+    tree->SetBranchAddress("FullDTF_pi_PX",&pi[0]);
+    tree->SetBranchAddress("FullDTF_pi_PY",&pi[1]);
+    tree->SetBranchAddress("FullDTF_pi_PZ",&pi[2]);
+    tree->SetBranchAddress("FullDTF_pi_PE",&pi[3]);
+
+    float B_FullDTF_Dplus_MERR[100], B_FullDTF_KS0_MERR[100], B_FullDTF_MERR[100];
+    tree->SetBranchAddress("B_FullDTF_KS0_MERR",&B_FullDTF_KS0_MERR);
+    tree->SetBranchAddress("B_FullDTF_Dplus_MERR",&B_FullDTF_Dplus_MERR);
+    tree->SetBranchAddress("B_FullDTF_MERR",&B_FullDTF_MERR);
+    
+    TFile *output = new TFile((TString((string)InputFileName).ReplaceAll(".root","_noBadEvents.root")),"RECREATE");
+    TTree* out_tree = tree->CloneTree(0);
+    
+    NamedParameter<int> EventPattern("Event Pattern", 521, 321, 211, -211, 443);
+    DalitzEventPattern pat(EventPattern.getVector());
+    cout << " got event pattern: " << pat << endl;
+    DalitzEventList eventList;
+    
+    int badEvents = 0;
+    for(int i=0; i< tree->GetEntries(); i++){
+        if (0ul == (i % 10000ul)) cout << "Read event " << i << "/" <<  tree->GetEntries() << endl;
+        tree->GetEntry(i);
+        
+        double sign = 1.;
+        //if(f > 0) sign = -1.;
+        TLorentzVector Ks_p(sign*Ks[0],sign*Ks[1],sign*Ks[2],Ks[3]);
+        TLorentzVector D_p(sign*D[0],sign*D[1],sign*D[2],D[3]);
+        TLorentzVector pi_p(sign*pi[0],sign*pi[1],sign*pi[2],pi[3]);
+        TLorentzVector B_p = Ks_p + pi_p + D_p;
+        // array of vectors
+        vector<TLorentzVector> vectorOfvectors;        
+        vectorOfvectors.push_back(B_p*MeV);
+        vectorOfvectors.push_back(D_p*MeV);
+        vectorOfvectors.push_back(Ks_p*MeV);
+        vectorOfvectors.push_back(pi_p*MeV);
+        
+        DalitzEvent evt = DalitzEvent(pat, vectorOfvectors);
+        if( evt.s(1,3) < pat.sijMin(1,3) || evt.s(1,3) > pat.sijMax(1,3) || evt.s(1,2) < pat.sijMin(1,2) || evt.s(1,2) > pat.sijMax(1,2)  || evt.s(2,3) < pat.sijMin(2,3) || evt.s(2,3) > pat.sijMax(2,3) )
+        {
+            badEvents++;
+            continue;
+        }
+        //if( evt.kinematicallyAllowed((double)eps) == 0)
+        if(evt.kinematicallyAllowed((double)eps) == 0 ||
+           !withinDPLimits(evt.s(1,3),evt.s(2,3), evt.m2(0), evt.m2(1), evt.m2(2), evt.m2(3)) || 
+           !withinDPLimits(evt.s(1,2),evt.s(2,3), evt.m2(0), evt.m2(1), evt.m2(3), evt.m2(2)) ||
+           !withinDPLimits(evt.s(1,3),evt.s(2,1), evt.m2(0), evt.m2(3), evt.m2(3), evt.m2(1)) )           
+        {
+            //cout << evt.m(0) << endl;
+            //cout << evt.m(2) << endl << endl;
+            badEvents++;
+            continue;
+        }      
+        if(B_FullDTF_Dplus_MERR[0] > 0.03 || B_FullDTF_KS0_MERR[0] > 0.1 || B_FullDTF_MERR[0] > 0.1  ){
+            badEvents++;
+            continue;            
+        }
+        
+        evt.setWeight(sw);
+        eventList.Add(evt);    
+        out_tree->Fill();
+    }
+    cout << endl << "bad events " << badEvents << " ( " << badEvents/(double) tree->GetEntries() * 100. << " %)" << endl << endl;
+    out_tree->Write();
+    output->Close();
+    cout << endl;
+    cout << "Created file " << TString((string)InputFileName).ReplaceAll(".root","_noBadEvents.root")  << endl << endl;
+}
+
+
+
+int main(int argc, char** argv){
+    
     time_t startTime = time(0);
     TH1::SetDefaultSumw2();
-    makeMINTtuple();
-    plot();
+    //makeMINTtuple();
+    //plot();
+    removeBadEvents();
+    
     
     cout << "==============================================" << endl;
     cout << " Done. " << " Total time since start " << (time(0) - startTime)/60.0 << " min." << endl;

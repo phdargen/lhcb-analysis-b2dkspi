@@ -49,7 +49,7 @@ int main(int argc, char** argv){
     }
 
     /// bools : bkg, ltu, ss
-    DecayTree d(decay, year, dataType, polarity,"./","Preselected/",mcEventType);
+    DecayTree d(decay, year, dataType, polarity,"./","/eos/lhcb/user/p/phdargen/B2DKspi/Preselected/",mcEventType);
     d.Loop();
 
     return 0;

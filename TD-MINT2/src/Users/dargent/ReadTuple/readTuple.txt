@@ -1,9 +1,4 @@
-"channel"	"Signal"
-"fixExpBkgFromSidebands"	 0
-"numCPU"	 8
-"sWeightNorm"	 0
-"sWeightSignal"	 1
-"nBins"		60
-"min_MM"	5100.
-"max_MM"	5700.
-"cut_BDT" 	0.35
+"Event Pattern"         511 -411 310 211
+"inFileNameSignal"	"/eos/lhcb/user/p/phdargen/B2DKspi/BDT/B2DKspi_data.root"
+#"inFileNameSignal"	"../MassFits/b2dkspi_sw.root"
+"eps"	0.05
