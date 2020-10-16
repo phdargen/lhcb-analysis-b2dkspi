@@ -4,7 +4,7 @@ RandomSeed  0
 "Event Pattern"         511 -411 310 211
 
 "makeNewIntegratorFile"		 0
-"IntegratorEventFile"   "SignalIntegrationEvents_AccBDT.root"
+"IntegratorEventFile"   "../AcceptancePhspBDT/MINT_SignalIntegrationEvents_AccBDT.root"
 
 "IntegratorEvents"	1000000
 "IntegPrecision"        4.0e-3
@@ -15,11 +15,11 @@ RandomSeed  0
 "useLASSO"		0
 "lambda"		10
 
-"InputFileName"		   "b2dkspi_sw.root"
+"InputFileName"		   "../MassFits/b2dkspi_sw_reduced.root"
 "OutputRootFile"	"toys.root"
 
 "OutputDir"		""
-
+"weightVar"	 	"N_B_sw2"
 
 ** name								Fix?	init	step	min	max
 *

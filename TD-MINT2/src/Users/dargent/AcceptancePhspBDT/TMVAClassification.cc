@@ -12,19 +12,18 @@
 #include "TSystem.h"
 #include "TROOT.h"
 #include "TMVAGui.C"
-/*
-#include "/work/dargent/TMVA-v4.2.0/test/variables.C"
-#include "/work/dargent/TMVA-v4.2.0/test/efficiencies.C"
-#include "/work/dargent/TMVA-v4.2.0/test/mvas.C"
-#include "/work/dargent/TMVA-v4.2.0/test/correlations.C"*/
-
+#include "../../../../../TMVA-v4.2.0/test/variables.C"
+#include "../../../../../TMVA-v4.2.0/test/efficiencies.C"
+#include "../../../../../TMVA-v4.2.0/test/mvas.C"
+#include "../../../../../TMVA-v4.2.0/test/correlations.C"
+#include "../../../../../TMVA-v4.2.0/test/mvaeffs.C"
 #if not defined(__CINT__) || defined(__MAKECINT__)
 // needs to be included when makecint runs (ACLIC)
 #include "TMVA/Factory.h"
 #include "TMVA/Tools.h"
 #endif
 
-void TMVAClassification( TString myMethodList = "BDTG", TString run = "all", TString trigger = "all")
+void TMVAClassification( TString myMethodList = "BDTG", TString run = "all", TString Ks = "all")
 {
    TChain* background = new TChain("MCDecayTree");
    background->Add("GenMC.root");
@@ -76,38 +75,57 @@ void TMVAClassification( TString myMethodList = "BDTG", TString run = "all", TSt
 
    //TString outDir = "plots";
    TString outDir = "figs/";
-   outDir +=  myMethodList + "_" + run + "_" + trigger;
+   outDir +=  myMethodList + "_" + run + "_" + Ks;
  
-   TString outfileName = "TMVA_Bs2DsKpipi_" +  myMethodList + "_" + run + "_" + trigger + ".root";
+   TString outfileName = "TMVA_Bs2DsKpipi_" +  myMethodList + "_" + run + "_" + Ks + ".root";
    TFile* outputFile = TFile::Open( outfileName, "RECREATE" );
 
    // Create the factory object. 
-   TMVA::Factory *factory = new TMVA::Factory( "TMVAClassification_" + run + "_" + trigger, outputFile,
+   TMVA::Factory *factory = new TMVA::Factory( "TMVAClassification_" + run + "_" + Ks, outputFile,
                                                "!V:!Silent:Color:DrawProgressBar:Transformations=I;D;P;G,D:AnalysisType=Classification" );
 
    signal->SetBranchStatus("*",0);  // disable all branches   signal->SetBranchStatus("s_*",1); 
    signal->SetBranchStatus("*m_*",1); 
+   signal->SetBranchStatus("*mp_*",1);     
+   signal->SetBranchStatus("*cos*",1); 
+   signal->SetBranchStatus("KsCat",1); 
+
    background->SetBranchStatus("*",0);  // disable all branches
    background->SetBranchStatus("*m_*",1);
+   background->SetBranchStatus("*mp_*",1);
+   background->SetBranchStatus("*cos*",1);
+   background->SetBranchStatus("KsCat",1); 
 
    // Define the input variables that shall be used for the MVA training
    //factory->AddVariable( "TRUE_m_DKs", "m(DKs)", "MeV", 'F' );
-   factory->AddVariable( "TRUE_m_Dpi", "m(D#pi)", "MeV", 'F' );
-   factory->AddVariable( "TRUE_m_Kspi", "m(Ks#pi)", "MeV", 'F' );
+   //factory->AddVariable( "TRUE_m_Dpi", "m(D#pi)", "MeV", 'F' );
+   //factory->AddVariable( "TRUE_m_Kspi", "m(Ks#pi)", "MeV", 'F' );
 
+   factory->AddVariable( "TRUE_mp_DKs", "m'(DKs)", "MeV", 'F' );
+   factory->AddVariable( "TRUE_mp_Dpi", "m'(D#pi)", "MeV", 'F' );
+   factory->AddVariable( "TRUE_mp_Kspi", "m'(Ks#pi)", "MeV", 'F' );
+
+   factory->AddVariable( "TRUE_cos_DKs", "#theta'(DKs)", "MeV", 'F' );
+   factory->AddVariable( "TRUE_cos_Dpi", "#theta'(D#pi)", "MeV", 'F' );
+   factory->AddVariable( "TRUE_cos_Kspi", "#theta'(Ks#pi)", "MeV", 'F' );
+    
    // global event weights per tree (see below for setting event-wise weights)
    Double_t signalWeight     = 1.0;
    Double_t backgroundWeight = 1.0;
 
    // Apply additional cuts on the signal and background samples (can be different)
    TCut mycuts = ""; 
+   if(Ks == "LL") mycuts += "KsCat == 0";
+   if(Ks == "DD") mycuts += "KsCat == 1";
    //mycuts = "run == " + run.ReplaceAll("run","")  ;
    //mycuts += "TriggerCat == " + trigger.ReplaceAll("t","")  ;
    TCut mycutb = "";
    
    factory->AddSignalTree    ( signal,     signalWeight     );
    factory->AddBackgroundTree( background, backgroundWeight );
-   factory->PrepareTrainingAndTestTree( mycuts, mycutb, "nTrain_Signal=1800:nTrain_Background=100000:nTest_Background=100000:SplitMode=Random:NormMode=NumEvents:!V" );
+   if(Ks == "all")factory->PrepareTrainingAndTestTree( mycuts, mycutb, "nTrain_Signal=1800:nTrain_Background=150000:nTest_Background=50000:SplitMode=Random:NormMode=NumEvents:!V" );
+   if(Ks == "LL")factory->PrepareTrainingAndTestTree( mycuts, mycutb, "nTrain_Signal=500:nTrain_Background=150000:nTest_Background=50000:SplitMode=Random:NormMode=NumEvents:!V" );
+   if(Ks == "DD")factory->PrepareTrainingAndTestTree( mycuts, mycutb, "nTrain_Signal=1300:nTrain_Background=150000:nTest_Background=50000:SplitMode=Random:NormMode=NumEvents:!V" );
 
    factory->SetSignalWeightExpression("weight");
    // ---- Book MVA methods
@@ -154,16 +172,18 @@ void TMVAClassification( TString myMethodList = "BDTG", TString run = "all", TSt
 
    delete factory;
 
-   //variables(outfileName,"InputVariables_Id", "TMVA Input Variables",kFALSE, kTRUE, outDir);
-   //correlations( outfileName,  kFALSE, kFALSE, kTRUE ,outDir);
-   //efficiencies( outfileName,  2, kTRUE ,outDir);
-   //mvas( outfileName, CompareType,  kTRUE , outDir, true);
+   variables(outfileName,"InputVariables_Id", "TMVA Input Variables",kFALSE, kTRUE, outDir);
+   correlations( outfileName,  kFALSE, kFALSE, kTRUE ,outDir);
+   efficiencies( outfileName,  2, kTRUE ,outDir);
+   mvas( outfileName, CompareType,  kTRUE , outDir, true);
 
    // Launch the GUI for the root macros
    if (!gROOT->IsBatch()) TMVAGui( outfileName );
 }
 
 void trainAll( TString myMethodList = "BDTG", TString trainOn = "MC") {
-	//gROOT->SetBatch(true);
+	gROOT->SetBatch(true);
 	TMVAClassification( myMethodList, "all",  "all" );
+    TMVAClassification( myMethodList, "all",  "LL" );
+    TMVAClassification( myMethodList, "all",  "DD" );
 }

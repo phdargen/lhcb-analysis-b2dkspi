@@ -1,8 +1,8 @@
- * general options
+* general options
 "initialState"	"Bd"
 "finalState"	"DKspi"
-"inFileNameSignal"	"/eos/lhcb/user/p/phdargen/B2DKspi/BDT/B2DKspi_data.root"
-"inFileNameMC"		"/eos/lhcb/user/p/phdargen/B2DKspi/BDT/B2DKspi_mc.root"
+"inFileNameSignal"	"/eos/lhcb/user/p/phdargen/B2DKspi/BDT/B2DKspi_data_noBadEvents.root"
+"inFileNameMC"		"/eos/lhcb/user/p/phdargen/B2DKspi/BDT/B2DKspi_mc_noBadEvents.root"
 "inFileNamePartReco"	"/eos/lhcb/user/p/phdargen/B2DKspi/Preselected/MC_B2DKspi_DD_12_BsDstKspi.root"
 
 "nBins"		100
@@ -15,17 +15,17 @@
 
 "sWeightSignal"	 		1
 "sWeightSignalNew"	 	1
-"sWeightMC"			0
+"sWeightMC"			1
 "outFileNameSignal"	"b2dkspi_sw.root"
 *"outFileNameSignal"	"bs2dkspi_sw.root"
 "makeReducedFile"		1
 "makeReducedFile::Cut"		"N_B_sw2 != 0"
 
-"cut_BDT"			"(BDTG > 0. && m_Dpi < 4900 && abs(D_PV_MM-1869.61)<25  && pi_ProbNNk < 0.2 && abs(FullDTF_m_Kspi - 1869.61)>25 && abs(FullDTF_m_Kspi - 1968.3)>25)"
-*"cut_BDT"			"(BDTG > 0. && m_Dpi < 4900 && abs(D_PV_MM-1869.61)<25  && pi_ProbNNk < 0.2 && abs(FullBsDTF_m_Kspi - 1869.61)>25 && abs(FullBsDTF_m_Kspi - 1968.3)>25)"
+"cut_BDT"			"(BDTG > 0. && abs(D_PV_MM-1869.61)<25  && pi_ProbNNk < 0.2 && abs(FullDTF_m_Kspi - 1869.61)>25 && abs(FullDTF_m_Kspi - 1968.3)>25)"
+*"cut_BDT"			"(BDTG > 0. &&  abs(D_PV_MM-1869.61)<25  && pi_ProbNNk < 0.2 && abs(FullBsDTF_m_Kspi - 1869.61)>25 && abs(FullBsDTF_m_Kspi - 1968.3)>25)"
 
-"cutMC_BDT"			"(BDTG > 0. && abs(Ks_PV_MM-497.611) < 30 && m_Dpi < 4900 && abs(D_PV_MM-1869.61)<25  && pi_ProbNNk < 0.2)"
+"cutMC_BDT"			"(BDTG > 0. && abs(Ks_PV_MM-497.611) < 30 && abs(D_PV_MM-1869.61)<25  && pi_ProbNNk < 0.2 && abs(FullDTF_m_Kspi - 1869.61)>25 && abs(FullDTF_m_Kspi - 1968.3)>25 )"
 
 "fixSignalShapeFromMC" 		0
 "fixExpBkgFromSidebands"	0
-"numCPU"	 8
+"numCPU"	 16

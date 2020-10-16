@@ -337,7 +337,7 @@ int ampFit(int step=0){
     DalitzEventPattern pat(EventPattern.getVector());
     cout << " got event pattern: " << pat << endl;
 	
-    FitAmpSum fas(pat);
+    FitAmpIncoherentSum fas(pat);
     FitAmpIncoherentSum fasBkg(pat);
     {
         fas.print();    
@@ -428,8 +428,8 @@ int ampFit(int step=0){
             }
             //if(KsCat==0)continue;
             //if(sqrt(evt.s(2,3))<1200)continue;            
-            if(abs(sqrt(evt.s(2,3))-1869.61)<20)continue;
-            if(abs(sqrt(evt.s(2,3))-1968.30)<20)continue;
+            if(abs(sqrt(evt.s(2,3))-1869.61)<25)continue;
+            if(abs(sqrt(evt.s(2,3))-1968.30)<25)continue;
             
             evt.setWeight(sw);
             eventList.Add(evt);	
@@ -440,7 +440,7 @@ int ampFit(int step=0){
     AmpsPdfFlexiFast* ampsSig;
     if(useLASSO) ampsSig = new AmpsPdfFlexiFast(pat, &fas, 0, integPrecision,integMethod, (std::string) IntegratorEventFile);
     else ampsSig = new AmpsPdfFlexiFast(pat, &fas, 0, integPrecision,integMethod, (std::string) IntegratorEventFile);
-    AmpsPdfFlexiFast ampsBkg(pat, &fasBkg, 0, integPrecision*100,integMethod, (std::string) IntegratorEventFile);
+    AmpsPdfFlexiFast ampsBkg(pat, &fasBkg, 0, integPrecision,integMethod, (std::string) IntegratorEventFile);
     DalitzSumPdf amps(sigfraction,*ampsSig,ampsBkg);
     
     Neg2LL neg2ll(amps, eventList);
@@ -671,7 +671,7 @@ int ampFit(int step=0){
             for(int i = 0; i < eventListMC.size(); i++){
                                     
                     double weight = ampsSig->un_normalised_noPs(eventListMC[i])*eventListMC[i].getWeight()/eventListMC[i].getGeneratorPdfRelativeToPhaseSpace();
-     
+                /*
                     double weight1 = fas.getAmpSqr(eventListMC[i], ampNames1) 
                         * eventListMC[i].getWeight()/ eventListMC[i].getGeneratorPdfRelativeToPhaseSpace();
                     double weight2 = fas.getAmpSqr(eventListMC[i], ampNames2) 
@@ -682,11 +682,11 @@ int ampFit(int step=0){
                         * eventListMC[i].getWeight()/ eventListMC[i].getGeneratorPdfRelativeToPhaseSpace();
                     double weight5 = fas.getAmpSqr(eventListMC[i], ampNames5) 
                         * eventListMC[i].getWeight()/ eventListMC[i].getGeneratorPdfRelativeToPhaseSpace();
-              
+              */
                     m_DKs_fit->Fill(sqrt(eventListMC[i].s(1,2)/(GeV*GeV)),weight);
                     m_Dpi_fit->Fill(sqrt(eventListMC[i].s(1,3)/(GeV*GeV)),weight);
                     m_Kspi_fit->Fill(sqrt(eventListMC[i].s(2,3)/(GeV*GeV)),weight);
-
+/*
                     m_DKs_fit_1->Fill(sqrt(eventListMC[i].s(1,2)/(GeV*GeV)),weight1);
                     m_Dpi_fit_1->Fill(sqrt(eventListMC[i].s(1,3)/(GeV*GeV)),weight1);
                     m_Kspi_fit_1->Fill(sqrt(eventListMC[i].s(2,3)/(GeV*GeV)),weight1);
@@ -706,7 +706,7 @@ int ampFit(int step=0){
                     m_DKs_fit_5->Fill(sqrt(eventListMC[i].s(1,2)/(GeV*GeV)),weight5);
                     m_Dpi_fit_5->Fill(sqrt(eventListMC[i].s(1,3)/(GeV*GeV)),weight5);
                     m_Kspi_fit_5->Fill(sqrt(eventListMC[i].s(2,3)/(GeV*GeV)),weight5);
-
+*/
                     eventListMC[i].setWeight(weight);
             }
 
@@ -829,8 +829,8 @@ int ampFit(int step=0){
         sg.FillEventList(eventListToy, 500000);
         
         for(int i = 0; i < eventListToy.size(); i++){
-            if(abs(sqrt(eventListToy[i].s(2,3))-1869.61)<20)continue;
-            if(abs(sqrt(eventListToy[i].s(2,3))-1968.30)<20)continue;
+            if(abs(sqrt(eventListToy[i].s(2,3))-1869.61)<25)continue;
+            if(abs(sqrt(eventListToy[i].s(2,3))-1968.30)<25)continue;
             eventListToyCut.Add(eventListToy[i]);
         }
         cout << "Generated " << eventListToyCut.size() << " events inside selected phasespace region" << endl;
@@ -840,7 +840,11 @@ int ampFit(int step=0){
     return 0;
 }
 
-void makeIntegratorFile(){
+void makeIntegratorFile(int seed = 0){
+    
+    TRandom3 ranLux;
+    ranLux.SetSeed(seed);
+    gRandom = &ranLux;
     
     FitAmplitude::AutogenerateFitFile();
 
@@ -868,8 +872,8 @@ void makeIntegratorFile(){
     TH1D* m_Kspi = new TH1D("m_Kspi","; m(K_{s}#pi) [GeV]; Yield",nBins,0,4);
     
     for(int i = 0; i < eventList.size(); i++){
-            if(abs(sqrt(eventList[i].s(2,3))-1869.61)<20)continue;
-            if(abs(sqrt(eventList[i].s(2,3))-1968.30)<20)continue;
+            if(abs(sqrt(eventList[i].s(2,3))-1869.61)<25)continue;
+            if(abs(sqrt(eventList[i].s(2,3))-1968.30)<25)continue;
             eventList_cut.Add(eventList[i]);
         
             m_DKs->Fill(sqrt(eventList[i].s(1,2)/(GeV*GeV)),eventList[i].getWeight());
@@ -894,7 +898,8 @@ void makeIntegratorFile(){
     m_Kspi->DrawNormalized("e1",1);
     c->Print("m_Kspi.eps");
 
-    eventList_cut.saveAsNtuple(IntegratorEventFile);
+    if(seed == 0)eventList_cut.saveAsNtuple(IntegratorEventFile);
+    else eventList_cut.saveAsNtuple((string)(TString((string)IntegratorEventFile).ReplaceAll(".root",anythingToString((int)seed)+".root")));
     return;
 }
 
@@ -970,10 +975,11 @@ int main(int argc, char** argv){
     gROOT->ProcessLine(".x ../lhcbStyle.C");
     gStyle->SetPalette(1);
 
-    NamedParameter<string> IntegratorEventFile("IntegratorEventFile", (std::string) "SignalIntegrationEvents.root", (char*) 0);
-    if(! std::ifstream(((string)IntegratorEventFile).c_str()).good()) makeIntegratorFile();
+    //NamedParameter<string> IntegratorEventFile("IntegratorEventFile", (std::string) "SignalIntegrationEvents.root", (char*) 0);
+    //if(! std::ifstream(((string)IntegratorEventFile).c_str()).good()) 
+    makeIntegratorFile(atoi(argv[1]));
   
-    ampFit(atoi(argv[1]));
+    //ampFit(atoi(argv[1]));
     
     cout << "==============================================" << endl;
     cout << " Done. " << " Total time since start " << (time(0) - startTime)/60.0 << " min." << endl;

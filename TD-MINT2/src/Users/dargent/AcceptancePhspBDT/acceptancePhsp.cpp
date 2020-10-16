@@ -25,6 +25,16 @@
 using namespace std;
 using namespace MINT;
 
+double dotProduct( const TLorentzVector& p1, const TLorentzVector& p2, const TLorentzVector& pX )
+{
+    return -p1.Dot( p2 ) + p1.Dot( pX ) * p2.Dot( pX ) / pX.Dot( pX );
+}
+
+double helicityCosine( const TLorentzVector& p1, const TLorentzVector& p2, const TLorentzVector& pX)
+{
+    return dotProduct(p1, p2, pX) / sqrt( dotProduct( p1, p1, pX ) * dotProduct( p2, p2, pX ) );
+}
+
 double cosThetaAngle(TLorentzVector p0,TLorentzVector p1,TLorentzVector p2,TLorentzVector p3){
  	TLorentzVector pD = p0 + p1 + p2 + p3 ;
  	p0.Boost( - pD.BoostVector() );
@@ -97,6 +107,7 @@ double acoplanarityAngle(const DalitzEvent& evt, int a, int b, int c, int d){
 
 void prepareFilesForBDT(){
 
+    DalitzEventPattern pdg(511 ,-411 ,310 ,211);
     NamedParameter<string> InputGenMC("InputGenMC", (std::string) "Gen_11166161.root");
     TChain* tree_gen=new TChain("MCDecayTreeTuple/MCDecayTree");
     tree_gen->Add(((string)InputGenMC).c_str());
@@ -125,6 +136,19 @@ void prepareFilesForBDT(){
     summary_tree_gen->Branch("TRUE_m_DKs", &m_DKs, "TRUE_m_DKs/D");
     summary_tree_gen->Branch("TRUE_m_Dpi", &m_Dpi, "TRUE_m_Dpi/D");
     summary_tree_gen->Branch("TRUE_m_Kspi", &m_Kspi, "TRUE_m_Kspi/D");
+
+    double mp_DKs,mp_Dpi,mp_Kspi;
+    summary_tree_gen->Branch("TRUE_mp_DKs", &mp_DKs, "TRUE_mp_DKs/D");
+    summary_tree_gen->Branch("TRUE_mp_Dpi", &mp_Dpi, "TRUE_mp_Dpi/D");
+    summary_tree_gen->Branch("TRUE_mp_Kspi", &mp_Kspi, "TRUE_mp_Kspi/D");
+
+    double cos_DKs,cos_Dpi,cos_Kspi;
+    summary_tree_gen->Branch("TRUE_cos_DKs", &cos_DKs, "TRUE_cos_DKs/D");
+    summary_tree_gen->Branch("TRUE_cos_Dpi", &cos_Dpi, "TRUE_cos_Dpi/D");
+    summary_tree_gen->Branch("TRUE_cos_Kspi", &cos_Kspi, "TRUE_cos_Kspi/D");
+
+    int KsCat = -1;
+    summary_tree_gen->Branch("KsCat", &KsCat, "KsCat/D");
     
     for(int i=0; i< tree_gen->GetEntries(); i++)
     {	
@@ -138,6 +162,16 @@ void prepareFilesForBDT(){
         m_Dpi = (D_p+pi_p).M();
         m_Kspi = (pi_p+Ks_p).M();
         
+        // 511 ,-411 ,310 ,211 
+        // B0, D-, Ks, pip
+        mp_DKs = 1./TMath::Pi() * TMath::ACos(2. * ( m_DKs - sqrt(pdg.sijMin(1,2))*MeV ) / (sqrt(pdg.sijMax(1,2))*MeV - sqrt(pdg.sijMin(1,2))*MeV)  - 1.);  
+        mp_Dpi = 1./TMath::Pi() * TMath::ACos(2. * ( m_Dpi - sqrt(pdg.sijMin(1,3))*MeV ) / (sqrt(pdg.sijMax(1,3))*MeV - sqrt(pdg.sijMin(1,3))*MeV)  - 1.);  
+        mp_Kspi = 1./TMath::Pi()* TMath::ACos(2. * ( m_Kspi - sqrt(pdg.sijMin(3,2))*MeV ) / (sqrt(pdg.sijMax(3,2))*MeV - sqrt(pdg.sijMin(3,2))*MeV)  - 1.);  
+
+        cos_DKs = 1./TMath::Pi() * TMath::ACos(helicityCosine(D_p,Ks_p,D_p+pi_p));
+        cos_Dpi = 1./TMath::Pi() * TMath::ACos(helicityCosine(D_p,pi_p,D_p+Ks_p));
+        cos_Kspi = 1./TMath::Pi() * TMath::ACos(helicityCosine(Ks_p,D_p,Ks_p+pi_p));
+
         summary_tree_gen->Fill();
     }
     summary_tree_gen->Write();
@@ -176,6 +210,14 @@ void prepareFilesForBDT(){
     summary_tree->Branch("TRUE_m_Dpi", &m_Dpi, "TRUE_m_Dpi/D");
     summary_tree->Branch("TRUE_m_Kspi", &m_Kspi, "TRUE_m_Kspi/D");
 
+    summary_tree->Branch("TRUE_mp_DKs", &mp_DKs, "TRUE_mp_DKs/D");
+    summary_tree->Branch("TRUE_mp_Dpi", &mp_Dpi, "TRUE_mp_Dpi/D");
+    summary_tree->Branch("TRUE_mp_Kspi", &mp_Kspi, "TRUE_mp_Kspi/D");
+    
+    summary_tree->Branch("TRUE_cos_DKs", &cos_DKs, "TRUE_cos_DKs/D");
+    summary_tree->Branch("TRUE_cos_Dpi", &cos_Dpi, "TRUE_cos_Dpi/D");
+    summary_tree->Branch("TRUE_cos_Kspi", &cos_Kspi, "TRUE_cos_Kspi/D");
+    
     int numEvents = tree->GetEntries();
     for(int i=0; i< numEvents; i++)
     {
@@ -189,14 +231,21 @@ void prepareFilesForBDT(){
         m_Dpi = (D_p+pi_p).M();
         m_Kspi = (pi_p+Ks_p).M();
         
+        mp_DKs = 1./TMath::Pi() * TMath::ACos(2. * ( m_DKs - sqrt(pdg.sijMin(1,2))*MeV ) / (sqrt(pdg.sijMax(1,2))*MeV - sqrt(pdg.sijMin(1,2))*MeV)  - 1.);  
+        mp_Dpi = 1./TMath::Pi() * TMath::ACos(2. * ( m_Dpi - sqrt(pdg.sijMin(1,3))*MeV ) / (sqrt(pdg.sijMax(1,3))*MeV - sqrt(pdg.sijMin(1,3))*MeV)  - 1.);  
+        mp_Kspi = 1./TMath::Pi()* TMath::ACos(2. * ( m_Kspi - sqrt(pdg.sijMin(3,2))*MeV ) / (sqrt(pdg.sijMax(3,2))*MeV - sqrt(pdg.sijMin(3,2))*MeV)  - 1.);  
+        
+        cos_DKs = 1./TMath::Pi() * TMath::ACos(helicityCosine(D_p,Ks_p,D_p+pi_p));
+        cos_Dpi = 1./TMath::Pi() * TMath::ACos(helicityCosine(D_p,pi_p,D_p+Ks_p));
+        cos_Kspi = 1./TMath::Pi() * TMath::ACos(helicityCosine(Ks_p,D_p,Ks_p+pi_p));
+        
         summary_tree->Fill();
     }
     summary_tree->Write();
     output->Close();
 
-    DalitzEventPattern pdg(511 ,-411 ,310 ,211);
     DalitzEventList eventList;
-    TFile *file_MINT =  TFile::Open("../LASSO/SignalIntegrationEvents.root");
+    TFile *file_MINT =  TFile::Open("SignalIntegrationEvents.root");
     TTree* tree_MINT=dynamic_cast<TTree*>(file_MINT->Get("DalitzEventList"));
 
     TFile* output_MINT = new TFile("MintMC.root","RECREATE");
@@ -209,15 +258,43 @@ void prepareFilesForBDT(){
     TBranch* b_m_Dpi = summary_tree_MINT->Branch("TRUE_m_Dpi", &m_Dpi, "TRUE_m_Dpi/D");
     TBranch* b_m_Kspi = summary_tree_MINT->Branch("TRUE_m_Kspi", &m_Kspi, "TRUE_m_Kspi/D");
 
+    TBranch* b_mp_DKs = summary_tree_MINT->Branch("TRUE_mp_DKs", &mp_DKs, "TRUE_mp_DKs/D");
+    TBranch* b_mp_Dpi = summary_tree_MINT->Branch("TRUE_mp_Dpi", &mp_Dpi, "TRUE_mp_Dpi/D");
+    TBranch* b_mp_Kspi = summary_tree_MINT->Branch("TRUE_mp_Kspi", &mp_Kspi, "TRUE_mp_Kspi/D");
+    
+    TBranch* b_cos_DKs = summary_tree_MINT->Branch("TRUE_cos_DKs", &cos_DKs, "TRUE_cos_DKs/D");
+    TBranch* b_cos_Dpi = summary_tree_MINT->Branch("TRUE_cos_Dpi", &cos_Dpi, "TRUE_cos_Dpi/D");
+    TBranch* b_cos_Kspi = summary_tree_MINT->Branch("TRUE_cos_Kspi", &cos_Kspi, "TRUE_cos_Kspi/D");
+    
     for(int i=0; i<eventList.size();i++){
         m_DKs = sqrt(eventList[i].s(1,2))*MeV;
         m_Dpi = sqrt(eventList[i].s(1,3))*MeV;
         m_Kspi = sqrt(eventList[i].s(2,3))*MeV;
+        
+        mp_DKs = 1./TMath::Pi() * TMath::ACos(2. * ( m_DKs - sqrt(pdg.sijMin(1,2))*MeV ) / (sqrt(pdg.sijMax(1,2))*MeV - sqrt(pdg.sijMin(1,2))*MeV)  - 1.);  
+        mp_Dpi = 1./TMath::Pi() * TMath::ACos(2. * ( m_Dpi - sqrt(pdg.sijMin(1,3))*MeV ) / (sqrt(pdg.sijMax(1,3))*MeV - sqrt(pdg.sijMin(1,3))*MeV)  - 1.);  
+        mp_Kspi = 1./TMath::Pi()* TMath::ACos(2. * ( m_Kspi - sqrt(pdg.sijMin(3,2))*MeV ) / (sqrt(pdg.sijMax(3,2))*MeV - sqrt(pdg.sijMin(3,2))*MeV)  - 1.);  
+
+        TLorentzVector Ks_p = eventList[i].p(2);
+        TLorentzVector pi_p = eventList[i].p(3);
+        TLorentzVector D_p = eventList[i].p(1);
+        
+        cos_DKs = 1./TMath::Pi() * TMath::ACos(helicityCosine(D_p,Ks_p,D_p+pi_p));
+        cos_Dpi = 1./TMath::Pi() * TMath::ACos(helicityCosine(D_p,pi_p,D_p+Ks_p));
+        cos_Kspi = 1./TMath::Pi() * TMath::ACos(helicityCosine(Ks_p,D_p,Ks_p+pi_p));
 
         summary_tree_MINT->GetEntry(i);
         b_m_DKs->Fill();
         b_m_Dpi->Fill();
         b_m_Kspi->Fill();
+
+        b_mp_DKs->Fill();
+        b_mp_Dpi->Fill();
+        b_mp_Kspi->Fill();
+
+        b_cos_DKs->Fill();
+        b_cos_Dpi->Fill();
+        b_cos_Kspi->Fill();        
     }
     summary_tree_MINT->Write();
     output_MINT->Close();
@@ -228,7 +305,14 @@ void reweightGen(){
     Double_t m_Dpi;
     Double_t m_Kspi;
     Double_t m_DKs;
-    double BDTG;
+    Double_t mp_Dpi;
+    Double_t mp_Kspi;
+    Double_t mp_DKs;
+    Double_t cos_Dpi;
+    Double_t cos_Kspi;
+    Double_t cos_DKs;
+    
+    double BDTG,BDTG_LL,BDTG_DD;
     double weight = 1;
     double genPdf = 1;
         
@@ -237,21 +321,45 @@ void reweightGen(){
     tree_gen->SetBranchAddress( "TRUE_m_Dpi", &m_Dpi );
     tree_gen->SetBranchAddress( "TRUE_m_Kspi", &m_Kspi );
     tree_gen->SetBranchAddress( "TRUE_m_DKs", &m_DKs );
+    tree_gen->SetBranchAddress( "TRUE_mp_Dpi", &mp_Dpi );
+    tree_gen->SetBranchAddress( "TRUE_mp_Kspi", &mp_Kspi );
+    tree_gen->SetBranchAddress( "TRUE_mp_DKs", &mp_DKs );
+    tree_gen->SetBranchAddress( "TRUE_cos_Dpi", &cos_Dpi );
+    tree_gen->SetBranchAddress( "TRUE_cos_Kspi", &cos_Kspi );
+    tree_gen->SetBranchAddress( "TRUE_cos_DKs", &cos_DKs );
     tree_gen->SetBranchAddress("eff_BDTG",&BDTG);
+    tree_gen->SetBranchAddress("eff_BDTG_LL",&BDTG_LL);
+    tree_gen->SetBranchAddress("eff_BDTG_DD",&BDTG_DD);
 
     TChain* tree=new TChain("DecayTree");
     tree->Add("SelMC_BDT.root");
-    tree->SetBranchAddress( "TRUE_m_Dpi", &m_Dpi );
-    tree->SetBranchAddress( "TRUE_m_Kspi", &m_Kspi );
-    tree->SetBranchAddress( "TRUE_m_DKs", &m_DKs );
+    tree->SetBranchAddress("TRUE_m_Dpi", &m_Dpi );
+    tree->SetBranchAddress("TRUE_m_Kspi", &m_Kspi );
+    tree->SetBranchAddress("TRUE_m_DKs", &m_DKs );
+    tree->SetBranchAddress("TRUE_mp_Dpi", &mp_Dpi );
+    tree->SetBranchAddress("TRUE_mp_Kspi", &mp_Kspi );
+    tree->SetBranchAddress("TRUE_mp_DKs", &mp_DKs );
+    tree->SetBranchAddress("TRUE_cos_Dpi", &cos_Dpi );
+    tree->SetBranchAddress("TRUE_cos_Kspi", &cos_Kspi );
+    tree->SetBranchAddress("TRUE_cos_DKs", &cos_DKs );
     tree->SetBranchAddress("eff_BDTG",&BDTG);
+    tree->SetBranchAddress("eff_BDTG_LL",&BDTG_LL);
+    tree->SetBranchAddress("eff_BDTG_DD",&BDTG_DD);
 
     TChain* tree_MINT=new TChain("DalitzEventList");
     tree_MINT->Add("MintMC_BDT.root");
     tree_MINT->SetBranchAddress( "TRUE_m_Dpi", &m_Dpi );
     tree_MINT->SetBranchAddress( "TRUE_m_Kspi", &m_Kspi );
     tree_MINT->SetBranchAddress( "TRUE_m_DKs", &m_DKs );    
+    tree_MINT->SetBranchAddress( "TRUE_mp_Dpi", &mp_Dpi );
+    tree_MINT->SetBranchAddress( "TRUE_mp_Kspi", &mp_Kspi );
+    tree_MINT->SetBranchAddress( "TRUE_mp_DKs", &mp_DKs );
+    tree_MINT->SetBranchAddress( "TRUE_cos_Dpi", &cos_Dpi );
+    tree_MINT->SetBranchAddress( "TRUE_cos_Kspi", &cos_Kspi );
+    tree_MINT->SetBranchAddress( "TRUE_cos_DKs", &cos_DKs );
     tree_MINT->SetBranchAddress("eff_BDTG",&BDTG);
+    tree_MINT->SetBranchAddress("eff_BDTG_LL",&BDTG_LL);
+    tree_MINT->SetBranchAddress("eff_BDTG_DD",&BDTG_DD);
     tree_MINT->SetBranchAddress("weight",&weight);
     tree_MINT->SetBranchAddress("genPdf",&genPdf);
 
@@ -314,7 +422,7 @@ void reweightGen(){
     }
 
     DalitzEventPattern pdg(511 ,-411 ,310 ,211);
-    TFile *file_integ =  TFile::Open("../LASSO/SignalIntegrationEvents.root");
+    TFile *file_integ =  TFile::Open("SignalIntegrationEvents.root");
     TTree* tree_integ=dynamic_cast<TTree*>(file_integ->Get("DalitzEventList"));
     DalitzEventList eventList,eventList_rw,eventList_rw_CP;
     eventList.fromNtuple(tree_integ,1);
@@ -359,11 +467,11 @@ void reweightGen(){
         DalitzEvent evt(eventList[i]);
         evt.setWeight(evt.getWeight()*w);
 
-        if(evt.getGeneratorPdfRelativeToPhaseSpace()>1000.)continue;
+        //if(evt.getGeneratorPdfRelativeToPhaseSpace()>1000.)continue;
 
         eventList_rw.Add(evt);
-        evt.CP_conjugateYourself();
-        eventList_rw_CP.Add(evt);
+        //evt.CP_conjugateYourself();
+        //eventList_rw_CP.Add(evt);
         
         weight *= w;
         D[0] = evt.p(1).X();

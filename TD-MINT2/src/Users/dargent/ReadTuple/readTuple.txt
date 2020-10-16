@@ -1,4 +1,0 @@
-"Event Pattern"         511 -411 310 211
-"inFileNameSignal"	"/eos/lhcb/user/p/phdargen/B2DKspi/BDT/B2DKspi_data.root"
-#"inFileNameSignal"	"../MassFits/b2dkspi_sw.root"
-"eps"	0.05
